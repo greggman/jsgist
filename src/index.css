@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+}
+
+.charts {
+  display: flex;
+}
+
+.selected {
+  background: red;
+}
+
+.collapsed>* {
+  display:none;
+}

@@ -1,0 +1,20 @@
+{
+  "title": "My test",
+  "description": "bla bla bla",
+  "html": "<hr>",
+  "setup": "const vowelArray = ['a', 'e', 'i', 'o', 'u'];\nconst isVowelByArray = c => vowelArray.includes(c.toLowerCase());\nconst isVowelByOr = c => {\n  c = c.toLowerCase();\n  return c === 'a' || c === 'e' || c === 'i' || c === 'o' || c === 'u';\n}\nconst test = new Array(1000).fill(0).map(_ => String.fromCharCode(0x61 + Math.random() * 26 | 0)).join('');\nconst expected = test.split('').reduce((sum, c) => sum + isVowelByArray(c), 0);\nconst verify = result => {\n  if (result !== expected) {\n    throw new Error(`actual: ${result} not equal to expected: ${expected}`);\n  }\n};\nconsole.log('-setup-');\n",
+  "tests": [
+    {
+      "name": "test1",
+      "async": false,
+      "code": "let sum = 0;\nfor (let i = 0; i < test.length; ++i) {\n  sum += isVowelByArray(test[i]);\n}\nverify(sum);\n",
+      "result": 75
+    },
+    {
+      "name": "test2",
+      "async": false,
+      "code": "let sum = 0;\nfor (let i = 0; i < test.length; ++i) {\n  sum += isVowelByOr(test[i]);\n}\nverify(sum);\n",
+      "result": 57
+    }
+  ]
+}
