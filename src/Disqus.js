@@ -29,11 +29,13 @@ export default class Disqus extends React.Component {
   }
   makeBlobURL() {
     this.disqusId = this.props.disqusId;
+    const base = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : window.location.origin;
+
     const html = `
     <html>
-      <link href="${window.location.origin}/comments.css" rel="stylesheet">
+      <link href="${base}/comments.css" rel="stylesheet">
       <body>
-        <script src="${window.location.origin}/comments.js" type="module"></script>
+        <script src="${base}/comments.js" type="module"></script>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
       /**
@@ -69,7 +71,7 @@ export default class Disqus extends React.Component {
   }
   render() {
     return (
-      <iframe ref={this.iframeRef} title="comments" src={this.makeBlobURL()} allow="allow-scripts"/>
+      <iframe ref={this.iframeRef} title="comments" src={this.makeBlobURL()} sandbox="allow-scripts"/>
     );
   }
 }

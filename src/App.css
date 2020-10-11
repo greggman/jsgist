@@ -18,6 +18,12 @@ html {
 *, *:before, *:after {
   box-sizing: inherit;
 }
+/* ---------------- */
+.content {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 .head {
   display: flex;
   font-size: xx-large;
@@ -39,9 +45,67 @@ html {
   position: relative;
   right: 1em;
 }
-.content {
-  height: 100vh;
+.top,
+.bottom {
+  display: flex;
+  padding: 10px;
+  position: relative;
 }
+.bottom {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.top>div,
+.bottom>div {
+  flex: 1 1 50%;
+}
+.top .right {
+  display: flex;
+}
+.left {
+  width: 50%;
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+.left>div {
+  height: 100%;
+  min-height: 0;
+}
+.right {
+  margin-left: 10px;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+.bottom  {
+  display: flex;
+}
+/* ---------------------- */
+.split, .gutter.gutter-horizontal {
+    float: left;
+}
+.gutter.gutter-horizontal,
+.gutter.gutter-horizontal:hover {
+    cursor: ew-resize;
+}
+.gutter.gutter-vertical,
+.gutter.gutter-vertical:hover {
+    cursor: ns-resize;
+}
+.gutter.gutter-vertical {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
+    background-repeat: no-repeat no-repeat;
+    background-position: center center;
+}
+
+.gutter.gutter-horizontal {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+    background-repeat: no-repeat no-repeat;
+    background-position: center center;
+}
+/* ---------------------- */
 a {
   color: var(--link-color);
 }
@@ -139,26 +203,6 @@ a {
   pointer-events: none;
   cursor: not-allowed;
 }
-.top,
-.bottom {
-  display: flex;
-  padding: 10px;
-  position: relative;
-}
-.top>div,
-.bottom>div {
-  flex: 1 1 50%;
-}
-.top .right {
-  display: flex;
-}
-.left {
-  width: 50%;
-  position: relative;
-}
-.right {
-  margin-left: 10px;
-}
 .messages {
   position: fixed;
   bottom: 0;
@@ -206,9 +250,9 @@ input[type="password"] {
 .code-area {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1.5em;
   flex: 1 1 auto;
   background: var(--code-area-bg-color);
+  min-height: 0;
 }
 .code-area button {
   margin-right: 0;

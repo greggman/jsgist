@@ -104,7 +104,7 @@ export let data = isDev ? {
     },
     {
       "name": "index.css",
-      "content": "body {\n  margin: 0;\n}\n#c {\n  width: 100vw;\n  height: 100vh;\n  display: block;\n}\n#info { \n  position: absolute; \n  left: 1em; \n  top: 1em; \n  background: rgba(0,0,0,.8); \n  padding: .5em;\n        color: white;\n        font-family: monospace;\n}\n",
+      "content": "body {\n  margin: 0;\n}\n#c {\n  width: 100vw;\n  height: 100vh;\n  display: block;\n}\n#info { \n  position: absolute; \n  left: 1em; \n  top: 1em; \n  background: rgba(0,0,0,.8); \n  padding: .5em;\n  color: white;\n  font-family: monospace;\n}",
     },
     {
       "name": "index.js",

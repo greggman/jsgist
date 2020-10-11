@@ -1,4 +1,5 @@
 import React from 'react';
+import Split from 'react-split';
 
 import EditLine from './EditLine.js';
 import Footer from './Footer.js';
@@ -249,7 +250,13 @@ class App extends React.Component {
           {
             loading ? [] : (
               <div className="bottom">
+                {/*<Split sizes={[50, 50]} direction="horizontal">*/}
                 <div className="left">
+                  <Split
+                    direction="vertical"
+                    sizes={data.files.map((_, __, a) => 100 / a.length )}
+                    minSize={0}
+                  >
                   {
                     data.files.map((file, ndx) => {
                       return (
@@ -266,11 +273,13 @@ class App extends React.Component {
                       );
                     })
                   }
-                    <button onClick={() => model.addFile()}>+</button>
+                  </Split>
+                    {/*<button onClick={() => model.addFile()}>+</button>*/}
                 </div>
                 <div className="right">
                   <Runner data={runningData} />
                 </div>
+                {/*</Split>*/}
               </div>
             )
           }
