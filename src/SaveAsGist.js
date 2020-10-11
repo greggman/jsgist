@@ -20,8 +20,8 @@ export default class SaveAsGist extends React.Component {
     const {pat} = this.state;
     github.setPat(pat);
     try {
-      const gist_id = await github.createGist(data);
-      onSave(gist_id);
+      const gistId = await github.createGist(data);
+      onSave(gistId);
     } catch (e) {
       addError(`could not create gist: ${e}`)
     }
@@ -41,8 +41,8 @@ export default class SaveAsGist extends React.Component {
   }
   render() {
     const {pat} = this.state;
-    const {gist_id} = this.props;
-    const canSave = pat && gist_id
+    const {gistId} = this.props;
+    const canSave = pat && gistId;
     return (
       <div>
         <div className="save-as-gist-pat">

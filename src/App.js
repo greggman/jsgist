@@ -1,17 +1,15 @@
 import React from 'react';
 
-import { classNames } from './css-utils.js';
 import EditLine from './EditLine.js';
+import Footer from './Footer.js';
 import GitHub from './GitHub.js';
 import Help from './Help.js';
-import LatestResults from './LatestResults.js';
 import Load from './Load.js';
 import * as model from './model.js';
-import NamedCodeArea from './NamedCodeArea.js';
-import Platforms from './Platforms.js';
 import Save from './Save.js';
+import Settings from './Settings.js';
 import TestArea from './TestArea.js';
-import TestRunner from './TestRunner.js';
+import Runner from './Runner.js';
 import {isCompressedBase64, compressedBase64ToJSON} from './SaveAsURL.js';
 
 import './App.css';
@@ -24,46 +22,40 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const noJSX = () => [];
+const darkMatcher = window.matchMedia('(prefers-color-scheme: dark)');
+const makeDisqusId = () => {
+  const loc = window.location;
+  const query = Object.fromEntries(new URLSearchParams(loc.search).entries());
+  const src = query.src;
+  return src
+      ? `${loc.origin}${loc.pathname}?src=${encodeURIComponent(src)}`
+      : '';
+}
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
       path: window.location.pathname,
-      running: false,
+      disqusId: makeDisqusId(),
+      dark: darkMatcher.matches,
       loading: false,
       dialog: noJSX,
       dataVersion: 0,
       gistId: '',
       pat: localStorage.getItem('pat'),
+      runningData: JSON.stringify(model.getBlankData()),
       messages: [],
     };
     this.github = new GitHub();
   }
   componentDidMount() {
-    const query = Object.fromEntries(new URLSearchParams(window.location.search).entries());
-    const backup = localStorage.getItem('backup');
-    let loaded = false;
-    if (backup) {
-      try {
-        const data = JSON.parse(backup);
-        if (data.href === window.location.href) {
-          model.setData(data.data);
-          loaded = true;
-          this.addInfo('loaded backup from local storage')
-        }
-      } catch (e) {
-        //
-      }
-    }
-    if (!loaded && query.src) {
-      this.loadData(query.src);
-    }
     model.add('path', window.location.pathname);
     model.subscribe('path', (newValue) => {
       window.history.pushState({}, '', newValue);
       this.setState({
         path: newValue,
+        disqusId: makeDisqusId(),
       });
     });
     // I still am not sure how I'm supposed to handle this.
@@ -90,6 +82,30 @@ class App extends React.Component {
     model.subscribe('updateVersion', (updateVersion) => {
       this.setState({updateVersion})
     });
+
+    darkMatcher.addEventListener('change', () => {
+      this.setState({dark: darkMatcher.matches});
+    });
+
+    const query = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+    const backup = localStorage.getItem('backup');
+    let loaded = false;
+    if (backup) {
+      try {
+        const data = JSON.parse(backup);
+        if (data.href === window.location.href) {
+          model.setData(data.data);
+          loaded = true;
+          this.addInfo('loaded backup from local storage')
+        }
+      } catch (e) {
+        //
+      }
+      localStorage.removeItem('backup');
+    }
+    if (!loaded && query.src) {
+      this.loadData(query.src);
+    }
   }
   async loadData(src) {
     this.setState({loading: true});
@@ -97,6 +113,7 @@ class App extends React.Component {
       if (isGistId(src)) {
         const data = await this.github.getAnonGist(src);
         model.setData(data);
+        this.setState({gistId: src})
       } else if (isCompressedBase64(src)) {
         const data = compressedBase64ToJSON(src);
         model.setData(data);
@@ -107,7 +124,7 @@ class App extends React.Component {
       }
     } catch (e) {
       console.warn(e);
-      this.addError(`could not load benchmark: src=${src}`);
+      this.addError(`could not load jsGist: src=${src} ${e}`);
     }
     this.setState({loading: false});
   }
@@ -123,23 +140,33 @@ class App extends React.Component {
     this.setState({dialog: noJSX});
   }
   handleNew = async() => {
-    model.setData(model.getNewTestData());
+    model.setData(model.getNewData());
   }
   handleRun = async () => {
-    this.setState({running: true});
     localStorage.setItem('backup', JSON.stringify({
       href: window.location.href,
       data: model.data,
     }));
-    console.log('--start--');
-    const testRunner = new TestRunner();
-    const benches = await testRunner.run(model.data);
-    console.log(benches);
-    console.log('--done--');
-    this.setState({running: false});
+    this.setState({
+      // We pass in JSON because we need to check if anything changed
+      // If we passed in an object we'd have to do a deep compare.
+      // We need to check if it changed because since we're generating
+      // a blob we'll end up with a new random number every time
+      // which means our virtual dom changes which means we'll get
+      // re-rendered, even though we aren't actually different.
+      runningData: JSON.stringify(model.data),
+    })
+  }
+  handleStop = async () => {
+    this.setState({
+      runningData: JSON.stringify(model.getBlankData()),
+    })
   }
   handleSave = async () => {
     this.setState({dialog: this.renderSave});
+  }
+  handleSettings = () => {
+    this.setState({dialog: this.renderSettings});
   }
   handleHelp = () => {
     this.setState({dialog: this.renderHelp});
@@ -154,8 +181,16 @@ class App extends React.Component {
     window.history.pushState({}, '', `${window.location.origin}?src=${gistId}`);
     this.setState({dialog: noJSX, gistId});
   }
-  renderHelp() {
-    return (<Help />);
+  handleAbort = () => {
+    this.abort();
+  };
+  renderHelp = () => {
+    return (<Help onClose={this.closeDialog} />);
+  }
+  renderSettings = () => {
+    return (
+      <Settings onClose={this.closeDialog} />
+    );
   }
   renderLoad = () => {
     return (
@@ -181,88 +216,70 @@ class App extends React.Component {
   }
   render() {
     const data = model.data;
-    const {running, loading, dialog, updateVersion: hackKey} = this.state;
-    const disabled = running;
-    const hideStyle = {
-      ...(!running && {display: 'none'}),
-    };
+    const {loading, dialog, disqusId, runningData, updateVersion: hackKey} = this.state;
+    const extra = [];
     return (
       <div className="App">
-        <div className="head">
-          <div>
-            <img src="/resources/images/logo.svg" alt="logo"/>
-          jsGist.org
-          </div>
-          <div>
-          <a href="https://github.com/greggman/jsgist/">
-            <img alt="github" src="/resources/images/octocat-icon.svg"/>
-          </a>
-          </div>
-        </div>
-        <div className="top">
-          <div className={classNames("left", {disabled})}>
-            <EditLine value={data.title} onChange={v => model.setTitle(v)} />
-          </div>
-          <div className={classNames("right", {disabled})}>
-            <button tabIndex="1" onClick={this.handleRun}>Run</button>
-            <button tabIndex="1" onClick={this.handleSave}>Save</button>
-            <button tabIndex="1" onClick={this.handleNew}>New</button>
-            <button tabIndex="1" onClick={this.handleLoad}>Load</button>
-            <button tabIndex="1" onClick={this.handleHelp}>?</button>
-          </div>
-        </div>
-        {
-          loading ? [] : (
-            <div className="bottom">
-              <div className="left">
-                <NamedCodeArea
-                  hackKey={hackKey}
-                  title="Initialization"
-                  value={data.initialization}
-                  show={data.initialization.length > 0}
-                  onValueChange={v => model.setInitialization(v)}
-                />
-                <NamedCodeArea
-                  hackKey={hackKey}
-                  title="Before Each Test"
-                  value={data.setup}
-                  show={data.setup.length > 0}
-                  onValueChange={v => model.setSetup(v)}
-                 />
-                {
-                  data.tests.map((test, ndx) => {
-                    const extra = (
-                      <div><button onClick={_ => model.deleteTest(ndx)}>-</button></div>
-                    );
-                    return (
-                      <TestArea
-                        key={`ca${ndx}`}
-                        hackKey={hackKey}
-                        desc={`Case ${ndx + 1}`}
-                        title={test.name}
-                        value={test.code}
-                        async={test.async}
-                        onTitleChange={title => model.setTestName(ndx, title)}
-                        onValueChange={value => model.setTestCode(ndx, value)}
-                        extra={extra}
-                      />
-                    );
-                  })
-                }
-                <div>
-                  <button onClick={model.addTest}>+</button>
-                  <div>foo</div>
-                  <div>bar</div>
-                </div>
-                <div className="blocked" style={hideStyle} />
-              </div>
-              <div className="right">
-                <LatestResults tests={data.tests}/>
-                <Platforms tests={data.tests}/>
-              </div>
+        <div className="content">
+          <div className="head">
+            <div>
+              <img src="/resources/images/logo.svg" alt="logo"/>
+            jsGist.org<span className="beta">(beta)</span>
             </div>
-          )
-        }
+            <div>
+            <a href="https://github.com/greggman/jsgist/">
+              <img alt="github" src="/resources/images/octocat-icon.svg"/>
+            </a>
+            </div>
+          </div>
+          <div className="top">
+            <div className="left">
+              <EditLine value={data.name} onChange={v => model.setName(v)} />
+            </div>
+            <div className="right">
+              <button tabIndex="1" onClick={this.handleRun}>Run</button>
+              <button tabIndex="1" onClick={this.handleStop}>Stop</button>
+              <button tabIndex="1" onClick={this.handleSave}>Save</button>
+              <button tabIndex="1" onClick={this.handleNew}>New</button>
+              <button tabIndex="1" onClick={this.handleLoad}>Load</button>
+              <button tabIndex="1" onClick={this.handleSettings} title="settings"><img src={`${window.location.origin}/resources/images/gear.svg`} alt="settings"></img></button>
+              <button tabIndex="1" onClick={this.handleHelp} title="help">?</button>
+            </div>
+          </div>
+          {
+            loading ? [] : (
+              <div className="bottom">
+                <div className="left">
+                  {
+                    data.files.map((file, ndx) => {
+                      return (
+                        <TestArea
+                          key={`ca${ndx}`}
+                          hackKey={hackKey}
+                          desc="filename"
+                          title={file.name}
+                          value={file.content}
+                          onTitleChange={name => model.setFileName(ndx, name)}
+                          onValueChange={value => model.setFileContent(ndx, value)}
+                          extra={extra}
+                        />
+                      );
+                    })
+                  }
+                    <button onClick={() => model.addFile()}>+</button>
+                </div>
+                <div className="right">
+                  <Runner data={runningData} />
+                </div>
+              </div>
+            )
+          }
+        </div>
+        <Footer
+          disqusId={disqusId}
+          disqusShortName="jsgist"
+          title={data.name}
+        />
         {dialog()}
         <div className="messages">
           {

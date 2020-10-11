@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "settings": {
+      "type": "object"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "content": { "type": "string" },
+          "type": { "type": "string" }
+        },
+        "required": ["content", "type"]
+      }
+    }
+  },
+  "required": ["name", "settings", "files"]
+}

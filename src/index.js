@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-if (window.location.hostname.startsWith('localhost')) {
+if (window.location.hostname.startsWith('localhost') || window.location.search.indexOf("test=true")) {
   ReactDOM.render(
     <React.StrictMode>
       <App />

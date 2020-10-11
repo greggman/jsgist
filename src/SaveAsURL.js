@@ -40,7 +40,7 @@ export default function SaveAsURL(props) {
   const url = `${window.location.origin}?src=${encodeURIComponent(src)}`;
   return (
     <div>
-      <div>copy / bookmark the link below</div>
+      <div>Copy / bookmark the link below</div>
       <a className="bookmark" href={url} target="_blank" rel="noopener noreferrer">{url}</a>
     </div>
   );

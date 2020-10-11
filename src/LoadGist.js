@@ -1,7 +1,7 @@
 import React from 'react';
 import { classNames } from './css-utils.js';
 
-export default class SaveAsGist extends React.Component {
+export default class LoadGist extends React.Component {
   constructor () {
     super();
     this.state = {
@@ -57,20 +57,23 @@ export default class SaveAsGist extends React.Component {
           Paste it above. Note: This is a static website. Your person access token
           is stored only locally in your browser and only accessible by this domain.
         </p>
-        <table className="gists">
-          <tbody>
-          {
-            gists.map((gist, ndx) => {
-              return (
-                <tr key={`g${ndx}`}>
-                  <td><a href={`${window.location.origin}?src=${encodeURIComponent(gist.id)}`}>{gist.description}</a></td>
-                  <td>{gist.updated_at.substring(0, 10)}</td>
-                </tr>
-              );
-            })
-          }
-          </tbody>
-        </table>
+        {
+          gists.length ?
+            <table className="gists">
+              <tbody>
+              {
+                gists.map((gist, ndx) => {
+                  return (
+                    <tr key={`g${ndx}`}>
+                      <td><a href={`${window.location.origin}?src=${encodeURIComponent(gist.id)}`}>{gist.description}</a></td>
+                      <td>{gist.updated_at.substring(0, 10)}</td>
+                    </tr>
+                  );
+                })
+              }
+              </tbody>
+            </table> : []
+        }
       </div>
     );
   }

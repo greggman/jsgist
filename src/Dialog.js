@@ -23,10 +23,10 @@ export default class Dialog extends React.Component {
           <div className="dialog-heading">
             <div className="dialog-title">{title}</div>
             <div className="dialog-close">
-              <button onClick={onClose}>☒</button>
+              <button onClick={onClose}>X</button>
             </div>
           </div>
-          <div>
+          <div className="dialog-content">
             {children}
           </div>
         </div>

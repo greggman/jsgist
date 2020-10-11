@@ -1,14 +1,19 @@
 :root {
   --main-bg-color: #eee;
   --main-fg-color: #000;
-  --title-bg-color: #DDD;
+  --title-bg-color: #CCC;
   --button-color: #48F;
   --link-color: #36C;
+  --code-area-bg-color: #CCC;
+  --un-run-bg-color: #8AF;
+  --aborted-bg-color: #DDD;
 }
 html {
   box-sizing: border-box;
   font-family: sans-serif;
   line-height: 1.5;
+  background: var(--main-bg-color);
+  color: var(--main-fg-color);
 }
 *, *:before, *:after {
   box-sizing: inherit;
@@ -28,12 +33,17 @@ html {
   vertical-align: middle;
   margin: 5px;
 }
+.head .beta {
+  font-size: x-small;
+  vertical-align: top;
+  position: relative;
+  right: 1em;
+}
+.content {
+  height: 100vh;
+}
 a {
   color: var(--link-color);
-}
-.App {
-  background: var(--main-bg-color);
-  color: var(--main-fg-color);
 }
 .blocked {
   position: absolute;
@@ -43,6 +53,9 @@ a {
   height: 100%;
   background: rgba(0, 0, 0, 0.8);
   z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .dialog {
   position: fixed;
@@ -74,6 +87,9 @@ a {
   margin: 10px;
   position: relative;
 }
+.dialog-content {
+  margin: 10px;
+}
 .dialog-close {
   position: absolute;
   right: 0;
@@ -101,7 +117,7 @@ a {
   flex: 1 1 auto;
 }
 .section {
-  margin: 10px;
+  margin-bottom: 10px;
   border: 1px solid #888;
   border-radius: 5px;
   padding: 1em;
@@ -131,7 +147,7 @@ a {
 }
 .top>div,
 .bottom>div {
-  flex: 1 5 50%;
+  flex: 1 1 50%;
 }
 .top .right {
   display: flex;
@@ -174,24 +190,31 @@ input[type="password"] {
   width: 100%;
   font-size: large;
 }
-.charts {
-  margin-top: 1em;
-}
 .named {
   padding: 0.25em;
+}
+.runner {
+  width: 100%;
+  height: 100%;
+}
+.runner>iframe {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border: none;
 }
 .code-area {
   display: flex;
   flex-direction: column;
   margin-bottom: 1.5em;
   flex: 1 1 auto;
-  background: #555;
+  background: var(--code-area-bg-color);
 }
 .code-area button {
   margin-right: 0;
 }
 .code-area input {
-  background: #555;
+  background: var(--code-area-bg-color);
   font-size: medium;
 }
 .expander {
@@ -203,23 +226,6 @@ input[type="password"] {
 .hider {
   width: 1em;
   color: #888;
-}
-.result {
-  margin-top: 1em;
-}
-.result-result {
-  display: block;
-  width: 100%;
-  margin: 0.25em 0;
-  background-color: #222;
-  border-radius: 0.25em;
-  white-space: nowrap;
-}
-.result-result>span {
-  display: inline-block;
-  padding: 0.125em;
-  width: 0px;
-  transition: width 0.2s ease-out;
 }
 .hidee {
   position: relative;
@@ -242,8 +248,11 @@ button {
   border-radius: 0.25em;
   padding: 0.25em;
   margin-right: 0.25em;
-  min-width: 1.5em;
+  min-width: 2.5em;
   font-weight: bold;
+}
+button img {
+  height: 1em;
 }
 button:hover {
   background: var(--button-color);
@@ -259,7 +268,7 @@ button:hover {
 }
 .CodeMirror-overlayscroll-horizontal div,
 .CodeMirror-overlayscroll-vertical div {
-  opacity: 0.3;
+  opacity: 0.6;
 }
 .markdown code {
   background: var(--title-bg-color);
@@ -268,15 +277,35 @@ button:hover {
   line-height: 2;
 }
 .gists {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 255, 0.1);
   width: 100%;
   border: none;
 }
 .gists tr:nth-child(2n) {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(128, 160, 255, 0.2);
 }
 .gists td:nth-child(2n) {
   text-align: right;
+}
+
+.comment-notes {
+  padding: 1em;
+  margin: 1em;
+  background: rgba(255, 255, 255, 0.5);
+  color: red;
+}
+.comments,
+.comment-sep {
+    margin: 0 auto 1em;
+    max-width: 700px;
+    width: calc(100% - 40px);
+}
+.comments > iframe {
+  width: 100%;
+  border: none;
+}
+.comments .links {
+  text-align: center;
 }
 
 @media (max-width: 740px) {
@@ -299,5 +328,21 @@ button:hover {
     --title-bg-color: #222;
     --button-bg-color: #fff;
     --link-color: #6CF;
+    --code-area-bg-color: #555;
+    --un-run-bg-color: blue;
+    --aborted-bg-color: #000;
+  }
+  .CodeMirror-overlayscroll-horizontal div,
+  .CodeMirror-overlayscroll-vertical div {
+    opacity: 0.3;
+  }
+  .comment-notes {
+    background: rgba(0, 0, 0, 0.5);
+  }
+  .gists {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  .gists tr:nth-child(2n) {
+    background-color: rgba(0, 0, 0, 0.2);
   }
 }

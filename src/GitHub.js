@@ -1,8 +1,8 @@
 import { Octokit } from '@octokit/rest';
 
-const userAgent = 'jsGist v0.0.1';
+const userAgent = 'jsBenchIt v0.0.1';
 
-const getGistContent = gist => JSON.parse(gist.files['jsGist.json'].content);
+const getGistContent = gist => JSON.parse(gist.files['jsBenchIt.json'].content);
 
 export default class GitHub {
   constructor() {
@@ -25,7 +25,7 @@ export default class GitHub {
   }
   async getUserGists() {
     const gists = await this.authorizedOctokit.paginate(this.authorizedOctokit.gists.list);
-    return gists.filter(gist => !!gist.files['jsGist.json']);
+    return gists.filter(gist => !!gist.files['jsBenchIt.json']);
     // return await this.authorizedOctokit.gists.list();
   }
   async getUserGist(gist_id) {
@@ -42,7 +42,7 @@ export default class GitHub {
       description: data.title,
       public: true,
       files: {
-        'jsGist.json': {content: JSON.stringify(data)},
+        'jsBenchIt.json': {content: JSON.stringify(data)},
       },
     });
     return gist.data.id;
@@ -80,7 +80,7 @@ url: "https://api.github.com/gists"
       description: data.title,
       public: isPublic,
       files: {
-        'jsGist.json': JSON.stringify(data),
+        'jsBenchIt.json': JSON.stringify(data),
       },
     });
   }
