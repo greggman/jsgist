@@ -81,9 +81,14 @@ export default class Runner extends React.Component {
   }
   render() {
     const url = this.makeBlobURL();
+    const {blank} = this.props;
     return (
       <div className="runner" ref={this.divRef}>
-        <iframe title="runner" sandbox="allow-scripts" src={url} />
+        <iframe
+          title="runner"
+          sandbox="allow-scripts"
+          src={url}
+          style={{...(blank && {background: 'none'})}}/>
       </div>)
   }
 }

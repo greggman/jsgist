@@ -23,6 +23,19 @@ function createGistData(data, gist_id) {
   const saveData = {
     ...data,
   };
+  /*
+  // we can't add a readme because we don't know the gist_id. I guess we would double
+  // save? create then update?
+
+  const lowerCaseFiles = Object.keys(files).map(n => n.toLowerCase());
+  const hadReadme = 
+      lowerCaseFiles.includes('readme.md') ||
+      lowerCaseFiles.includes('readme.txt') ||
+      lowerCaseFiles.includes('readme');
+  if (!hadReadme) {
+    files['README.md'] = `# ${data.name}\n\n[jsGist Link](${window.location.origin}?src=${})`
+  }
+  */
   const jsGistData = {}
   files['jsGist.json'] = jsGistData;
   const noDuplicateNames = Object.keys(files).length === data.files.length + 1;

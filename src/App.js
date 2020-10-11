@@ -46,6 +46,7 @@ class App extends React.Component {
       gistId: '',
       pat: localStorage.getItem('pat'),
       runningData: JSON.stringify(model.getBlankData()),
+      blank: true,
       messages: [],
     };
     this.github = new GitHub();
@@ -156,11 +157,13 @@ class App extends React.Component {
       // which means our virtual dom changes which means we'll get
       // re-rendered, even though we aren't actually different.
       runningData: JSON.stringify(model.data),
+      blank: false,
     })
   }
   handleStop = async () => {
     this.setState({
       runningData: JSON.stringify(model.getBlankData()),
+      blank: true,
     })
   }
   handleSave = async () => {
@@ -217,7 +220,7 @@ class App extends React.Component {
   }
   render() {
     const data = model.data;
-    const {loading, dialog, disqusId, runningData, updateVersion: hackKey} = this.state;
+    const {loading, blank, dialog, disqusId, runningData, updateVersion: hackKey} = this.state;
     const extra = [];
     return (
       <div className="App">
@@ -250,36 +253,38 @@ class App extends React.Component {
           {
             loading ? [] : (
               <div className="bottom">
-                {/*<Split sizes={[50, 50]} direction="horizontal">*/}
-                <div className="left">
-                  <Split
-                    direction="vertical"
-                    sizes={data.files.map((_, __, a) => 100 / a.length )}
-                    minSize={0}
-                  >
-                  {
-                    data.files.map((file, ndx) => {
-                      return (
-                        <TestArea
-                          key={`ca${ndx}`}
-                          hackKey={hackKey}
-                          desc="filename"
-                          title={file.name}
-                          value={file.content}
-                          onTitleChange={name => model.setFileName(ndx, name)}
-                          onValueChange={value => model.setFileContent(ndx, value)}
-                          extra={extra}
-                        />
-                      );
-                    })
-                  }
-                  </Split>
-                    {/*<button onClick={() => model.addFile()}>+</button>*/}
-                </div>
-                <div className="right">
-                  <Runner data={runningData} />
-                </div>
-                {/*</Split>*/}
+                <Split sizes={[50, 50]} direction="horizontal">
+                  <div className="left">
+                    <div className="codes">
+                    <Split
+                      direction="vertical"
+                      sizes={data.files.map((_, __, a) => 100 / a.length )}
+                      minSize={0}
+                    >
+                    {
+                      data.files.map((file, ndx) => {
+                        return (
+                          <TestArea
+                            key={`ca${ndx}`}
+                            hackKey={hackKey}
+                            desc="filename"
+                            title={file.name}
+                            value={file.content}
+                            onTitleChange={name => model.setFileName(ndx, name)}
+                            onValueChange={value => model.setFileContent(ndx, value)}
+                            extra={extra}
+                          />
+                        );
+                      })
+                    }
+                    </Split>
+                    </div>
+                      {/*<button onClick={() => model.addFile()}>+</button>*/}
+                  </div>
+                  <div className="right">
+                    <Runner data={runningData} blank={blank} />
+                  </div>
+                </Split>
               </div>
             )
           }
