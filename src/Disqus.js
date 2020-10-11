@@ -64,7 +64,6 @@ export default class Disqus extends React.Component {
       </body>
     </html>
     `;
-    console.log(html);
     const blob = new Blob([html], {type: 'text/html'});
     return URL.createObjectURL(blob);
   }

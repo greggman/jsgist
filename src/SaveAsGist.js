@@ -16,28 +16,38 @@ export default class SaveAsGist extends React.Component {
   }
   onSaveNew = async() => {
     this.setState({saving: true});
-    const {data, github, addError, onSave} = this.props;
+    const {data, github, addError, onSave, onClose} = this.props;
     const {pat} = this.state;
+    let success = false;
     github.setPat(pat);
     try {
       const gistId = await github.createGist(data);
       onSave(gistId);
+      success = true;
     } catch (e) {
       addError(`could not create gist: ${e}`)
     }
     this.setState({saving: false});
+    if (success) {
+      onClose();
+    }
   }
   onSaveOverExisting = async() => {
     this.setState({saving: true});
-    const {data, gistId, github, addError} = this.props;
+    const {data, gistId, github, addError, onClose} = this.props;
     const {pat} = this.state;
+    let success = false;
     github.setPat(pat);
     try {
       await github.updateGist(gistId, data);
+      success = true;
     } catch (e) {
       addError(`could not update gist: ${e}`)
     }
     this.setState({saving: false});
+    if (success) {
+      onClose();
+    }
   }
   render() {
     const {pat} = this.state;

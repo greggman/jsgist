@@ -13,10 +13,9 @@
         "type": "object",
         "properties": {
           "name": { "type": "string" },
-          "content": { "type": "string" },
-          "type": { "type": "string" }
+          "content": { "type": "string" }
         },
-        "required": ["content", "type"]
+        "required": ["content", "name"]
       }
     }
   },

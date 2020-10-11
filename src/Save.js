@@ -10,7 +10,7 @@ export default function Save(props) {
   return (
     <Dialog title="Save As" onClose={onClose}>
       <Section heading="Save As Gist">
-        <SaveAsGist gistId={gistId} github={github} data={data} onSave={onSave} addError={addError} />
+        <SaveAsGist gistId={gistId} github={github} data={data} onClose={onClose} onSave={onSave} addError={addError} />
       </Section>
       <Section heading="Save As URL">
         <SaveAsURL data={data} />
