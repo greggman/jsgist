@@ -381,7 +381,7 @@ button:hover {
     max-width: 700px;
     width: calc(100% - 40px);
 }
-.comments > iframe {
+.comments iframe {
   width: 100%;
   border: none;
 }

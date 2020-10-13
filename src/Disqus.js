@@ -37,48 +37,38 @@ export default class Disqus extends React.Component {
       <body>
         <script crossorigin src="${base}/comments.js" type="module"></script>
         <div id="disqus_thread"></div>
-        <script type="text/javascript">
-      /**
-       *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-       *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
-       */
-console.log('comments-blob.html');
-      
-      var disqus_config = function () {
-          this.page.url = '${window.location.origin}${this.disqusId}';
-          this.page.identifier = '${escape(this.disqusId)}';
-          this.page.title = '${escape(this.props.title)}';
-      };
-      
-      (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
-          if (window.location.hostname.indexOf("jsgist.org") < 0) {
-              return;
-          }
-
-          var d = document, s = d.createElement('script');
-          
-          s.crossOrigin = 'anonymous';
-          s.src = '//${this.props.disqusShortName}.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
-console.log(s.src);
-          s.setAttribute('data-timestamp', +new Date());
-          (d.head || d.body).appendChild(s);
-      })();
-        </script>
+        ${
+          window.location.origin.indexOf('jsgist.org') < 0
+          ? ''
+          : `
+          <script>
+          var disqus_config = function () {
+              this.page.url = '${this.disqusId}';
+              this.page.identifier = '${escape(this.disqusId)}';
+              this.page.title = '${escape(this.props.title)}';
+          };
+          </script>
+          <script crossorigin src="https://${this.props.disqusShortName}.disqus.com/embed.js"></script>
+          `
+        }
         <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
       </body>
     </html>
     `;
+    console.log(html);
     const blob = new Blob([html], {type: 'text/html'});
     return URL.createObjectURL(blob);
   }
   render() {
     return (
-      <iframe
-        ref={this.iframeRef}
-        title="comments"
-        src={this.makeBlobURL()}
-        sandbox="allow-scripts allow-forms allow-popups"
-      />
+      <div ref={this.elemRef}>
+        <iframe
+          ref={this.iframeRef}
+          title="comments"
+          src={this.makeBlobURL()}
+          sandbox="allow-scripts allow-forms allow-popups"
+        />
+      </div>
     );
   }
 }

@@ -8,10 +8,10 @@ export default function Footer(props) {
       <hr/>
       {/*
       <div className="links">
-         <a href="https://github.com/greggman/jsgist/issues/new?assignees=&labels=suggested+topic&template=suggest-topic.md&title=%5BSUGGESTION%5D">Suggestion</a>?<span> </span>
-         <a href="https://github.com/greggman/jsgist/issues/new?assignees=&labels=&template=request.md&title=">Request</a>?<span> </span>
-         <a href="https://github.com/greggman/jsgist/issues/new?assignees=&labels=bug+%2F+issue&template=bug-issue-report.md&title=">Issue</a>?<span> </span>
-         <a href="https://github.com/greggman/jsgist/issues/new?assignees=&labels=bug+%2F+issue&template=bug-issue-report.md&title=">Bug</a>?
+         <a target="_blank" href="https://github.com/greggman/jsgist/issues/new?assignees=&labels=suggested+topic&template=suggest-topic.md&title=%5BSUGGESTION%5D">Suggestion</a>?<span> </span>
+         <a target="_blank" href="https://github.com/greggman/jsgist/issues/new?assignees=&labels=&template=request.md&title=">Request</a>?<span> </span>
+         <a target="_blank" href="https://github.com/greggman/jsgist/issues/new?assignees=&labels=bug+%2F+issue&template=bug-issue-report.md&title=">Issue</a>?<span> </span>
+         <a target="_blank" href="https://github.com/greggman/jsgist/issues/new?assignees=&labels=bug+%2F+issue&template=bug-issue-report.md&title=">Bug</a>?
       </div>
       */}
       {

@@ -53,7 +53,7 @@ export default class LoadGist extends React.Component {
           >Load Your Gists</button>
         </p>
         <p>
-          <a href="https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token">Create a Personal Access Token</a> with only <b>gist</b> permissions.
+          <a target="_blank" rel="noopener noreferrer" href="https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token">Create a Personal Access Token</a> with only <b>gist</b> permissions.
           Paste it above. Note: This is a static website. Your person access token
           is stored only locally in your browser and only accessible by this domain.
         </p>
