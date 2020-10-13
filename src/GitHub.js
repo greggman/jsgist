@@ -56,15 +56,26 @@ function createGistData(data, gist_id) {
   };
 }
 
-export default class GitHub {
+export default class GitHub extends EventTarget {
   constructor() {
+    super();
     this.pat = '';
+    this.user = {};
     this.unAuthorizedOctokit = new Octokit({
       userAgent,
     });
   }
   get octokit() {
     return this.authorizedOctokit || this.unAuthorizedOctokit;
+  }
+  _updateUserData(data) {
+    if (data.owner) {
+      this.user.name = data.owner.login;
+      this.user.avatarURL = data.owner.avatar_url;
+      const event = new Event('userdata');
+      event.data = {...this.user};
+      this.dispatchEvent(event);
+    }
   }
   setPat(pat) {
     if (pat !== this.pat) {
@@ -82,15 +93,18 @@ export default class GitHub {
   }
   async getUserGist(gist_id) {
     const gist = await this.octokit.gists.get({gist_id});
-    return getGistContent(gist);
+    this._updateUserData(gist.data);
+    return getGistContent(gist.data);
   }
   async getAnonGist(gist_id) {
     const req = await fetch(`https://api.github.com/gists/${gist_id}`);
     const gist = await req.json();
+    this._updateUserData(gist);
     return getGistContent(gist);
   }
   async createGist(data) {
     const gist = await this.authorizedOctokit.gists.create(createGistData(data));
+    this._updateUserData(gist.data);
     return gist.data.id;
   }
   async updateGist(gist_id, data) {

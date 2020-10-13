@@ -5,17 +5,14 @@
     {
       "name": "index.html",
       "content": "<div>hello</div>",
-      "type": "text/html"
     },
     {
       "name": "index.css",
       "content": "body { background: yellow; }",
-      "type": "text/css"
     },
     {
       "name": "index.js",
       "content": "console.log('world');",
-      "type": "application/javascript"
     }
   ]
 }

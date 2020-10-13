@@ -1,8 +1,8 @@
 import React from 'react';
-import Split from 'react-split';
 
 import EditLine from './EditLine.js';
 import Footer from './Footer.js';
+import Split from './Split.js';
 import GitHub from './GitHub.js';
 import Help from './Help.js';
 import Load from './Load.js';
@@ -48,10 +48,16 @@ class App extends React.Component {
       runningData: JSON.stringify(model.getBlankData()),
       blank: true,
       messages: [],
+      userData: {},
     };
     this.github = new GitHub();
   }
   componentDidMount() {
+    this.github.addEventListener('userdata', (e) => {
+      this.setState({
+        userData: e.data,
+      });
+    });
     model.add('path', window.location.pathname);
     model.subscribe('path', (newValue) => {
       window.history.pushState({}, '', newValue);
@@ -101,7 +107,7 @@ class App extends React.Component {
           this.addInfo('loaded backup from local storage')
         }
       } catch (e) {
-        //
+        console.log('bad backup')
       }
       localStorage.removeItem('backup');
     }
@@ -111,6 +117,7 @@ class App extends React.Component {
   }
   async loadData(src) {
     this.setState({loading: true});
+    let success = true;
     try {
       if (isGistId(src)) {
         const data = await this.github.getAnonGist(src);
@@ -125,10 +132,14 @@ class App extends React.Component {
         model.setData(data);
       }
     } catch (e) {
+      success = false;
       console.warn(e);
       this.addError(`could not load jsGist: src=${src} ${e}`);
     }
     this.setState({loading: false});
+    if (success) {
+      this.handleRun();
+    }
   }
   addMsg = (msg, className) => {
     this.setState({messages: [{msg, className}, ...this.state.messages]});
@@ -142,7 +153,9 @@ class App extends React.Component {
     this.setState({dialog: noJSX});
   }
   handleNew = async() => {
-    model.setData(model.getNewData());
+    window.location.href = window.location.origin;
+    //window.history.pushState({}, '', `${window.location.origin}`);
+    //model.setData(model.getNewData());
   }
   handleRun = async () => {
     localStorage.setItem('backup', JSON.stringify({
@@ -180,6 +193,7 @@ class App extends React.Component {
   }
   handleOnLoad = async() => {
     this.setState({dialog: noJSX});
+    this.handleRun();
   }
   handleOnSave = (gistId) => {
     window.history.pushState({}, '', `${window.location.origin}?src=${gistId}`);
@@ -220,7 +234,15 @@ class App extends React.Component {
   }
   render() {
     const data = model.data;
-    const {loading, blank, dialog, disqusId, runningData, updateVersion: hackKey} = this.state;
+    const {
+      loading,
+      blank,
+      dialog,
+      disqusId,
+      runningData,
+      updateVersion: hackKey,
+      userData,
+    } = this.state;
     const extra = [];
     return (
       <div className="App">
@@ -228,7 +250,7 @@ class App extends React.Component {
           <div className="head">
             <div>
               <img src="/resources/images/logo.svg" alt="logo"/>
-            jsGist.org<span className="beta">(beta)</span>
+            jsGist.org<span className="beta">(alpha)</span>
             </div>
             <div>
             <a href="https://github.com/greggman/jsgist/">
@@ -238,7 +260,11 @@ class App extends React.Component {
           </div>
           <div className="top">
             <div className="left">
-              <EditLine value={data.name} onChange={v => model.setName(v)} />
+              <div className="name">
+                <EditLine value={data.name} onChange={v => model.setName(v)} />
+                <div className="username">{userData.name}</div>
+                {userData.avatarURL ? <img className="avatar" src={userData.avatarURL} alt="avatar"/> : []}
+              </div>
             </div>
             <div className="right">
               <button tabIndex="1" onClick={this.handleRun}>Run</button>
@@ -246,19 +272,18 @@ class App extends React.Component {
               <button tabIndex="1" onClick={this.handleSave}>Save</button>
               <button tabIndex="1" onClick={this.handleNew}>New</button>
               <button tabIndex="1" onClick={this.handleLoad}>Load</button>
-              <button tabIndex="1" onClick={this.handleSettings} title="settings"><img src={`${window.location.origin}/resources/images/gear.svg`} alt="settings"></img></button>
+              {/*<button tabIndex="1" onClick={this.handleSettings} title="settings"><img src={`${window.location.origin}/resources/images/gear.svg`} alt="settings"></img></button>*/}
               <button tabIndex="1" onClick={this.handleHelp} title="help">?</button>
             </div>
           </div>
           {
             loading ? [] : (
               <div className="bottom">
-                <Split sizes={[50, 50]} direction="horizontal">
+                <Split direction="horizontal" minSize={0}>
                   <div className="left">
                     <div className="codes">
                     <Split
                       direction="vertical"
-                      sizes={data.files.map((_, __, a) => 100 / a.length )}
                       minSize={0}
                     >
                     {

@@ -12,7 +12,7 @@ function find(files, endings) {
 }
 
 function getOrFind(files, name, ...endings) {
-  return files[name] || find(files, endings);
+  return files.find(f => f.name.toLowerCase() === name.toLowerCase) || find(files, endings);
 }
 
 export default class Runner extends React.Component {
@@ -55,10 +55,7 @@ export default class Runner extends React.Component {
   makeBlobURL() {
     this.oldData = this.props.data;
     const data = JSON.parse(this.props.data);
-    const files = data.files.reduce((files, file) => {
-      files[file.name] = file;
-      return files;
-    }, {});
+    const files = data.files;
     const mainHTML = getOrFind(files, 'index.html', 'html');
     const mainJS = getOrFind(files, 'index.js', 'js', 'js', 'javascript');
     const mainCSS = getOrFind(files, 'index.css', 'css');

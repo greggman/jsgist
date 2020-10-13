@@ -90,8 +90,14 @@ html {
   display: flex;
 }
 /* ---------------------- */
+.split {
+  width: 100%;
+}
 .split, .gutter.gutter-horizontal {
     float: left;
+}
+.gutter {
+    background-color: var(--main-bg-color);
 }
 .gutter.gutter-horizontal,
 .gutter.gutter-horizontal:hover {
@@ -128,6 +134,7 @@ a {
   justify-content: center;
   align-items: center;
 }
+/* ---------------------- */
 .dialog {
   position: fixed;
   left: 0;
@@ -174,6 +181,17 @@ a {
   color: #eee;
   padding: 1em;
 }
+.section {
+  margin-bottom: 10px;
+  border: 1px solid #888;
+  border-radius: 5px;
+  padding: 1em;
+}
+.section-heading {
+  font-size: large;
+  border-bottom: 1px solid #888;
+  margin-bottom: 1em;
+}
 .save-as-gist-pat {
   display: flex;
   align-items: center;
@@ -187,17 +205,6 @@ a {
 .save-as-gist-pat>div:nth-child(2) {
   flex: 1 1 auto;
 }
-.section {
-  margin-bottom: 10px;
-  border: 1px solid #888;
-  border-radius: 5px;
-  padding: 1em;
-}
-.section-heading {
-  font-size: large;
-  border-bottom: 1px solid #888;
-  margin-bottom: 1em;
-}
 .bookmark {
   max-width: 100%;
   text-overflow: ellipsis;
@@ -210,6 +217,7 @@ a {
   pointer-events: none;
   cursor: not-allowed;
 }
+/* ------------------ */
 .messages {
   position: fixed;
   bottom: 0;
@@ -228,13 +236,35 @@ a {
 .messages .info {
   background: #00F;
 }
+/* -------------------- */
+.radio {
+  display: flex;
+}
+.radio-selected {
+  background-color: red;
+}
+/* -------------------- */
 input {
   border: none;
   padding: 0.25em;
   background: var(--title-bg-color);
   color: var(--main-fg-color);
 }
-
+.name {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.name > * + * {
+  margin-left: 10px;
+}
+.name>*:nth-child(1) {
+  flex: 1 1 auto;
+}
+.avatar {
+  height: 2em;
+}
 input[type="text"],
 input[type="password"] {
   outline: none;

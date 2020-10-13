@@ -24,7 +24,7 @@ export function add(name, initialValue) {
 }
 
 export function get(name) {
-  return trackedValues[name];
+  return trackedValues[name].value;
 }
 
 export function set(name, newValue) {
@@ -80,11 +80,26 @@ export function getBlankData() {
     "files": [
       {
         "name": "index.html",
-        "content": `<div class="outer"><div><img src="${url}"></div></div>`,
+        "content": ``,
       },
       {
         "name": "index.css",
-        "content": "body {\n  margin: 0;\n}\n.outer {\n  width: 100vw;\n  height: 100vh;\n  display: flex;\n  justify-content: center;\n  align-items: center;}\n.outer>div {\n  flex: 1 1 auto;\n}\n@media (prefers-color-scheme: dark) {\n  html {\n    background: #222;\n  }\n}\n",
+        "content": `
+          html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url(${url});
+            background-size: contain contain;
+            background-position: center center;
+            background-repeat: no-repeat no-repeat;
+          }
+          @media (prefers-color-scheme: dark) {
+            html {
+              background: #222;
+            }
+          }
+        `,
       },
       {
         "name": "index.js",

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Controlled as CodeMirror} from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
@@ -15,26 +15,38 @@ const darkMatcher = window.matchMedia
 
 const noop = () => {};
 
-export default function Code(props) {
-  const {value, hackKey, options = {}, onValueChange = noop} = props;
-  const [localValue, setLocalValue] = useState(value);
-  const isDarkMode = darkMatcher.matches;
-  return (
-    <CodeMirror
-      key={hackKey}
-      value={localValue}
-      options={{
-        mode: 'javascript',
-        scrollbarStyle: 'overlay',
-        theme: isDarkMode ? 'material' : 'eclipse',
-        ...(options.editor && options.editor),
-      }}
-      onBeforeChange={(editor, data, value) => {
-        setLocalValue(value);
-      }}
-      onChange={(editor, data, value) => {
-        onValueChange(value);
-      }}
-    />
-  );
+export default class Code extends React.Component {
+  constructor(props) {
+    super(props);
+    const {value, hackKey} = props;
+    this.state = {value, hackKey}
+  }
+  static getDerivedStateFromProps(props, state) {
+    const needNewData = state.hackKey !== props.hackKey;
+    return (needNewData)
+       ? {hackKey: props.hackKey, value: props.value}
+       : null;
+  }
+  render() {
+    const {options = {}, onValueChange = noop} = this.props;
+    const {value} =  this.state;
+    const isDarkMode = darkMatcher.matches;
+    return (
+      <CodeMirror
+        value={value}
+        options={{
+          mode: 'javascript',
+          scrollbarStyle: 'overlay',
+          theme: isDarkMode ? 'material' : 'eclipse',
+          ...(options.editor && options.editor),
+        }}
+        onBeforeChange={(editor, data, value) => {
+          this.setState({value});
+        }}
+        onChange={(editor, data, value) => {
+          onValueChange(value);
+        }}
+      />
+    );
+  }
 };

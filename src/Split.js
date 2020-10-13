@@ -1,0 +1,337 @@
+import React from 'react';
+
+const defaultGutterSize = 10;
+const defaultDirection = 'horizontal';
+const defaultMinSize = 10;
+
+function distribute(items, buckets) {
+  const base = items / buckets | 0;
+  const extra = items % buckets;
+  const array = new Array(buckets).fill(base);
+  if (extra === 0) {
+    return array;
+  } else if (extra <= buckets / 2 | 0) {
+    const leap = buckets / extra | 0;
+    const halfLeap = leap / 2 | 0; 
+    return array.map((v, i) => v + ((i % leap === halfLeap) ? 1 : 0));
+  } else {
+    const leap = buckets / (buckets - extra) | 0;
+    const halfLeap = leap / 2 | 0;
+    return array.map((v, i) => v + (1 - (i % leap === halfLeap ? 1 : 0)));
+  }
+}
+
+function normalizeSizes(sizes) {
+  const totalSize = sizes.reduce((sum, v) => sum + v, 0);
+  return sizes.map(v => v / totalSize);
+}
+
+function addSpaceForChildren(sizes, numChildren, gutterSize, minSizePX, totalSizePX) {
+  // const numGutters = numChildren - 1;
+  // const totalGutterSpacePX = numGutters * gutterSize;
+  // const availableSpacePX = totalSizePX - totalGutterSpacePX;
+  //
+  // this is not so trivial
+  // let's say we have 3 items and we add 2 more.
+  // each of those 2 has a minSize. So need to take 2 * minSize
+  // from the 3 items or (2 * minSize / 3). But any of those items
+  // themselves might already be at or near minSize
+  //
+  // This seems like it's then iterative.
+  //
+  // go through and try to remove (minSize * numNewElements / numOldElements)
+  // from each old element but only remove such that that element
+  // is still >= minSize. When done there's possibly some amount
+  // you haven't distributed yet so repeat the process over and over
+  // until it's all distributed.
+  //
+  // given that we don't know which elements are new, for now
+  // lets just reset all the sizes
+  return new Array(numChildren).fill(1 / numChildren);
+}
+
+const getDirectionProps = direction => (direction === 'horizontal')
+  ? {
+      dimension: 'width',
+      clientAxis: 'clientX',
+      position: 'left',
+      positionEnd: 'right',
+      clientSize: 'clientWidth',
+      style: {
+        width: '100%',
+        display: 'flex',
+      },
+    }
+  : {
+      dimension: 'height',
+      clientAxis: 'clientY',
+      position: 'top',
+      positionEnd: 'bottom',
+      clientSize: 'clientHeight',
+      style: { height: '100%' },
+    };
+
+function computeNewSizes({
+  startSizes,
+  currentSizes,
+  prevPaneNdx,
+  gutterSize,
+  minSize,
+  deltaPX,
+  outerSizePX,
+}) {
+  const numPanes = currentSizes.length;
+  const numGutters = numPanes - 1;
+  const totalGutterSizePX = numGutters * gutterSize;
+
+  const gutterReservedSizesPX = distribute(totalGutterSizePX, numPanes);
+
+  const nextPaneNdx = prevPaneNdx + 1;
+  const prevPaneStartSizePX = Math.ceil(startSizes[prevPaneNdx] * outerSizePX) - gutterReservedSizesPX[prevPaneNdx];
+  const nextPaneStartSizePX = Math.ceil(startSizes[nextPaneNdx] * outerSizePX) - gutterReservedSizesPX[nextPaneNdx];
+  const spaceUsedByBothElementsPX = prevPaneStartSizePX + nextPaneStartSizePX;
+  const prevPaneNewSizePX = Math.min(
+    Math.max(minSize, prevPaneStartSizePX + deltaPX),
+    spaceUsedByBothElementsPX - minSize);
+  const nextPaneNewSizePX = spaceUsedByBothElementsPX - prevPaneNewSizePX;
+  const newSizes = [
+    ...currentSizes.slice(0, prevPaneNdx),
+    (prevPaneNewSizePX + gutterReservedSizesPX[prevPaneNdx]) / outerSizePX,
+    (nextPaneNewSizePX + gutterReservedSizesPX[nextPaneNdx]) / outerSizePX,
+    ...currentSizes.slice(prevPaneNdx + 2, currentSizes.length),
+  ];
+
+  /*
+  const availableSpacePX = outerSizePX - totalGutterSizePX;
+  const info = `
+  gutterReservedSizes: ${gutterReservedSizesPX}
+  availableSpacePX: ${availableSpacePX}
+  prevStartSizePX: ${prevPaneStartSizePX}
+  nextStartSizePX: ${nextPaneStartSizePX}
+  spaceUsedByBothElementsPX: ${spaceUsedByBothElementsPX}
+  prevNewSizePX: ${prevPaneNewSizePX}
+  nextNewSizePX: ${nextPaneNewSizePX}
+  sizes: ${currentSizes}
+  newSizes: ${newSizes}
+  `;
+  const infoElem = document.querySelector('#info');
+  infoElem.textContent = info;
+  */
+
+  return newSizes;
+}
+
+export default class GManSplit extends React.Component {
+  constructor(props) {
+    super(props);
+    const numPanes = React.Children.count(props.children);
+    const size = 1 / numPanes;
+    this.state = {
+      sizes: new Array(numPanes).fill(size),
+    };
+    this.elementRef = React.createRef();
+  }
+  _setSizes = (sizes) => {
+    this.setState({sizes});
+  }
+  handleMouseUp = () => {
+    document.removeEventListener("mousemove", this.handleMouseMove);
+    document.removeEventListener("mouseup", this.handleMouseUp);
+    this.setState({dragging: false});
+  };
+  handleMouseMove = (e) => {
+    const {
+      gutterSize = defaultGutterSize,
+      direction = defaultDirection,
+      minSize = defaultMinSize,
+      computeNewSizesFn = computeNewSizes,
+      onSetSizes,
+      sizes: propSizes,
+    } = this.props;
+    const {
+      prevPaneNdx,
+      mouseStart,
+      startSizes,
+      sizes: stateSizes,
+    } = this.state;
+    const setSizes = onSetSizes || this._setSizes;
+    const sizes = onSetSizes ? propSizes : stateSizes;
+
+    const {
+      clientAxis,
+      clientSize,
+    } = getDirectionProps(direction);
+
+    const deltaPX = e[clientAxis] - mouseStart;
+    const outerSizePX = this.elementRef.current[clientSize];
+
+    const newSizes = computeNewSizesFn({
+      startSizes,
+      currentSizes: sizes,
+      prevPaneNdx,
+      gutterSize,
+      minSize,
+      deltaPX,
+      outerSizePX,
+    });
+
+    setSizes(newSizes);
+  };
+  handleMouseDown = (e) => {
+    const {
+      direction = defaultDirection,
+    } = this.props;
+    const {
+      clientAxis,
+    } = getDirectionProps(direction);
+
+    document.addEventListener("mousemove", this.handleMouseMove);
+    document.addEventListener("mouseup", this.handleMouseUp);
+    const gutterNdx = Array.prototype.indexOf.call(e.target.parentElement.children, e.target);
+    const prevPaneNdx = (gutterNdx - 1) / 2;    
+    this.setState({
+      startSizes: this.state.sizes.slice(),
+      mouseStart: e[clientAxis],
+      prevPaneNdx,
+      dragging: true,
+    });
+  };
+  recomputeSizes = () => {
+    // here it's not entirely clear what to do. Maybe we need options
+    // If they user removes a child which sizes do they want? I guess
+    // since they removed a child they passed in new sizes so we should
+    // pass sizes back? Ugh!
+    //
+    // Example:
+    //
+    //   * start: 3 panes, sizes a(33%), b(33%), c(33%)
+    //   * user adjusts to sizes a(10%), b(90%), c(10%)
+    //   * user deletes pane (a)
+    //
+    // If we just continue to use the current sizes the we'd get
+    //
+    //   b(10%), c(90%)
+    //
+    // We have no way of knowing that b should get the 90%
+    //
+    // One way would be to pass responsibility for saving the sizes
+    // up to the parent. Basically if you want to add/remove children
+    // then you need need to keep their state. In that case
+    // passing an `onSetSize` prop. It's a function that will be called
+    // with an array of sizes.  Update your sizes and pass them in as
+    // props
+    //
+    // But, just so we don't completely fail if the user has not opted
+    // into managing the size state then at least do something.
+    const {sizes} = this.state;
+    const {minSize, direction, gutterSize} = this.props;
+    const {
+      clientSize,
+    } = getDirectionProps(direction);
+
+    const numChildren = React.Children.count(this.props.children);
+    const newSizes = numChildren < sizes.length
+      // a child was removed, normalizes the sizes
+      ? normalizeSizes(sizes.slice(0, numChildren))
+      // children were added, make space for them
+      : addSpaceForChildren(sizes, numChildren, gutterSize, minSize, this.elementRef.current.parentElement[clientSize]);
+    this._setSizes(newSizes);
+  }
+  componentDidUpdate() {
+    const {children, onSetSizes} = this.props;
+    const {sizes} = this.state;
+    // we need to check if new elements were added.
+    if (onSetSizes) {
+      return; // not our responsibility
+    }
+
+    const numChildren = React.Children.count(children);
+    if (sizes.length !== numChildren) {
+      setTimeout(this.recomputeSizes);
+    }
+  }
+  render() {
+    const {
+      children, 
+      direction = defaultDirection, 
+      gutterSize = defaultGutterSize, 
+      sizes: propSizes,
+      onSetSizes,
+      minSize,
+      ...rest
+    } = this.props;
+    const {
+      dragging,
+      prevPaneNdx,
+      sizes: stateSizes,
+    } = this.state;
+    const {
+      dimension,
+      style,
+    } = getDirectionProps(direction);
+
+    const sizes = onSetSizes ? propSizes : stateSizes;
+    const numPanes = React.Children.count(children);
+    const numGutters = numPanes - 1;
+    const totalGutterSpace = gutterSize * numGutters;
+    const gutterStyle = {[dimension]: `${gutterSize}px`};
+    const gutterReservedSizes = distribute(totalGutterSpace, numPanes);
+
+    let childNdx = 0;
+    let first = true;
+    const newChildren = [];
+    React.Children.forEach(children, (child, props) => {
+      if (!React.isValidElement(child)) {
+        return null;
+      }
+      if (!first) {
+        newChildren.push(
+          <div
+            key={`gutter${newChildren.length}`}
+            className={`gutter gutter-${direction} ${dragging && childNdx === prevPaneNdx + 1 ? 'gutter-dragging' : ''}`}
+            style={gutterStyle}
+            onMouseDown={this.handleMouseDown}
+          />
+        );
+      }
+
+      const style = {
+        ...child.props.style,
+        [dimension]: `calc(${sizes[childNdx] * 100}% - ${gutterReservedSizes[childNdx]}px)`
+      };
+
+      newChildren.push(
+        React.cloneElement(child, {
+          key: `pane${newChildren.length}`,
+          style,
+          ...child.props
+        })
+      );
+      first = false;
+      ++childNdx;
+    });
+    return (
+      <div
+        className="split"
+        ref={this.elementRef}
+        style={{
+          ...this.props.style,
+          ...style,
+          ...(dragging && {userSelect: 'none'})
+        }}
+        {...rest}
+      >
+        {newChildren}
+      </div>
+    );
+  }
+}
+
+/*
+direction
+sizes
+onSetSizes
+compute
+
+*/
+
