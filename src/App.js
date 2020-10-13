@@ -237,7 +237,7 @@ class App extends React.Component {
       loading,
       blank,
       dialog,
-      disqusId,
+      // disqusId,
       runningData,
       updateVersion: hackKey,
       userData,
