@@ -42,6 +42,7 @@ export default class Disqus extends React.Component {
        *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
        *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
        */
+console.log('comments-blob.html');
       
       var disqus_config = function () {
           this.page.url = '${window.location.origin}${this.disqusId}';
@@ -58,7 +59,7 @@ export default class Disqus extends React.Component {
           
           s.crossOrigin = 'anonymous';
           s.src = '//${this.props.disqusShortName}.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
-          
+console.log(s.src);
           s.setAttribute('data-timestamp', +new Date());
           (d.head || d.body).appendChild(s);
       })();
@@ -72,7 +73,12 @@ export default class Disqus extends React.Component {
   }
   render() {
     return (
-      <iframe ref={this.iframeRef} title="comments" src={this.makeBlobURL()} sandbox="allow-scripts"/>
+      <iframe
+        ref={this.iframeRef}
+        title="comments"
+        src={this.makeBlobURL()}
+        sandbox="allow-scripts allow-forms allow-popups"
+      />
     );
   }
 }
