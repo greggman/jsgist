@@ -35,7 +35,7 @@ export default class Disqus extends React.Component {
     <html>
       <link href="${base}/comments.css" rel="stylesheet">
       <body>
-        <script src="${base}/comments.js" type="module"></script>
+        <script crossorigin src="${base}/comments.js" type="module"></script>
         <div id="disqus_thread"></div>
         <script type="text/javascript">
       /**
@@ -56,6 +56,7 @@ export default class Disqus extends React.Component {
 
           var d = document, s = d.createElement('script');
           
+          s.crossOrigin = 'anonymous';
           s.src = '//${this.props.disqusShortName}.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
           
           s.setAttribute('data-timestamp', +new Date());

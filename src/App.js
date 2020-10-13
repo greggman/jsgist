@@ -262,8 +262,8 @@ class App extends React.Component {
             <div className="left">
               <div className="name">
                 <EditLine value={data.name} onChange={v => model.setName(v)} />
-                <div className="username">{userData.name}</div>
-                {userData.avatarURL ? <img className="avatar" src={userData.avatarURL} alt="avatar"/> : []}
+                <div className="username"><a target="_blank" rel="noopener noreferrer" href={`https://github.com/${userData.name}`}>{userData.name}</a></div>
+                {userData.avatarURL ? <a target="_blank" rel="noopener noreferrer" href={`https://github.com/${userData.name}`}><img className="avatar" src={userData.avatarURL} alt="avatar"/></a> : []}
               </div>
             </div>
             <div className="right">

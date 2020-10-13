@@ -5,6 +5,8 @@
     "disqus",
     "hidee",
     "jsgist",
+    "noopener",
+    "noreferrer",
     "octokit"
   ]
 }
