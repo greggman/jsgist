@@ -1,7 +1,6 @@
 import React from 'react';
 
 import EditLine from './EditLine.js';
-import Footer from './Footer.js';
 import Split from './Split.js';
 import GitHub from './GitHub.js';
 import Help from './Help.js';
@@ -314,11 +313,6 @@ class App extends React.Component {
             )
           }
         </div>
-        <Footer
-          disqusId={disqusId}
-          disqusShortName="jsgist"
-          title={data.name}
-        />
         {dialog()}
         <div className="messages">
           {
