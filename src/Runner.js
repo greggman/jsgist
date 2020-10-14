@@ -24,17 +24,6 @@ export default class Runner extends React.Component {
         this.removeIFrame();
         const iframe = document.createElement('iframe');
         this.iframe = iframe;
-        iframe.sandbox = `
-            allow-downloads
-            allow-forms
-            allow-modals
-            allow-orientation-lock
-            allow-pointer-lock
-            allow-popups
-            allow-presentation
-            allow-scripts
-            allow-top-navigation
-        `;
         iframe.src = 'https://jsgistrunner.devcomments.org/runner.html';
         if (blank) {
           iframe.style.background = 'none';
