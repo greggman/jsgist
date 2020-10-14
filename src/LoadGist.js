@@ -1,5 +1,7 @@
 import React from 'react';
-import { classNames } from './css-utils.js';
+import {classNames} from './css-utils.js';
+import {updateURL} from './url.js';
+import {noop, wait} from './utils.js';
 
 export default class LoadGist extends React.Component {
   constructor () {
@@ -15,6 +17,16 @@ export default class LoadGist extends React.Component {
     this.setState({pat});
     localStorage.setItem('pat', pat);
   }
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.loadGists();
+  }
+  componentDidMount() {
+    document.body.addEventListener('submit', this.handleSubmit);
+  }
+  componentWillUnmount() {
+    document.body.removeEventListener('submit', this.handleSubmit);
+  }
   loadGists = async(e) => {
     this.setState({loading: true});
     const {addError, github} = this.props;
@@ -25,6 +37,11 @@ export default class LoadGist extends React.Component {
       this.setState({
         gists: gists.map(g => g),
       });
+      // apparently we need to update the URL in order for the browser
+      // to save the password.
+      updateURL({loggedIn: true});
+      await wait();
+      updateURL({loggedIn: undefined});
     } catch (e) {
       addError(`could not load gists: ${e}`);
     }
@@ -35,23 +52,27 @@ export default class LoadGist extends React.Component {
     const canLoad = !!pat && !loading;
     return (
       <div>
-        <div className="save-as-gist-pat">
-          <div>Personal Access Token:&nbsp;</div>
-          <div>
-            <input
-              type="password"
-              value={pat}
-              placeholder="personal access token"
-              onChange={this.handlePATChange}
-            />
+        <form>
+          <div className="save-as-gist-pat">
+            <div>Personal Access Token:&nbsp;</div>
+            <div>
+              <input type="text" name="username" value="unused" style={{display: 'none'}} onChange={noop} />
+              <input
+                type="password"
+                name="password"
+                value={pat}
+                placeholder="personal access token"
+                onChange={this.handlePATChange}
+              />
+            </div>
           </div>
-        </div>
-        <p>
-          <button
-            className={classNames({disabled: !canLoad})}
-            onClick={this.loadGists}
-          >Load Your Gists</button>
-        </p>
+          <p>
+            <button
+              type="submit"
+              className={classNames({disabled: !canLoad})}
+            >Load Your Gists</button>
+          </p>
+        </form>
         <p>
           <a target="_blank" rel="noopener noreferrer" href="https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token">Create a Personal Access Token</a> with only <b>gist</b> permissions.
           Paste it above. Note: This is a static website. Your person access token
