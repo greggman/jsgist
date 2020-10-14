@@ -1,75 +1,30 @@
 import React from 'react';
-import {getOrFind} from './utils.js';
 
 export default class Runner extends React.Component {
   constructor(props) {
     super(props);
-    this.divRef = React.createRef();
-  }
-  /*
-  componentDidMount() {
-    const elem = this.divRef.current;
-    const handlers = {
-      // error caught by window.addEventListener('error')
-      log(data) {
+    this.runnerRef = React.createRef();
+    this.handlers = {
+      log: () => {
 
       },
-    }
-
-    this.handleMessage = (e) => {
-      const {type, data} =  e.data;
-      handlers[type](data);
-  };
-    window.addEventListener('message', this.handleMessage);
-    const blob = new Blob([html], {type: 'text/html'});
-    iframe.sandbox = 'allow-scripts';
-    iframe.src = URL.createObjectURL(blob);
-    iframe.className = "snippet";
-    elem.appendChild(iframe);
-  }
-  componentWillUnmount() {
-    window.removeEventListener('message', this.handleMessage);
-    if (this.iframe) {
-      this.iframe.remove();
-      this.iframe = undefined;
+      gimmeDaCodez: () => {
+        this.iframe.contentWindow.postMessage({
+          type: 'run',
+          data: this.data,
+        }, "*");
+      },
     }
   }
-  */
-  shouldComponentUpdate(nextProps, nextState) {
-    return (nextProps.data !== this.oldData);
-  }
-  makeBlobURL() {
-    this.oldData = this.props.data;
-    const data = JSON.parse(this.props.data);
-    const files = data.files;
-    const mainHTML = getOrFind(files, 'index.html', 'html');
-    const mainJS = getOrFind(files, 'index.js', 'js', 'js', 'javascript');
-    const mainCSS = getOrFind(files, 'index.css', 'css');
-    const base = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : window.location.origin;
-    const html = `
-    <${'script'} type="module" src="${base}/console-wrapper.js"></${'script'}>
-    <style>
-    ${mainCSS.content}
-    </style>
-    <body>
-    ${mainHTML.content}
-    </body>
-    <${'script'} type="module">
-    ${mainJS.content}
-    </${'script'}>
-    `;
-    const blob = new Blob([html], {type: 'text/html'});
-    return URL.createObjectURL(blob);
-
-  }
-  render() {
-    const url = this.makeBlobURL();
-    const {blank} = this.props;
-    return (
-      <div className="runner" ref={this.divRef}>
-        <iframe
-          title="runner"
-          sandbox="
+  componentDidMount() {
+    const {registerRunnerAPI} = this.props;
+    registerRunnerAPI({
+      run: (data, blank) => {
+        this.data = data;
+        this.removeIFrame();
+        const iframe = document.createElement('iframe');
+        this.iframe = iframe;
+        iframe.sandbox = `
             allow-downloads
             allow-forms
             allow-modals
@@ -79,10 +34,37 @@ export default class Runner extends React.Component {
             allow-presentation
             allow-scripts
             allow-top-navigation
-          "
-          src={url}
-          style={{...(blank && {background: 'none'})}}/>
-      </div>)
+        `;
+        iframe.src = 'https://jsgistrunner.devcomments.org/runner.html';
+        if (blank) {
+          iframe.style.background = 'none';
+        }
+        this.runnerRef.current.appendChild(iframe);
+      },
+    })
+    window.addEventListener('message', this.handleMessage);
+  }
+  removeIFrame() {
+    if (this.iframe) {
+      this.iframe.remove();
+      this.iframe = undefined;
+    }
+  }
+  componentWillUnmount() {
+    this.removeIFrame();
+    window.removeEventListener('message', this.handleMessage);
+  }
+  handleMessage = (e) => {
+    const {type, data} =  e.data;
+    const fn = this.handlers[type];
+    if (fn) {
+      fn(data);
+    }
+  }
+  render() {
+    return (
+      <div className="runner" ref={this.runnerRef}></div>
+    )
   }
 }
 

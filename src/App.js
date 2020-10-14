@@ -43,8 +43,6 @@ class App extends React.Component {
       dataVersion: 0,
       gistId: '',
       pat: localStorage.getItem('pat'),
-      runningData: JSON.stringify(model.getBlankData()),
-      blank: true,
       messages: [],
       userData: {},
     };
@@ -151,6 +149,10 @@ class App extends React.Component {
   closeDialog = () => {
     this.setState({dialog: noJSX});
   }
+  registerRunnerAPI = (api) => {
+    this.runnerAPI = api;
+    this.handleStop();
+  }
   handleNew = async() => {
     window.location.href = window.location.origin;
     //window.history.pushState({}, '', `${window.location.origin}`);
@@ -161,22 +163,10 @@ class App extends React.Component {
       href: window.location.href,
       data: model.data,
     }));
-    this.setState({
-      // We pass in JSON because we need to check if anything changed
-      // If we passed in an object we'd have to do a deep compare.
-      // We need to check if it changed because since we're generating
-      // a blob we'll end up with a new random number every time
-      // which means our virtual dom changes which means we'll get
-      // re-rendered, even though we aren't actually different.
-      runningData: JSON.stringify(model.data),
-      blank: false,
-    })
+    this.runnerAPI.run(model.data);
   }
   handleStop = async () => {
-    this.setState({
-      runningData: JSON.stringify(model.getBlankData()),
-      blank: true,
-    })
+    this.runnerAPI.run(model.getBlankData(), true);
   }
   handleSave = async () => {
     this.setState({dialog: this.renderSave});
@@ -235,10 +225,8 @@ class App extends React.Component {
     const data = model.data;
     const {
       loading,
-      blank,
       dialog,
       // disqusId,
-      runningData,
       updateVersion: hackKey,
       userData,
     } = this.state;
@@ -306,7 +294,7 @@ class App extends React.Component {
                       {/*<button onClick={() => model.addFile()}>+</button>*/}
                   </div>
                   <div className="right">
-                    <Runner data={runningData} blank={blank} />
+                    <Runner registerRunnerAPI={this.registerRunnerAPI} />
                   </div>
                 </Split>
               </div>
