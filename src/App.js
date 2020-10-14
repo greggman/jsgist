@@ -133,6 +133,14 @@ class App extends React.Component {
     }
   }
   addMsg = (msg, className) => {
+    switch (className) {
+      case 'error':
+        console.error(msg);
+        break;
+      default:
+        console.log(msg);
+        break;
+    }
     this.setState({messages: [{msg, className}, ...this.state.messages]});
     setTimeout(() => {
       this.setState({messages: this.state.messages.slice(0, this.state.messages.length - 1)});
