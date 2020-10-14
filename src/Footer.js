@@ -20,7 +20,7 @@ export default function Footer(props) {
             <div className="comment-notes">
                Use <b>&lt;pre&gt;&lt;code&gt;</b>code goes here<b>&lt;/code&gt;&lt;/pre&gt;</b> for code blocks
             </div>
-            <Disqus disqusId={props.disqusId} disqusShortName={props.disqusShortName} title={props.title} />
+            <Disqus disqusId={props.disqusId} title={props.title} />
           </React.Fragment>
         ) : []
       }

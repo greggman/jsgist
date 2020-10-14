@@ -1,13 +1,14 @@
 import React from 'react';
 
 import EditLine from './EditLine.js';
-import Split from './Split.js';
+import Footer from './Footer.js';
 import GitHub from './GitHub.js';
 import Help from './Help.js';
 import Load from './Load.js';
 import * as model from './model.js';
 import Save from './Save.js';
 import Settings from './Settings.js';
+import Split from './Split.js';
 import TestArea from './TestArea.js';
 import Runner from './Runner.js';
 import {isCompressedBase64, compressedBase64ToJSON} from './SaveAsURL.js';
@@ -28,7 +29,7 @@ const makeDisqusId = () => {
   const query = Object.fromEntries(new URLSearchParams(loc.search).entries());
   const src = query.src;
   return src
-      ? `${loc.origin}${loc.pathname}?src=${encodeURIComponent(src)}`
+      ? `${encodeURIComponent(src)}`
       : '';
 }
 
@@ -313,6 +314,10 @@ class App extends React.Component {
             )
           }
         </div>
+        <Footer
+          disqusId={makeDisqusId()}
+          title={data.name}
+        />
         {dialog()}
         <div className="messages">
           {

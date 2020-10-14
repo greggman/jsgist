@@ -1,6 +1,5 @@
 import {getOrFind} from '../utils.js';
 import {createURL} from '../url.js';
-import { useForkRef } from '@material-ui/core';
 
 async function main() {
   function getGistContent(gist) {

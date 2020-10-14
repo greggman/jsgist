@@ -9,7 +9,7 @@ export function createURL(base, params) {
     }
   }
   url.search = searchParams.toString();
-  return url;
+  return url.href;
 }
 
 export function updateURL(params) {
