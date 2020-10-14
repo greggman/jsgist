@@ -4,6 +4,7 @@ import SaveAsGist from './SaveAsGist.js';
 import SaveAsJSON from './SaveAsJSON.js';
 import SaveAsURL from './SaveAsURL.js';
 import Section from './Section.js';
+import Embed from './Embed.js';
 
 export default function Save(props) {
   const {data, github, gistId, onSave, onClose, addError} = props;
@@ -17,6 +18,9 @@ export default function Save(props) {
       </Section>
       <Section heading="Save As JSON">
         <SaveAsJSON data={data} />
+      </Section>
+      <Section heading="Embedding">
+        <Embed gistId={gistId} />
       </Section>
     </Dialog>
   )
