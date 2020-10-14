@@ -1,19 +1,21 @@
 import Ajv from 'ajv';
 import * as model from './model';
 
+const gistsKey = 'jsGist-gists';
+
 const gistSchema = {
   "type": "object",
   "properties": {
     "name": { "type": "string" },
     "date": { "type": "string" },
   },
-  "required": ["name", "date"]
+  "required": ["name", "date"],
 };
 
 const gistsSchema = {
   "$schema": "http://json-schema.org/schema#",
   "type": "object",
-  "additionalProperties": gistSchema
+  "additionalProperties": gistSchema,
 };
 const ajv = new Ajv() // options can be passed, e.g. {allErrors: true}
 const gistsValidator = ajv.compile(gistsSchema);
@@ -21,9 +23,9 @@ const gistValidator = ajv.compile(gistSchema);
 
 function getStoredGists() {
   try {
-    const gists = JSON.parse(localStorage.getItem('gists'));
+    const gists = JSON.parse(localStorage.getItem(gistsKey));
     if (!gistsValidator(gists)) {
-      localStorage.removeIem('gists');
+      localStorage.removeIem(gistsKey);
       throw new Error();
     }
     return gists;
@@ -54,7 +56,7 @@ export function addGist(id, name, date) {
 
 function saveGistsToLocalStorage(gists) {
   // send to other windows
-  localStorage.setItem('gists', JSON.stringify(gists));
+  localStorage.setItem(gistsKey, JSON.stringify(gists));
 }
 
 export function getGists() {

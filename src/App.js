@@ -19,6 +19,7 @@ if (process.env.NODE_ENV === 'development') {
   window.d = model.data;
 }
 
+const backupKey = 'jsGist-backup';
 const noJSX = () => [];
 const darkMatcher = window.matchMedia('(prefers-color-scheme: dark)');
 const makeDisqusId = () => {
@@ -93,7 +94,7 @@ class App extends React.Component {
     });
 
     const query = Object.fromEntries(new URLSearchParams(window.location.search).entries());
-    const backup = localStorage.getItem('backup');
+    const backup = localStorage.getItem(backupKey);
     let loaded = false;
     if (backup) {
       try {
@@ -106,7 +107,7 @@ class App extends React.Component {
       } catch (e) {
         console.log('bad backup')
       }
-      localStorage.removeItem('backup');
+      localStorage.removeItem(backupKey);
     }
     if (!loaded && query.src) {
       this.loadData(query.src);
@@ -148,7 +149,7 @@ class App extends React.Component {
     //model.setData(model.getNewData());
   }
   handleRun = async () => {
-    localStorage.setItem('backup', JSON.stringify({
+    localStorage.setItem(backupKey, JSON.stringify({
       href: window.location.href,
       data: model.data,
     }));
