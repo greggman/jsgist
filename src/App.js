@@ -197,7 +197,7 @@ class App extends React.Component {
   }
   handleOnSave = (gistId) => {
     window.history.pushState({}, '', `${window.location.origin}?src=${gistId}`);
-    this.setState({dialog: noJSX, gistId});
+    this.setState({gistId});
   }
   handleAbort = () => {
     this.abort();

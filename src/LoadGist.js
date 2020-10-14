@@ -1,5 +1,6 @@
 import React from 'react';
 import {classNames} from './css-utils.js';
+import * as gists from './gists.js';
 import {updateURL} from './url.js';
 import {noop, wait} from './utils.js';
 
@@ -9,7 +10,7 @@ export default class LoadGist extends React.Component {
     this.state = {
       loading: false,
       pat: localStorage.getItem('pat') || '',
-      gists: [],
+      gists: gists.getGists(),
     };
   }
   handlePATChange = (e) => {
@@ -21,11 +22,16 @@ export default class LoadGist extends React.Component {
     e.preventDefault();
     this.loadGists();
   }
+  handleNewGists = (gists) => {
+    this.setState({gists});
+  }
   componentDidMount() {
     document.body.addEventListener('submit', this.handleSubmit);
+    gists.subscribe(this.handleNewGists);
   }
   componentWillUnmount() {
     document.body.removeEventListener('submit', this.handleSubmit);
+    gists.unsubscribe(this.handleNewGists);
   }
   loadGists = async(e) => {
     this.setState({loading: true});
@@ -33,10 +39,15 @@ export default class LoadGist extends React.Component {
     const {pat} = this.state;
     github.setPat(pat);
     try {
-      const gists = await github.getUserGists();
-      this.setState({
-        gists: gists.map(g => g),
-      });
+      const gistArray = await github.getUserGists();
+      const gistsById = gistArray.reduce((gists, gist) => {
+        gists[gist.id] = {
+          name: gist.description,
+          date: gist.updated_at,
+        };
+        return gists;
+      }, {});
+      gists.setGists(gistsById);
       // apparently we need to update the URL in order for the browser
       // to save the password.
       updateURL({loggedIn: true});
@@ -50,6 +61,9 @@ export default class LoadGist extends React.Component {
   render() {
     const {pat, gists, loading} = this.state;
     const canLoad = !!pat && !loading;
+    const gistArray = Object.entries(gists).map(([id, {name, date}]) => {
+      return {id, name, date};
+    }).sort((b, a) => a.date < b.date ? -1 : ((a.date > b.date) ? 1 : 0));
     return (
       <div>
         <form>
@@ -70,7 +84,7 @@ export default class LoadGist extends React.Component {
             <button
               type="submit"
               className={classNames({disabled: !canLoad})}
-            >Load Your Gists</button>
+            >{gistArray.length ? 'Reload' : 'Load'} Your Gists</button>
           </p>
         </form>
         <p>
@@ -79,15 +93,15 @@ export default class LoadGist extends React.Component {
           is stored only locally in your browser and only accessible by this domain.
         </p>
         {
-          gists.length ?
+          gistArray.length ?
             <table className="gists">
               <tbody>
               {
-                gists.map((gist, ndx) => {
+                gistArray.map((gist, ndx) => {
                   return (
                     <tr key={`g${ndx}`}>
-                      <td><a href={`${window.location.origin}?src=${encodeURIComponent(gist.id)}`}>{gist.description}</a></td>
-                      <td>{gist.updated_at.substring(0, 10)}</td>
+                      <td><a href={`${window.location.origin}?src=${encodeURIComponent(gist.id)}`}>{gist.name}</a></td>
+                      <td>{gist.date.substring(0, 10)}</td>
                     </tr>
                   );
                 })

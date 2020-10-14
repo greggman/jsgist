@@ -111,10 +111,19 @@ export default class GitHub extends EventTarget {
     const gistData = createGistData(data);
     const gist = await this.authorizedOctokit.gists.create(gistData);
     this._updateUserData(gist.data);
-    return gist.data.id;
+    return {
+      id: gist.data.id,
+      name: gist.data.description,
+      date: gist.data.updated_at,
+    };
   }
   async updateGist(gist_id, data) {
     const gistData = createGistData(data, gist_id);
-    return await this.authorizedOctokit.gists.update(gistData);
+    const gist = await this.authorizedOctokit.gists.update(gistData);
+    return {
+      id: gist.data.id,
+      name: gist.data.description,
+      date: gist.data.updated_at,
+    };
   }
 }

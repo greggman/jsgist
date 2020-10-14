@@ -1,5 +1,6 @@
 import React from 'react';
 import {classNames} from './css-utils.js';
+import * as gists from './gists.js';
 import {updateURL} from './url.js';
 import {noop, wait} from './utils.js';
 
@@ -44,8 +45,9 @@ export default class SaveAsGist extends React.Component {
     let success = false;
     github.setPat(pat);
     try {
-      const gistId = await github.createGist(data);
-      onSave(gistId);
+      const {id, name, date} = await github.createGist(data);
+      gists.addGist(id, name, date);
+      onSave(id);
       success = true;
     } catch (e) {
       addError(`could not create gist: ${e}`)
@@ -67,7 +69,8 @@ export default class SaveAsGist extends React.Component {
     let success = false;
     github.setPat(pat);
     try {
-      await github.updateGist(gistId, data);
+      const {id, name, date} = await github.updateGist(gistId, data);
+      gists.addGist(id, name, date);
       success = true;
     } catch (e) {
       addError(`could not update gist: ${e}`)
@@ -78,7 +81,7 @@ export default class SaveAsGist extends React.Component {
     }
   }
   render() {
-    const {pat} = this.state;
+    const {pat, saving} = this.state;
     const {gistId} = this.props;
     const canSave = pat && gistId;
     return (
@@ -100,7 +103,7 @@ export default class SaveAsGist extends React.Component {
           <p>
             <button
               type="submit"
-              className={classNames({disabled: !pat})}
+              className={classNames({disabled: !pat || saving})}
               data-type="new"
               onClick={this.markToSaveNewGist}
             >Save to new Gist</button>
