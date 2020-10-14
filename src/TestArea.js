@@ -1,3 +1,4 @@
+import mime from 'mime-types';
 import React from 'react';
 // import EditLine from './EditLine.js';
 import CodeArea from './CodeArea.js';
@@ -7,9 +8,16 @@ export default function TestArea(props) {
   const heading = (
     <div style={{width: '100%'}}>{title}</div>
   );
-
+  const mimeType = mime.lookup(title) || (title.toLowerCase() === 'javascript' ? 'application/javascript' : 'application/octet-stream');
+  const options = {
+    ...props.options,
+    editor: {
+      ...(props.options?.editor && props.options.editor),
+      mode: mimeType,
+    },
+  };
   return (
-    <CodeArea key={hackKey} {...props} heading={heading} />
+    <CodeArea key={hackKey} {...props} options={options} heading={heading} />
   );
 }
 
