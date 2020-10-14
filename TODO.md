@@ -3,6 +3,7 @@ O make embed show more types cb64, etc.
 O add embed UI
 O add export UI
 O make embed build
+O handle back (need to notice back and re-load)
 O show avatar
   O figure out what to do on new
 O log
