@@ -117,7 +117,7 @@ class App extends React.Component {
     this.setState({loading: true});
     let success = true;
     try {
-      const {data, id} = await loadGistFromSrc(src);
+      const {data, id} = await loadGistFromSrc(src, this.github);
       model.setData(data);
       if (id) {
         this.setState({gistId: src})

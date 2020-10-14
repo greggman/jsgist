@@ -96,11 +96,19 @@ export default class GitHub extends EventTarget {
     return gists.filter(gist => !!gist.files['jsGist.json']);
     // return await this.authorizedOctokit.gists.list();
   }
+
+  async getAnonGist(gist_id) {
+    const {data, rawData} = await getAnonGist(gist_id);
+    this._updateUserData(rawData);
+    return {data, rawData};
+  }
+
   async getUserGist(gist_id) {
     const gist = await this.octokit.gists.get({gist_id});
     this._updateUserData(gist.data);
     return getGistContent(gist.data);
   }
+
   async createGist(data) {
     const gistData = createGistData(data);
     const gist = await this.authorizedOctokit.gists.create(gistData);
@@ -120,11 +128,14 @@ export default class GitHub extends EventTarget {
       date: gist.data.updated_at,
     };
   }
+
 }
 
 export async function getAnonGist(gist_id) {
   const req = await fetch(`https://api.github.com/gists/${gist_id}`);
   const gist = await req.json();
-  this._updateUserData(gist);
-  return getGistContent(gist);
+  return {
+    data: getGistContent(gist),
+    rawData: gist,
+  };
 }
