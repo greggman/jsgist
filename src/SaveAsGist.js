@@ -19,7 +19,11 @@ export default class SaveAsGist extends React.Component {
   }
   handleSubmit = (e) => {
     e.preventDefault();
-    this.saveFn();
+    // this is voodoo. For some reason submit gets called
+    // twice. This seems to fix the problem.
+    if (!this.state.saving) {
+      this.saveFn();
+    }
   }
   // this nonsense about markToSaveAsNewGist and markToUpdateNewGist
   // is because in order to get the browser to save the token as a password
