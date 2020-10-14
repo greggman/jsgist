@@ -11,9 +11,11 @@ async function main() {
     document.querySelector('.head').style.display = 'none';
   }
 
+  const iframe = document.querySelector('iframe');
+
   const handlers = {
     gimmeDaCodez: () => {
-      this.iframe.contentWindow.postMessage({
+      iframe.contentWindow.postMessage({
         type: 'run',
         data,
       }, "*");
@@ -27,7 +29,6 @@ async function main() {
     }
   });
 
-  const iframe = document.querySelector('iframe');
   iframe.src = 'https://jsgistrunner.devcomments.org/runner.html';
 }
 
