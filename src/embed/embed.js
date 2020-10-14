@@ -1,4 +1,6 @@
 import {getOrFind} from '../utils.js';
+import {createURL} from '../url.js';
+import { useForkRef } from '@material-ui/core';
 
 async function main() {
   function getGistContent(gist) {
@@ -21,6 +23,14 @@ async function main() {
   const req = await fetch(`https://api.github.com/gists/${params.src}`);
   const gist = await req.json();
   const data = getGistContent(gist);
+
+  const a = document.querySelector('.head a');
+  a.textContent = `jsGist - ${data.name}`;
+  a.href = createURL(window.location.origin, {src: params.src});
+  if (params.noheader) {
+    document.querySelector('.head').style.display = 'none';
+  }
+
   const files = data.files;
   const mainHTML = getOrFind(files, 'index.html', 'html');
   const mainJS = getOrFind(files, 'index.js', 'js', 'js', 'javascript');

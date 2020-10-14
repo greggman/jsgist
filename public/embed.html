@@ -5,27 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>jsGist</title>
     <style>
+      :root {
+        --main-bg-color: #eee;
+        --main-fg-color: #000;
+      }
+      a {
+        color: var(--main-fg-color);
+        text-decoration: none;
+      }
       html, body, iframe {
         margin: 0;
         width: 100%;
         height: 100%;
         border: none;
+        font-family: sans-serif;
+      }
+      .outer {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .head {
+        background: var(--main-bg-color);
+        color: var(--main-fg-color);
+        display: flex;
+        align-items: center;
+        padding: 0.25em;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .head img {
+        height: 1em;
+        margin-right: 0.5em;
+      }
+      .result {
+        flex: 1 1 auto;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --main-bg-color: #444;
+          --main-fg-color: #fff;
+        }
       }
     </style>
   </head>
   <body>
-    <iframe sandbox="
-allow-downloads
-allow-forms
-allow-modals
-allow-orientation-lock
-allow-pointer-lock
-allow-popups
-allow-popups-to-escape-sandbox
-allow-presentation
-allow-scripts
-allow-top-navigation
-    "></iframe>
+    <div class="outer">
+      <div class="head">
+        <img src="/resources/images/logo-small.svg">
+        <a href="https://jsgist.org">jsGist</a>
+      </div>
+      <div class="result">
+        <iframe sandbox="
+    allow-downloads
+    allow-forms
+    allow-modals
+    allow-orientation-lock
+    allow-pointer-lock
+    allow-popups
+    allow-popups-to-escape-sandbox
+    allow-presentation
+    allow-scripts
+    allow-top-navigation
+        "></iframe>
+        </div>
+      </div>
+    </div>
   </body>
   <script type="module" src="embed.js"></script>
 </html>
