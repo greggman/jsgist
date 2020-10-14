@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>jsGist</title>
+    <style>
+      html, body, iframe {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe sandbox="
+allow-downloads
+allow-forms
+allow-modals
+allow-orientation-lock
+allow-pointer-lock
+allow-popups
+allow-popups-to-escape-sandbox
+allow-presentation
+allow-scripts
+allow-top-navigation
+    "></iframe>
+  </body>
+  <script type="module">
+async function main() {
+  function getGistContent(gist) {
+    const data = JSON.parse(gist.files['jsGist.json'].content);
+    data.files = Object.entries(gist.files)
+      .filter(([name]) => name !== 'jsGist.json')
+      .map(([name, file]) => {
+        return {
+          name,
+          content: file.content,
+        }
+      }).concat(data.files || []);
+    return data;
+  }
+
+  function find(files, endings) {
+    // calling toLowerCase a bunch is bad but there will never be more than a few files
+    for (const ending of endings) {
+      const file = files.find(file => file.name.toLowerCase().endsWith(ending.toLowerCase()));
+      if (file) {
+        return file;
+      }
+    }
+    return '';
+  }
+
+  function getOrFind(files, name, ...endings) {
+    return files.find(f => f.name.toLowerCase() === name.toLowerCase) || find(files, endings);
+  }
+
+  const escapeHTML = s => s.replace(/</g, '&lt;');
+
+  const params = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+  // TODO, handle other forms
+  const req = await fetch(`https://api.github.com/gists/${params.src}`);
+  const gist = await req.json();
+  const data = getGistContent(gist);
+  const files = data.files;
+  const mainHTML = getOrFind(files, 'index.html', 'html');
+  const mainJS = getOrFind(files, 'index.js', 'js', 'js', 'javascript');
+  const mainCSS = getOrFind(files, 'index.css', 'css');
+  const html = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${escapeHTML(data.name)}</title>
+    <style>
+    ${mainCSS.content}
+    </style>
+  </head>
+  <body>
+  ${mainHTML.content}
+  </body>
+  <${'script'} type="module">
+  ${mainJS.content}
+  </${'script'}>
+</html>
+  `;
+  const blob = new Blob([html], {type: 'text/html'});
+  const iframe = document.querySelector('iframe');
+  iframe.src = URL.createObjectURL(blob);
+}
+main();
+  </script>
+</html>

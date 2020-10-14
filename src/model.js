@@ -34,11 +34,9 @@ export function set(name, newValue) {
   }
   trackedValue.value = newValue;
   const fns = [...trackedValue.subscriptions.keys()];
-  //setTimeout(() => {
-    for (const fn of fns) {
-      fn(newValue, name);
-    }
-  //});
+  for (const fn of fns) {
+    fn(newValue, name);
+  }
 }
 
 export function subscribe(name, fn) {

@@ -83,9 +83,20 @@ export default class Runner extends React.Component {
       <div className="runner" ref={this.divRef}>
         <iframe
           title="runner"
-          sandbox="allow-scripts"
+          sandbox="
+            allow-downloads
+            allow-forms
+            allow-modals
+            allow-orientation-lock
+            allow-pointer-lock
+            allow-popups
+            allow-presentation
+            allow-scripts
+            allow-top-navigation
+          "
           src={url}
           style={{...(blank && {background: 'none'})}}/>
       </div>)
   }
 }
+
