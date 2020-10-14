@@ -19,7 +19,7 @@ export default class SaveAsGist extends React.Component {
   }
   handleSubmit = (e) => {
     e.preventDefault();
-    this.onSaveNew();
+    this.saveFn();
   }
   // this nonsense about markToSaveAsNewGist and markToUpdateNewGist
   // is because in order to get the browser to save the token as a password
@@ -27,10 +27,10 @@ export default class SaveAsGist extends React.Component {
   // switch machines you don't have to go look up the password, the browser
   // will hopefully offer it.
   markToSaveNewGist = () => {
-    this.mode = 'new';
+    this.saveFn = this.saveNew;
   }
   markToUpdateGist =  () => {
-    this.mode = 'update';
+    this.saveFn = this.saveOverExisting;
   }
   componentDidMount() {
     document.body.addEventListener('submit', this.handleSubmit);
@@ -38,7 +38,7 @@ export default class SaveAsGist extends React.Component {
   componentWillUnmount() {
     document.body.removeEventListener('submit', this.handleSubmit);
   }
-  onSaveNew = async() => {
+  saveNew = async() => {
     this.setState({saving: true});
     const {data, github, addError, onSave, onClose} = this.props;
     const {pat} = this.state;
@@ -62,7 +62,7 @@ export default class SaveAsGist extends React.Component {
       onClose();
     }
   }
-  onSaveOverExisting = async() => {
+  saveOverExisting = async() => {
     this.setState({saving: true});
     const {data, gistId, github, addError, onClose} = this.props;
     const {pat} = this.state;
@@ -108,7 +108,7 @@ export default class SaveAsGist extends React.Component {
               onClick={this.markToSaveNewGist}
             >Save to new Gist</button>
             <button
-              className={classNames({disabled: !canSave})}
+              className={classNames({disabled: !canSave || saving})}
               type="submit"
               data-type="update"
               onClick={this.markToUpdateGist}
