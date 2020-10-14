@@ -49,6 +49,12 @@ There's a long list of desired features. Feel free to help add them
 
   this is relatively easy.
 
+- [ ] add export to jsfiddle/codepen/codesandbox etc..
+
+- [ ] allow deleting gists
+
+  as it is you go to github to delete gists.
+
 - [ ] allow more files. 
 
   The UI already kind of does this but we have to re-write references to blobs
@@ -72,5 +78,9 @@ There's a long list of desired features. Feel free to help add them
 
   - [X] Simple: just a page that shows your code
   - [ ] Complex: a page that shows your code with UX, links, avatar, etc...
+
+- [ ] Add tests!!!
+
+  There are currently no tests.
 
 ## License: [MIT](LICENSE.md)
