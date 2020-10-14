@@ -1,6 +1,7 @@
 import { Octokit } from '@octokit/rest';
 
 const userAgent = 'jsGist v0.0.1';
+const emptyValue = '/*bug-in-github-api-content-can-not-be-empty*/';
 
 function getGistContent(gist) {
   const data = JSON.parse(gist.files['jsGist.json'].content);
@@ -9,7 +10,9 @@ function getGistContent(gist) {
     .map(([name, file]) => {
       return {
         name,
-        content: file.content,
+        content: file.content.startsWith(emptyValue)
+            ? file.content.substr(emptyValue.length)
+            : file.content,
       }
     }).concat(data.files || []);
   return data;
@@ -17,7 +20,9 @@ function getGistContent(gist) {
 
 function createGistData(data, gist_id) {
   let files = data.files.reduce((files, file) => {
-    files[file.name] = {content: file.content};
+    files[file.name] = {
+      content: file.content.trim() ? file.content : `${emptyValue}${file.content}`,
+    };
     return files;
   }, {});
   const saveData = {
@@ -49,9 +54,9 @@ function createGistData(data, gist_id) {
   }
   jsGistData.content = JSON.stringify(saveData);
   return {
+    files,
     description: data.name,
     public: !data.settings.private,
-    files,
     ...(gist_id && {gist_id}),
   };
 }
@@ -103,11 +108,13 @@ export default class GitHub extends EventTarget {
     return getGistContent(gist);
   }
   async createGist(data) {
-    const gist = await this.authorizedOctokit.gists.create(createGistData(data));
+    const gistData = createGistData(data);
+    const gist = await this.authorizedOctokit.gists.create(gistData);
     this._updateUserData(gist.data);
     return gist.data.id;
   }
   async updateGist(gist_id, data) {
-    return await this.authorizedOctokit.gists.update(createGistData(data, gist_id));
+    const gistData = createGistData(data, gist_id);
+    return await this.authorizedOctokit.gists.update(gistData);
   }
 }
