@@ -1,5 +1,6 @@
-export function updateURL(params) {
-  const searchParams = new URLSearchParams(window.location.search);
+export function createURL(base, params) {
+  const url = new URL(base);
+  const searchParams = new URLSearchParams(url.search);
   for (const [key, value] of Object.entries(params)) {
     if (value === undefined) {
       searchParams.delete(key);
@@ -7,7 +8,12 @@ export function updateURL(params) {
       searchParams.set(key, value);
     }
   }
-  const url = new URL(window.location.href);
   url.search = searchParams.toString();
+  return url;
+}
+
+export function updateURL(params) {
+  const url = createURL(window.location.href, params);
   window.history.replaceState({}, '', url.href);
 }
+
