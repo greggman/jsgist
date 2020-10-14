@@ -1,3 +1,5 @@
+O fix embed
+O add avatar to embed
 O handle back (need to notice back and re-load)
 x show avatar
   O figure out what to do on new
