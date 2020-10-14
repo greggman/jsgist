@@ -11,6 +11,19 @@ object-assign
  * Released under the MIT License.
  */
 
+/*!
+ * mime-db
+ * Copyright(c) 2014 Jonathan Ong
+ * MIT Licensed
+ */
+
+/*!
+ * mime-types
+ * Copyright(c) 2014 Jonathan Ong
+ * Copyright(c) 2015 Douglas Christopher Wilson
+ * MIT Licensed
+ */
+
 /** @license React v0.19.1
  * scheduler.production.min.js
  *
