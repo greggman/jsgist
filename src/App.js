@@ -5,18 +5,15 @@ import Footer from './Footer.js';
 import GitHub from './GitHub.js';
 import Help from './Help.js';
 import Load from './Load.js';
+import {loadGistFromSrc} from './loader.js';
 import * as model from './model.js';
 import Save from './Save.js';
 import Settings from './Settings.js';
 import Split from './Split.js';
 import TestArea from './TestArea.js';
 import Runner from './Runner.js';
-import {isCompressedBase64, compressedBase64ToJSON} from './SaveAsURL.js';
 
 import './App.css';
-
-const idRE = /^[a-z0-9]+$/i;
-const isGistId = s => idRE.test(s);
 
 if (process.env.NODE_ENV === 'development') {
   window.d = model.data;
@@ -119,17 +116,10 @@ class App extends React.Component {
     this.setState({loading: true});
     let success = true;
     try {
-      if (isGistId(src)) {
-        const data = await this.github.getAnonGist(src);
-        model.setData(data);
+      const {data, id} = await loadGistFromSrc(src);
+      model.setData(data);
+      if (id) {
         this.setState({gistId: src})
-      } else if (isCompressedBase64(src)) {
-        const data = compressedBase64ToJSON(src);
-        model.setData(data);
-      } else {
-        const res = await fetch(src);
-        const data = await res.json();
-        model.setData(data);
       }
     } catch (e) {
       success = false;

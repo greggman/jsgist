@@ -3,7 +3,7 @@ import { Octokit } from '@octokit/rest';
 const userAgent = 'jsGist v0.0.1';
 const emptyValue = '/*bug-in-github-api-content-can-not-be-empty*/';
 
-function getGistContent(gist) {
+export function getGistContent(gist) {
   const data = JSON.parse(gist.files['jsGist.json'].content);
   data.files = Object.entries(gist.files)
     .filter(([name]) => name !== 'jsGist.json')
@@ -101,12 +101,6 @@ export default class GitHub extends EventTarget {
     this._updateUserData(gist.data);
     return getGistContent(gist.data);
   }
-  async getAnonGist(gist_id) {
-    const req = await fetch(`https://api.github.com/gists/${gist_id}`);
-    const gist = await req.json();
-    this._updateUserData(gist);
-    return getGistContent(gist);
-  }
   async createGist(data) {
     const gistData = createGistData(data);
     const gist = await this.authorizedOctokit.gists.create(gistData);
@@ -126,4 +120,11 @@ export default class GitHub extends EventTarget {
       date: gist.data.updated_at,
     };
   }
+}
+
+export async function getAnonGist(gist_id) {
+  const req = await fetch(`https://api.github.com/gists/${gist_id}`);
+  const gist = await req.json();
+  this._updateUserData(gist);
+  return getGistContent(gist);
 }

@@ -1,28 +1,12 @@
 import {getOrFind} from '../utils.js';
 import {createURL} from '../url.js';
+import {loadGistFromSrc} from '../loader.js';
 
 async function main() {
-  function getGistContent(gist) {
-    const data = JSON.parse(gist.files['jsGist.json'].content);
-    data.files = Object.entries(gist.files)
-      .filter(([name]) => name !== 'jsGist.json')
-      .map(([name, file]) => {
-        return {
-          name,
-          content: file.content,
-        }
-      }).concat(data.files || []);
-    return data;
-  }
-
   const escapeHTML = s => s.replace(/</g, '&lt;');
 
   const params = Object.fromEntries(new URLSearchParams(window.location.search).entries());
-  // TODO, handle other forms
-  const req = await fetch(`https://api.github.com/gists/${params.src}`);
-  const gist = await req.json();
-  const data = getGistContent(gist);
-
+  const {data} = await loadGistFromSrc(params.src);
   const a = document.querySelector('.head a');
   a.textContent = `jsGist - ${data.name}`;
   a.href = createURL(window.location.origin, {src: params.src});
