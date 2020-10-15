@@ -31,13 +31,20 @@
         color: var(--main-fg-color);
         display: flex;
         align-items: center;
-        padding: 0.25em;
+        padding: 0.25em 0 0.25em 0;
         white-space: nowrap;
         overflow: hidden;
+        justify-content: space-between;
       }
       .head img {
         height: 1em;
+        margin-left: 0.5em;
         margin-right: 0.5em;
+        vertical-align: middle;
+      }
+      .left, .right {
+        display: flex;
+        align-items: center;
       }
       .result {
         flex: 1 1 auto;
@@ -59,8 +66,14 @@
   <body>
     <div class="outer">
       <div class="head">
-        <img src="/resources/images/logo-small.svg">
-        <a href="https://jsgist.org">jsGist</a>
+        <div class="left">
+          <img src="/resources/images/logo-small.svg">
+          <a href="https://jsgist.org">jsGist</a>
+        </div>
+        <div class="right">
+          <a id="user"></a>
+          <a id="avatar-link"><img id="avatar"></a>
+        </div>
       </div>
       <div class="result">
         <iframe></iframe>

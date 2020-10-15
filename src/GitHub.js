@@ -18,6 +18,24 @@ export function getGistContent(gist) {
   return data;
 } 
 
+export async function getAnonGist(gist_id) {
+  const req = await fetch(`https://api.github.com/gists/${gist_id}`);
+  const gist = await req.json();
+  return {
+    data: getGistContent(gist),
+    rawData: gist,
+  };
+}
+
+export function getUserData(data) {
+  return (data && data.owner)
+      ? {
+          name: data.owner.login,
+          avatarURL: data.owner.avatar_url,
+      }
+      : undefined;
+}
+
 function createGistData(data, gist_id) {
   let files = data.files.reduce((files, file) => {
     files[file.name] = {
@@ -74,9 +92,9 @@ export default class GitHub extends EventTarget {
     return this.authorizedOctokit || this.unAuthorizedOctokit;
   }
   _updateUserData(data) {
-    if (data.owner) {
-      this.user.name = data.owner.login;
-      this.user.avatarURL = data.owner.avatar_url;
+    const userData = getUserData(data);
+    if (userData) {
+      Object.assign(this.user, userData);
       const event = new Event('userdata');
       event.data = {...this.user};
       this.dispatchEvent(event);
@@ -131,11 +149,3 @@ export default class GitHub extends EventTarget {
 
 }
 
-export async function getAnonGist(gist_id) {
-  const req = await fetch(`https://api.github.com/gists/${gist_id}`);
-  const gist = await req.json();
-  return {
-    data: getGistContent(gist),
-    rawData: gist,
-  };
-}
