@@ -408,6 +408,11 @@ button:hover {
 .comments .links {
   text-align: center;
 }
+hr {
+  border: none;
+  background: var(--title-bg-color);
+  height: 2px;
+}
 
 @media (max-width: 740px) {
   .head {
