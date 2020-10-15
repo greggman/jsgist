@@ -89,7 +89,7 @@ export default class LoadGist extends React.Component {
         </form>
         <p>
           <a target="_blank" rel="noopener noreferrer" href="https://github.com/settings/tokens">Create a Personal Access Token</a> with only <b>gist</b> permissions.
-          Paste it above. Note: This is a static website. Your person access token
+          Paste it above. Note: This is a static website. Your personal access token
           is stored only locally in your browser and only accessible by this domain.
         </p>
         {
