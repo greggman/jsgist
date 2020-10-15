@@ -184,7 +184,7 @@ export default class GManSplit extends React.Component {
     const {
       clientAxis,
     } = getDirectionProps(direction);
-
+console.log('reg list')
     document.addEventListener("mousemove", this.handleMouseMove);
     document.addEventListener("mouseup", this.handleMouseUp);
     const gutterNdx = Array.prototype.indexOf.call(e.target.parentElement.children, e.target);
@@ -322,6 +322,13 @@ export default class GManSplit extends React.Component {
         {...rest}
       >
         {newChildren}
+        {dragging ? 
+          <style>
+            iframe {'{'}
+              pointer-events: none;
+            {'}'}
+          </style> : []
+        }
       </div>
     );
   }
