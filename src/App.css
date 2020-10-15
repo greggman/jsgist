@@ -11,7 +11,7 @@
 html {
   box-sizing: border-box;
   font-family: sans-serif;
-  line-height: 1.5;
+  line-height: 1.2;
   background: var(--main-bg-color);
   color: var(--main-fg-color);
 }
@@ -45,10 +45,13 @@ html {
   position: relative;
   right: 1em;
 }
-.top,
+.top {
+  display: flex;
+  margin: 10px 10px 0 10px;
+}
 .bottom {
   display: flex;
-  padding: 10px;
+  margin: 10px;
   position: relative;
 }
 .bottom {
@@ -65,9 +68,7 @@ html {
   margin-left: 10px;
 }
 .left {
-  width: 50%;
   position: relative;
-  height: 100%;
   min-height: 0;
   min-width: 0;
 }
@@ -82,7 +83,6 @@ html {
   flex-direction: column;
 }
 .right {
-  height: 100%;
   min-height: 0;
   min-width: 0;
 }
@@ -394,11 +394,12 @@ button:hover {
   .bottom {
     flex-direction: column;
   }
-  .left {
-    width: 100%;
-  }
   .right {
     margin-left: 0;
+  }
+  .top .right {
+    margin-left: 0;
+    margin-top: 10px;
   }
 }
 
