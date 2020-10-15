@@ -124,20 +124,15 @@ function computeNewSizes({
 }
 
 const stopMobileBrowserFromScrolling = e => e.preventDefault();
-const stopOtherThingsListeningForMoveEventsFromResponding = e => e.stopPropagation();
 
-export default class GManSplit extends React.Component {
+class Gutter extends React.Component {
   constructor(props) {
     super(props);
-    const numPanes = React.Children.count(props.children);
-    const size = 1 / numPanes;
-    this.state = {
-      sizes: new Array(numPanes).fill(size),
-    };
     this.elementRef = React.createRef();
   }
-  _setSizes = (sizes) => {
-    this.setState({sizes});
+  handleMouseDownAndTouchStart = (e) => {
+    const {onMouseDownAndTouchStart} = this.props;
+    onMouseDownAndTouchStart(e);
   }
   componentDidMount() {
     // There's no way in React 16 to add passive false event listeners
@@ -152,6 +147,31 @@ export default class GManSplit extends React.Component {
     elem.removeEventListener('mousedown', this.handleMouseDownAndTouchStart);
     elem.removeEventListener('touchstart', this.handleMouseDownAndTouchStart);
   }
+  render() {
+    const {direction, dragging, current, style} = this.props;
+    return (
+      <div
+        ref={this.elementRef}
+        className={`gutter gutter-${direction} ${dragging && current ? 'gutter-dragging' : ''}`}
+        style={style}
+      />
+    );
+  }
+}
+
+export default class GManSplit extends React.Component {
+  constructor(props) {
+    super(props);
+    const numPanes = React.Children.count(props.children);
+    const size = 1 / numPanes;
+    this.state = {
+      sizes: new Array(numPanes).fill(size),
+    };
+    this.elementRef = React.createRef();
+  }
+  _setSizes = (sizes) => {
+    this.setState({sizes});
+  }
   handleMouseUpAndTouchEnd = () => {
     document.removeEventListener("mousemove", this.handleMouseAndTouchMove);
     document.removeEventListener("mouseup", this.handleMouseUpAndTouchEnd);
@@ -161,7 +181,6 @@ export default class GManSplit extends React.Component {
   };
   handleMouseAndTouchMove = (e) => {
     stopMobileBrowserFromScrolling(e);
-    stopOtherThingsListeningForMoveEventsFromResponding(e);
     const {
       gutterSize = defaultGutterSize,
       direction = defaultDirection,
@@ -200,8 +219,8 @@ export default class GManSplit extends React.Component {
     setSizes(newSizes);
   };
   handleMouseDownAndTouchStart = (e) => {
+    console.log('split mouse down')
     stopMobileBrowserFromScrolling(e);
-    stopOtherThingsListeningForMoveEventsFromResponding(e);
     const {
       direction = defaultDirection,
     } = this.props;
@@ -312,10 +331,13 @@ export default class GManSplit extends React.Component {
       }
       if (!first) {
         newChildren.push(
-          <div
+          <Gutter
             key={`gutter${newChildren.length}`}
-            className={`gutter gutter-${direction} ${dragging && childNdx === prevPaneNdx + 1 ? 'gutter-dragging' : ''}`}
+            direction={direction}
+            dragging={dragging}
+            current={dragging && childNdx === prevPaneNdx + 1}
             style={gutterStyle}
+            onMouseDownAndTouchStart={this.handleMouseDownAndTouchStart}
           />
         );
       }
