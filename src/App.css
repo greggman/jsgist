@@ -57,6 +57,23 @@ html, body {
   position: relative;
   right: 1em;
 }
+.fix-help-contribute {
+  display: flex;
+  align-items: center;
+}
+.fix-help-contribute a {
+  text-decoration: none;
+  color: var(--main-fg-color);
+}
+.fix-help-contribute .three-words {
+  font-size: x-small;
+  text-align: right;
+}
+.fix-help-contribute .octocat {
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+}
 .top {
   flex: 0 0 auto;
   display: flex;
@@ -435,6 +452,9 @@ hr {
   .top .right {
     margin-left: 0;
     margin-top: 5px;
+  }
+  .fix-help-contribute .three-words {
+    display: none;
   }
 }
 

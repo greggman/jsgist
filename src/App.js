@@ -239,10 +239,17 @@ class App extends React.Component {
               <img src="/resources/images/logo.svg" alt="logo"/>
             jsGist.org<span className="beta">(alpha)</span>
             </div>
-            <div>
-            <a href="https://github.com/greggman/jsgist/">
-              <img alt="github" src="/resources/images/octocat-icon.svg"/>
-            </a>
+            <div className="fix-help-contribute">
+              <div className="three-words">
+                <div><a target="_blank" rel="noopener noreferrer" href="https://github.com/greggman/jsgist/">Fix</a></div>
+                <div><a target="_blank" rel="noopener noreferrer" href="https://github.com/greggman/jsgist/">Help</a></div>
+                <div><a target="_blank" rel="noopener noreferrer" href="https://github.com/greggman/jsgist/">Contribute</a></div>
+              </div>
+              <div className="octocat">
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/greggman/jsgist/">
+                  <img alt="github" src="/resources/images/octocat-icon.svg"/>
+                </a>
+              </div>
             </div>
           </div>
           <div className="top">
