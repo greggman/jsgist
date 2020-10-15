@@ -26,6 +26,8 @@ function normalizeSizes(sizes) {
   return sizes.map(v => v / totalSize);
 }
 
+const getMouseOrTouchPosition = (e, clientAxis) => e.touches ? e.touches[0][clientAxis] : e[clientAxis];
+
 function addSpaceForChildren(sizes, numChildren, gutterSize, minSizePX, totalSizePX) {
   // const numGutters = numChildren - 1;
   // const totalGutterSpacePX = numGutters * gutterSize;
@@ -68,7 +70,7 @@ const getDirectionProps = direction => (direction === 'horizontal')
       position: 'top',
       positionEnd: 'bottom',
       clientSize: 'clientHeight',
-      style: { height: '100%' },
+      style: { /*height: '100%'*/ },
     };
 
 function computeNewSizes({
@@ -121,6 +123,9 @@ function computeNewSizes({
   return newSizes;
 }
 
+const stopMobileBrowserFromScrolling = e => e.preventDefault();
+const stopOtherThingsListeningForMoveEventsFromResponding = e => e.stopPropagation();
+
 export default class GManSplit extends React.Component {
   constructor(props) {
     super(props);
@@ -134,12 +139,29 @@ export default class GManSplit extends React.Component {
   _setSizes = (sizes) => {
     this.setState({sizes});
   }
-  handleMouseUp = () => {
-    document.removeEventListener("mousemove", this.handleMouseMove);
-    document.removeEventListener("mouseup", this.handleMouseUp);
+  componentDidMount() {
+    // There's no way in React 16 to add passive false event listeners
+    // which means there is no way to drag a splitter and prevent mobile browsers
+    // from scrolling
+    const elem = this.elementRef.current;
+    elem.addEventListener('mousedown', this.handleMouseDownAndTouchStart, {passive: false});
+    elem.addEventListener('touchstart', this.handleMouseDownAndTouchStart, {passive: false});
+  }
+  componentWillUnmount() {
+    const elem = this.elementRef.current;
+    elem.removeEventListener('mousedown', this.handleMouseDownAndTouchStart);
+    elem.removeEventListener('touchstart', this.handleMouseDownAndTouchStart);
+  }
+  handleMouseUpAndTouchEnd = () => {
+    document.removeEventListener("mousemove", this.handleMouseAndTouchMove);
+    document.removeEventListener("mouseup", this.handleMouseUpAndTouchEnd);
+    document.removeEventListener("touchmove", this.handleMouseAndTouchMove);
+    document.removeEventListener("touchend", this.handleMouseUpAndTouchEnd);
     this.setState({dragging: false});
   };
-  handleMouseMove = (e) => {
+  handleMouseAndTouchMove = (e) => {
+    stopMobileBrowserFromScrolling(e);
+    stopOtherThingsListeningForMoveEventsFromResponding(e);
     const {
       gutterSize = defaultGutterSize,
       direction = defaultDirection,
@@ -162,7 +184,7 @@ export default class GManSplit extends React.Component {
       clientSize,
     } = getDirectionProps(direction);
 
-    const deltaPX = e[clientAxis] - mouseStart;
+    const deltaPX = getMouseOrTouchPosition(e, clientAxis) - mouseStart;
     const outerSizePX = this.elementRef.current[clientSize];
 
     const newSizes = computeNewSizesFn({
@@ -177,21 +199,25 @@ export default class GManSplit extends React.Component {
 
     setSizes(newSizes);
   };
-  handleMouseDown = (e) => {
+  handleMouseDownAndTouchStart = (e) => {
+    stopMobileBrowserFromScrolling(e);
+    stopOtherThingsListeningForMoveEventsFromResponding(e);
     const {
       direction = defaultDirection,
     } = this.props;
     const {
       clientAxis,
     } = getDirectionProps(direction);
-console.log('reg list')
-    document.addEventListener("mousemove", this.handleMouseMove);
-    document.addEventListener("mouseup", this.handleMouseUp);
+
+    document.addEventListener("mousemove", this.handleMouseAndTouchMove, {passive: false});
+    document.addEventListener("mouseup", this.handleMouseUpAndTouchEnd);
+    document.addEventListener("touchmove", this.handleMouseAndTouchMove, {passive: false});
+    document.addEventListener("touchend", this.handleMouseUpAndTouchEnd);
     const gutterNdx = Array.prototype.indexOf.call(e.target.parentElement.children, e.target);
     const prevPaneNdx = (gutterNdx - 1) / 2;    
     this.setState({
       startSizes: this.state.sizes.slice(),
-      mouseStart: e[clientAxis],
+      mouseStart: getMouseOrTouchPosition(e, clientAxis),
       prevPaneNdx,
       dragging: true,
     });
@@ -290,22 +316,18 @@ console.log('reg list')
             key={`gutter${newChildren.length}`}
             className={`gutter gutter-${direction} ${dragging && childNdx === prevPaneNdx + 1 ? 'gutter-dragging' : ''}`}
             style={gutterStyle}
-            onMouseDown={this.handleMouseDown}
           />
         );
       }
 
       const style = {
-        ...child.props.style,
-        [dimension]: `calc(${sizes[childNdx] * 100}% - ${gutterReservedSizes[childNdx]}px)`
+        [dimension]: `calc(${sizes[childNdx] * 100}% - ${gutterReservedSizes[childNdx]}px)`,
       };
 
       newChildren.push(
-        React.cloneElement(child, {
-          key: `pane${newChildren.length}`,
-          style,
-          ...child.props
-        })
+        <div key={`pane${newChildren.length}`} style={style}>
+          {React.cloneElement(child)}
+        </div>
       );
       first = false;
       ++childNdx;
@@ -325,7 +347,7 @@ console.log('reg list')
         {dragging ? 
           <style>
             iframe {'{'}
-              pointer-events: none;
+              pointer-events: none !important;
             {'}'}
           </style> : []
         }
