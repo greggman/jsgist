@@ -32,12 +32,6 @@ export default class SaveAsGist extends React.Component {
   markToUpdateGist =  () => {
     this.saveFn = this.saveOverExisting;
   }
-  componentDidMount() {
-    document.body.addEventListener('submit', this.handleSubmit);
-  }
-  componentWillUnmount() {
-    document.body.removeEventListener('submit', this.handleSubmit);
-  }
   saveNew = async() => {
     this.setState({saving: true});
     const {data, github, addError, onSave, onClose} = this.props;
