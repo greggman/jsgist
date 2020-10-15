@@ -45,6 +45,12 @@ There's a long list of desired features. Feel free to help add them
   It might be nice for the UX present like codepen (a list of include stuff)
   but that list is derived from scanning the code, not internally stored.
 
+  Speaking of which, if anyone knows a good layout / form lib speak up.
+  One of the reasons I bailed on making a setting UI for the mvp is because
+  designing the forms and then fighting all the HTML/CSS I knew would be
+  several days. Basically just the settings alone will probably take 2x
+  as long as the main app because there are so many UI details.
+
 - [ ] add a visible log
 
   this is relatively easy.
@@ -55,10 +61,30 @@ There's a long list of desired features. Feel free to help add them
 
   as it is you go to github to delete gists.
 
+- [ ] show revisions and forks
+
+  I'm not sure there's a good solution here. I don't think gists are
+  a good place to store revisions? 
+  
+  * We could add them inside the main gist. This would make the data
+    stored and the time save/load get slower and slower.
+  
+  * We could load the old gist and save it as a new gist then save
+    the current gist over the old gists (so the id stays the first)
+    gist. The problem with this is there's easy way to handle loading
+    an old gist and saving. If you make revisions 1, 2, 3, 4, then go
+    to revision 2 and save it has no knowledge of revision 3 and 4?
+    
+    Hmmm, I guess if each revision stores the id it was then you can
+    read that gist and find the top revision.
+
 - [ ] allow more files. 
 
   The UI already kind of does this but we have to re-write references to blobs
-  or figure out if maybe a service worker could handle it.
+  or figure out if maybe a service worker could handle it. I'm not sure how
+  handy this would be. If you want to test a worker it's nice to have
+  a separate file but how often do people want to do that? My point being
+  this might be lots of effort for little payoff.
 
 - [ ] consider github login?
 
@@ -74,10 +100,14 @@ There's a long list of desired features. Feel free to help add them
 
 - [ ] Mobile
 
+  Mobile works but could use better styling/layout
+
 - [ ] Allow embedding
 
   - [X] Simple: just a page that shows your code
   - [ ] Complex: a page that shows your code with UX, links, avatar, etc...
+
+- [ ] Use service worker to help debugging
 
 - [ ] Add tests!!!
 
