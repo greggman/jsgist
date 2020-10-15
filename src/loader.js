@@ -1,6 +1,5 @@
 
 import {isCompressedBase64, compressedBase64ToJSON} from './compression.js';
-import {getAnonGist} from './GitHub.js';
 
 const idRE = /^[a-z0-9]+$/i;
 export const isGistId = s => idRE.test(s);
