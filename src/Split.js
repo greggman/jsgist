@@ -77,24 +77,18 @@ function computeNewSizes({
   startSizes,
   currentSizes,
   prevPaneNdx,
-  gutterSize,
-  minSize,
+  gutterReservedSizesPX,
+  minSizePX,
   deltaPX,
   outerSizePX,
 }) {
-  const numPanes = currentSizes.length;
-  const numGutters = numPanes - 1;
-  const totalGutterSizePX = numGutters * gutterSize;
-
-  const gutterReservedSizesPX = distribute(totalGutterSizePX, numPanes);
-
   const nextPaneNdx = prevPaneNdx + 1;
   const prevPaneStartSizePX = Math.ceil(startSizes[prevPaneNdx] * outerSizePX) - gutterReservedSizesPX[prevPaneNdx];
   const nextPaneStartSizePX = Math.ceil(startSizes[nextPaneNdx] * outerSizePX) - gutterReservedSizesPX[nextPaneNdx];
   const spaceUsedByBothElementsPX = prevPaneStartSizePX + nextPaneStartSizePX;
   const prevPaneNewSizePX = Math.min(
-    Math.max(minSize, prevPaneStartSizePX + deltaPX),
-    spaceUsedByBothElementsPX - minSize);
+    Math.max(minSizePX, prevPaneStartSizePX + deltaPX),
+    spaceUsedByBothElementsPX - minSizePX);
   const nextPaneNewSizePX = spaceUsedByBothElementsPX - prevPaneNewSizePX;
   const newSizes = [
     ...currentSizes.slice(0, prevPaneNdx),
@@ -206,12 +200,18 @@ export default class GManSplit extends React.Component {
     const deltaPX = getMouseOrTouchPosition(e, clientAxis) - mouseStart;
     const outerSizePX = this.elementRef.current[clientSize];
 
+    const numPanes = sizes.length;
+    const numGutters = numPanes - 1;
+    const totalGutterSizePX = numGutters * gutterSize;
+
+    const gutterReservedSizesPX = distribute(totalGutterSizePX, numPanes);
+
     const newSizes = computeNewSizesFn({
       startSizes,
       currentSizes: sizes,
       prevPaneNdx,
-      gutterSize,
-      minSize,
+      gutterReservedSizesPX,
+      minSizePX: minSize,
       deltaPX,
       outerSizePX,
     });
@@ -219,7 +219,6 @@ export default class GManSplit extends React.Component {
     setSizes(newSizes);
   };
   handleMouseDownAndTouchStart = (e) => {
-    console.log('split mouse down')
     stopMobileBrowserFromScrolling(e);
     const {
       direction = defaultDirection,
@@ -250,7 +249,7 @@ export default class GManSplit extends React.Component {
     // Example:
     //
     //   * start: 3 panes, sizes a(33%), b(33%), c(33%)
-    //   * user adjusts to sizes a(10%), b(90%), c(10%)
+    //   * user adjusts to sizes a(10%), b(80%), c(10%)
     //   * user deletes pane (a)
     //
     // If we just continue to use the current sizes the we'd get
