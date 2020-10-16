@@ -24,7 +24,8 @@ export default class Runner extends React.Component {
         this.removeIFrame();
         const iframe = document.createElement('iframe');
         this.iframe = iframe;
-        iframe.src = 'https://jsgistrunner.devcomments.org/runner.html';
+        //iframe.src = 'http://localhost:8081/runner-02.html';
+        iframe.src = 'https://jsgistrunner.devcomments.org/runner-02.html';
         if (blank) {
           iframe.style.background = 'none';
         }
