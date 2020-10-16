@@ -236,7 +236,7 @@ class App extends React.Component {
         <div className="content">
           <div className="head">
             <div>
-              <img src="/resources/images/logo.svg" alt="logo"/>
+              <img src="/resources/images/logo-small.svg" alt="logo"/>
             jsGist.org<span className="beta">(alpha)</span>
             </div>
             <div className="fix-help-contribute">
