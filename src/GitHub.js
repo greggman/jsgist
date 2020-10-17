@@ -71,10 +71,17 @@ function createGistData(data, gist_id) {
     };
   }
   jsGistData.content = JSON.stringify(saveData);
+  if (gist_id) {
+    // if we have a gist_id this is an update
+    // updates need filenames (which allows renaming)
+    for (const [filename, file] of Object.entries(files)) {
+      file.filename = filename;
+    }
+  }
   return {
     files,
     description: data.name,
-    public: !data.settings.private,
+    ...(!gist_id && {public: !data.settings.private}),
     ...(gist_id && {gist_id}),
   };
 }
