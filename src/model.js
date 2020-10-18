@@ -1,9 +1,10 @@
 import Ajv from 'ajv';
+
+import {isDevelopment} from './flags.js';
 import schema from './schema.json';
 
 const ajv = new Ajv() // options can be passed, e.g. {allErrors: true}
 const validator = ajv.compile(schema);
-const isDev = process.env.NODE_ENV === 'development';
 
 const trackedValues = {};
 
@@ -107,7 +108,7 @@ export function getBlankData() {
   }));
 }
 
-export let data = isDev ? {
+export let data = isDevelopment ? {
   "name": "ThreeJSFundamentals Scenegraph Tank",
   "settings": {},
   "files": [

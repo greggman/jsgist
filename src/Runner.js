@@ -1,4 +1,6 @@
 import React from 'react';
+
+import {isDevelopment} from './flags.js';
 import * as winMsgMgr from './window-message-manager.js';
 
 export default class Runner extends React.Component {
@@ -26,8 +28,9 @@ export default class Runner extends React.Component {
         this.removeIFrame();
         const iframe = document.createElement('iframe');
         this.iframe = iframe;
-        //iframe.src = 'http://localhost:8081/runner-02.html';
-        iframe.src = 'https://jsgistrunner.devcomments.org/runner-02.html';
+        iframe.src = isDevelopment
+            ? 'http://localhost:8081/runner-02.html?development=true'
+            : 'https://jsgistrunner.devcomments.org/runner-02.html';
         if (blank) {
           iframe.style.background = 'none';
         }

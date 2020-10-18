@@ -1,6 +1,7 @@
 import React from 'react';
 
 import EditLine from './EditLine.js';
+import {isDevelopment} from './flags.js';
 import Footer from './Footer.js';
 import GitHub from './GitHub.js';
 import Help from './Help.js';
@@ -16,7 +17,7 @@ import Runner from './Runner.js';
 
 import './App.css';
 
-if (process.env.NODE_ENV === 'development') {
+if (isDevelopment) {
   window.d = model.data;
 }
 
