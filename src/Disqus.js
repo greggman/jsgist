@@ -1,5 +1,6 @@
 import React from 'react';
 import {createURL} from './url.js';
+import * as winMsgMgr from './window-message-manager.js';
 
 // Disqus is served from a separate domain in an iframe. In other words
 //
@@ -29,21 +30,14 @@ export default class Disqus extends React.Component {
   // so the main page can adjust the iframe size. We do that same thing
   // so our top page can just the size of the middle iframe in the
   // diagram above.
-  handleMessage = (e) => {
-    const {type, data} = e.data;
-    switch (type) {
-      case 'resize':
-        this.iframeRef.current.style.height = `${data.height}px`;
-        break;
-      default:
-        break;
-    }
+  handleResize = (data) => {
+    this.iframeRef.current.style.height = `${data.height}px`;
   }
   componentDidMount() {
-    window.addEventListener('message', this.handleMessage);
+    winMsgMgr.on('resize', this.handleResize);
   }
   componentWillUnmount() {
-    window.removeEventListener('message', this.handleMessage);
+    winMsgMgr.remove('resize', this.handleResize);
   }
   shouldComponentUpdate(nextProps) {
     return nextProps.disqusId !== this.disqusId;

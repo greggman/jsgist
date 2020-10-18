@@ -1,20 +1,22 @@
 import React from 'react';
+import * as winMsgMgr from './window-message-manager.js';
 
 export default class Runner extends React.Component {
   constructor(props) {
     super(props);
     this.runnerRef = React.createRef();
-    this.handlers = {
-      log: () => {
+  }
+  handleJSLog = (data) => {
+    this.props.logManager.addMsg(data.type, data.msg);
+  }
+  handleJSError = (data) => {
 
-      },
-      gimmeDaCodez: () => {
-        this.iframe.contentWindow.postMessage({
-          type: 'run',
-          data: this.data,
-        }, "*");
-      },
-    }
+  }
+  handleGimmeDaCodez = () => {
+    this.iframe.contentWindow.postMessage({
+      type: 'run',
+      data: this.data,
+    }, "*");
   }
   componentDidMount() {
     const {registerRunnerAPI} = this.props;
@@ -32,7 +34,9 @@ export default class Runner extends React.Component {
         this.runnerRef.current.appendChild(iframe);
       },
     })
-    window.addEventListener('message', this.handleMessage);
+    winMsgMgr.on('gimmeDaCodez', this.handleGimmeDaCodez);
+    winMsgMgr.on('jsLog', this.handleJSLog);
+    winMsgMgr.on('jsError', this.handleJSError);
   }
   removeIFrame() {
     if (this.iframe) {
@@ -42,7 +46,9 @@ export default class Runner extends React.Component {
   }
   componentWillUnmount() {
     this.removeIFrame();
-    window.removeEventListener('message', this.handleMessage);
+    winMsgMgr.remove('gimmeDaCodez', this.handleGimmeDaCodez);
+    winMsgMgr.remove('jsLog', this.handleJSLog);
+    winMsgMgr.remove('jsError', this.handleJSError);
   }
   handleMessage = (e) => {
     const {type, data} =  e.data;

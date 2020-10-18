@@ -7,6 +7,8 @@
   --code-area-bg-color: #CCC;
   --un-run-bg-color: #8AF;
   --aborted-bg-color: #DDD;
+  --error-fg-color: darkred;
+  --warn-fg-color: brown;
 }
 
 
@@ -123,6 +125,51 @@ html, body {
 }
 .bottom  {
   display: flex;
+}
+/* ---------------------- */
+.logger {
+  background: var(--title-bg-color);
+  font-family: monospace;
+  white-space: pre-wrap;
+  height: 100%;
+  width: 100%;
+}
+.log-messages {
+  overflow: auto;
+  height: 100%;
+}
+.log-messages>* {
+  overflow-wrap: anywhere;
+  padding-left: 1.5em;
+  position: relative;
+}
+.logger .log:before,
+.logger .info:before,
+.logger .warn:before,
+.logger .error:before {
+  width: 1.5em;
+  content: " ";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.logger .warn {
+  color: var(--warn-fg-color);
+  background: rgba(255, 255, 0, 0.2);
+}
+.logger .warn:before {
+  background-image: url(/resources/images/warn-icon.svg);
+}
+.logger .error {
+  color: var(--error-fg-color);
+  background: rgba(255, 0, 0, 0.2);
+}
+.logger .error:before {
+  background-image: url(/resources/images/error-icon.svg);
 }
 /* ---------------------- */
 .split {
@@ -468,6 +515,8 @@ hr {
     --code-area-bg-color: #555;
     --un-run-bg-color: blue;
     --aborted-bg-color: #000;
+    --error-fg-color: red;
+    --warn-fg-color: yellow;
   }
   .CodeMirror-overlayscroll-horizontal div,
   .CodeMirror-overlayscroll-vertical div {

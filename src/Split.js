@@ -159,7 +159,7 @@ export default class GManSplit extends React.Component {
     const numPanes = React.Children.count(props.children);
     const size = 1 / numPanes;
     this.state = {
-      sizes: new Array(numPanes).fill(size),
+      sizes: props.sizes || new Array(numPanes).fill(size),
     };
     this.elementRef = React.createRef();
   }

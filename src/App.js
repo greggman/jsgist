@@ -6,6 +6,7 @@ import GitHub from './GitHub.js';
 import Help from './Help.js';
 import Load from './Load.js';
 import {loadGistFromSrc} from './loader.js';
+import Log, {LogManager} from './Log.js';
 import * as model from './model.js';
 import Save from './Save.js';
 import Settings from './Settings.js';
@@ -47,6 +48,7 @@ class App extends React.Component {
       userData: {},
     };
     this.github = new GitHub();
+    this.logManager = new LogManager();
   }
   componentDidMount() {
     this.github.addEventListener('userdata', (e) => {
@@ -163,6 +165,7 @@ class App extends React.Component {
       href: window.location.href,
       data: model.data,
     }));
+    this.logManager.clear();
     this.runnerAPI.run(model.data);
   }
   handleStop = async () => {
@@ -301,7 +304,10 @@ class App extends React.Component {
                       {/*<button onClick={() => model.addFile()}>+</button>*/}
                   </div>
                   <div className="right">
-                    <Runner registerRunnerAPI={this.registerRunnerAPI} />
+                    <Split direction="vertical" sizes={[0.9, 0.1]}>
+                      <Runner logManager={this.logManager} registerRunnerAPI={this.registerRunnerAPI} />
+                      <Log logManager={this.logManager} />
+                    </Split>
                   </div>
                 </Split>
               </div>

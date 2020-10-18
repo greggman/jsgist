@@ -130,11 +130,14 @@ if (!validator(data)) {
   console.log(validator.errors);
 }
 
-add('dataVersion', 0);   // any data changes
-add('updateVersion', 0);  // all data changes
+const dataVersionKey = 'dataVersion';
+const updateVersionKey = 'updateVersion';
 
-function notify() {
-  set('dataVersion', get('dataVersion') + 1);
+add(dataVersionKey, 0);   // any data changes
+add(updateVersionKey, 0);  // all data changes
+
+function notify(version = 'dataVersion') {
+  set(version, get(version) + 1);
 }
 
 function getUniqueName(basename) {
