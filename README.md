@@ -51,9 +51,14 @@ There's a long list of desired features. Feel free to help add them
   several days. Basically just the settings alone will probably take 2x
   as long as the main app because there are so many UI details.
 
-- [ ] add a visible log
+- [X] add a visible log
 
   this is relatively easy.
+  
+- [ ] highlight errors in source
+
+  the data is already there for js errors. Could also do it for all
+  log messages.
 
 - [ ] add export to jsfiddle/codepen/codesandbox etc..
 
@@ -107,7 +112,7 @@ There's a long list of desired features. Feel free to help add them
   - [X] Simple: just a page that shows your code
   - [ ] Complex: a page that shows your code with UX, links, avatar, etc...
 
-- [ ] Use service worker to help debugging
+- [X] Use service worker to help debugging
 
 - [ ] Add tests!!!
 
