@@ -1,13 +1,14 @@
-O fix model so that each area only updates when its file changes
-O add stack trace to all logs?
-O click log line to take you to line
-O errors automatically go to line?
-O handle back (need to notice back and re-load)
-O allow pop-out result to separate window.
-O save README with link. If user made a readme use that instead though sub {{link}} for link
+- [ ] add stack trace to all logs?
+- [ ] click log line to take you to line
+- [ ] errors automatically go to line?
+- [ ] handle back (need to notice back and re-load)
+- [ ] allow pop-out result to separate window.
+- [ ] save README with link. If user made a readme use that instead though sub {{link}} for link
+  
   (we can't do this unless we double save on create as we need to know the gist id to make the link)
 
 # done
+- [x] fix model so that each area only updates when its file changes
 - [x] fix embed
 - [x] make embed show more types cb64, etc.
 - [x] add export UI
