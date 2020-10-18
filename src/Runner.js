@@ -12,7 +12,14 @@ export default class Runner extends React.Component {
     this.props.logManager.addMsg(data.type, data.msg);
   }
   handleJSError = (data) => {
-
+    const {
+      msg,
+      url,
+      lineNo,
+      colNo,
+      section,
+    } = data;
+    this.props.logManager.addMsg('error', `${url}:${lineNo}:${colNo}:${section} ${msg}`);
   }
   handleGimmeDaCodez = () => {
     this.iframe.contentWindow.postMessage({
