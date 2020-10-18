@@ -1,3 +1,7 @@
+O fix model so that each area only updates when its file changes
+O add stack trace to all logs?
+O click log line to take you to line
+O errors automatically go to line?
 O handle back (need to notice back and re-load)
 O allow pop-out result to separate window.
 O save README with link. If user made a readme use that instead though sub {{link}} for link
