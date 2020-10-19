@@ -2,24 +2,17 @@ import React from 'react';
 
 import {isDevelopment} from './flags.js';
 import * as winMsgMgr from './window-message-manager.js';
-
+import {createURL} from './url.js';
 export default class Runner extends React.Component {
   constructor(props) {
     super(props);
     this.runnerRef = React.createRef();
   }
   handleJSLog = (data) => {
-    this.props.logManager.addMsg(data.type, data.msg);
+    this.props.logManager.addMsg(data);
   }
   handleJSError = (data) => {
-    const {
-      msg,
-      url,
-      lineNo,
-      colNo,
-      section,
-    } = data;
-    this.props.logManager.addMsg('error', `${url}:${lineNo}:${colNo}:${section} ${msg}`);
+    this.props.logManager.addMsg({...data, type: 'error'});
   }
   handleGimmeDaCodez = () => {
     this.iframe.contentWindow.postMessage({
@@ -36,8 +29,8 @@ export default class Runner extends React.Component {
         const iframe = document.createElement('iframe');
         this.iframe = iframe;
         iframe.src = isDevelopment
-            ? 'http://localhost:8081/runner-02.html?development=true'
-            : 'https://jsgistrunner.devcomments.org/runner-02.html';
+            ? createURL('http://localhost:8081/runner-03.html', {url: 'http://localhost:8080/jsgist-runner.js'})
+            : createURL('https://jsgistrunner.devcomments.org/runner-03.html', {url: 'https://jsgist.org/jsgist-runner.js'});
         if (blank) {
           iframe.style.background = 'none';
         }

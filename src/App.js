@@ -2,6 +2,7 @@ import React from 'react';
 
 import EditLine from './EditLine.js';
 import {isDevelopment} from './flags.js';
+import Files from './Files.js';
 import Footer from './Footer.js';
 import GitHub from './GitHub.js';
 import Help from './Help.js';
@@ -12,7 +13,6 @@ import * as model from './model.js';
 import Save from './Save.js';
 import Settings from './Settings.js';
 import Split from './Split.js';
-import TestArea from './TestArea.js';
 import Runner from './Runner.js';
 
 import './App.css';
@@ -156,6 +156,9 @@ class App extends React.Component {
     this.runnerAPI = api;
     this.handleStop();
   }
+  registerFilesAPI = (api) => {
+    this.filesAPI = api;
+  }
   handleNew = async() => {
     window.location.href = window.location.origin;
     //window.history.pushState({}, '', `${window.location.origin}`);
@@ -167,6 +170,7 @@ class App extends React.Component {
       data: model.data,
     }));
     this.logManager.clear();
+    console.clear();
     this.runnerAPI.run(model.data);
   }
   handleStop = async () => {
@@ -195,6 +199,9 @@ class App extends React.Component {
   handleAbort = () => {
     this.abort();
   };
+  handleGoToLine = (data) => {
+    this.filesAPI.goToLine(data);
+  }
   renderHelp = () => {
     return (<Help onClose={this.closeDialog} />);
   }
@@ -279,35 +286,12 @@ class App extends React.Component {
               <div className="bottom">
                 <Split direction="horizontal" minSize={0}>
                   <div className="left">
-                    <div className="codes">
-                    <Split
-                      direction="vertical"
-                      minSize={0}
-                    >
-                    {
-                      data.files.map((file, ndx) => {
-                        return (
-                          <TestArea
-                            key={`ca${ndx}`}
-                            hackKey={hackKey}
-                            desc="filename"
-                            title={file.name}
-                            value={file.content}
-                            onTitleChange={name => model.setFileName(ndx, name)}
-                            onValueChange={value => model.setFileContent(ndx, value)}
-                            extra={extra}
-                          />
-                        );
-                      })
-                    }
-                    </Split>
-                    </div>
-                      {/*<button onClick={() => model.addFile()}>+</button>*/}
+                    <Files data={data} hackKey={hackKey} extra={extra} registerAPI={this.registerFilesAPI} />
                   </div>
                   <div className="right">
                     <Split direction="vertical" sizes={[0.9, 0.1]}>
                       <Runner logManager={this.logManager} registerRunnerAPI={this.registerRunnerAPI} />
-                      <Log logManager={this.logManager} />
+                      <Log logManager={this.logManager} onGoToLine={this.handleGoToLine} />
                     </Split>
                   </div>
                 </Split>

@@ -140,35 +140,69 @@ html, body {
 }
 .log-messages>* {
   overflow-wrap: anywhere;
-  padding-left: 1.5em;
-  position: relative;
+  display: flex;
 }
-.logger .log:before,
-.logger .info:before,
-.logger .warn:before,
-.logger .error:before {
-  width: 1.5em;
-  content: " ";
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
+.logger .msg {
+  flex: 1 1 auto;
+}
+.logger .file {
+  float: right;
+}
+.logger .file-link {
+  text-decoration: underline;
+}
+.logger .file-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+.logger .log .count,
+.logger .info .count,
+.logger .warn .count,
+.logger .error .count,
+.logger .log .no-count,
+.logger .info .no-count,
+.logger .warn .no-count,
+.logger .error .no-count {
+  width: 1.0em;
+  height: 1em;
+  margin: 0 0.25em 0 0.25em;
   background-position: center center;
   background-repeat: no-repeat;
+  text-align: center;
+}
+.logger .log .count,
+.logger .info .count,
+.logger .warn .count,
+.logger .error .count {
+  border-radius: 0.5em;
+  vertical-align: middle;
+  line-height: 1em;
 }
 
+.logger .info .count {
+  background: #666;
+  color: #DDD;
+}
 .logger .warn {
   color: var(--warn-fg-color);
   background: rgba(255, 255, 0, 0.2);
 }
-.logger .warn:before {
+.logger .warn .count {
+  background: yellow;
+  color: brown;
+}
+.logger .warn .no-count {
   background-image: url(/resources/images/warn-icon.svg);
 }
 .logger .error {
   color: var(--error-fg-color);
   background: rgba(255, 0, 0, 0.2);
 }
-.logger .error:before {
+.logger .error .count {
+  background: red;
+  color: white;
+}
+.logger .error .no-count {
   background-image: url(/resources/images/error-icon.svg);
 }
 /* ---------------------- */

@@ -1,4 +1,21 @@
 import React from 'react';
+import {classNames} from './css-utils';
+
+function isMsgSame(oldMsg, newMsg) {
+  if (!!oldMsg !== !!newMsg) {
+    return false;
+  }
+  const keys = Object.keys(oldMsg).filter(key => key !== 'count');
+  if (keys.length !== Object.keys(newMsg).length) {
+    return false;
+  }
+  for (const key of keys) {
+    if (oldMsg[key] !== newMsg[key]) {
+      return false;
+    }
+  }
+  return true;
+}
 
 export class LogManager extends EventTarget {
   constructor() {
@@ -12,8 +29,13 @@ export class LogManager extends EventTarget {
     this._msgs = [];
     this._notify();
   }
-  addMsg = (type, msg) => {
-    this._msgs.push({type, msg});
+  addMsg = (data) => {
+    const lastData = this._msgs[this._msgs.length - 1];
+    if (isMsgSame(lastData, data)) {
+      lastData.count = (lastData.count || 0) + 1;
+    } else {
+      this._msgs.push(data);
+    }
     this._notify();
   }
   getMsgs() {
@@ -52,11 +74,23 @@ export default class Log extends React.Component {
     return elem.scrollHeight - (elem.scrollTop + elem.parentElement.clientHeight);
   }
   render() {
+    const {onGoToLine} = this.props;
     return (
       <div className="logger">
         <div className="log-messages layout-scrollbar" ref={this.logMessagesRef}>
           { this.logManager.getMsgs().map((msg, ndx) => (
-            <div key={`l${ndx}`} className={msg.type}>{msg.msg}</div>
+            <div className={classNames('log-line',{[msg.type]: true})} key={`l${ndx}`}>
+              <div className={msg.count ? "count" : "no-count"}>{msg.count ? msg.count : ''}</div>
+              <div className="msg">
+                {msg.msg}
+                <div
+                  className={classNames('file', {fileLink: msg.section})}
+                  onClick={() => onGoToLine(msg)}
+                >
+                  {msg.section || msg.url}:{msg.lineNo}
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>

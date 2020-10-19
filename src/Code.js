@@ -28,6 +28,18 @@ export default class Code extends React.Component {
        ? {hackKey: props.hackKey, value: props.value}
        : null;
   }
+  componentDidMount() {
+    const {registerAPI} = this.props;
+    registerAPI({
+      goToLine: (lineNo, colNo) => {
+        this.editor.focus();
+        this.editor.doc.setCursor(lineNo - 1, colNo - 1);
+      },
+    });
+  }
+  registerEditor = (editor) => {
+    this.editor = editor;
+  }
   render() {
     const {options = {}, onValueChange = noop} = this.props;
     const {value} =  this.state;
@@ -40,6 +52,7 @@ export default class Code extends React.Component {
           scrollbarStyle: 'overlay',
           theme: isDarkMode ? 'material' : 'eclipse',
           ...(options.editor && options.editor),
+          lineNumbers: true,
         }}
         onBeforeChange={(editor, data, value) => {
           this.setState({value});
@@ -47,6 +60,7 @@ export default class Code extends React.Component {
         onChange={(editor, data, value) => {
           onValueChange(value);
         }}
+        editorDidMount={this.registerEditor}
       />
     );
   }
