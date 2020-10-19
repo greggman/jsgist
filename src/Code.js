@@ -30,12 +30,14 @@ export default class Code extends React.Component {
   }
   componentDidMount() {
     const {registerAPI} = this.props;
-    registerAPI({
-      goToLine: (lineNo, colNo) => {
-        this.editor.focus();
-        this.editor.doc.setCursor(lineNo - 1, colNo - 1);
-      },
-    });
+    if (registerAPI) {
+      registerAPI({
+        goToLine: (lineNo, colNo) => {
+          this.editor.focus();
+          this.editor.doc.setCursor(lineNo - 1, colNo - 1);
+        },
+      });
+    }
   }
   registerEditor = (editor) => {
     this.editor = editor;
