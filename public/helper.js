@@ -37,6 +37,33 @@
     };
   }
 
+  /*
+  Examples of stacks. Ideally I'd like to automatic this.
+  Could maybe just scan from the top line down for the second
+  match (need to remove ourselves). The problem is chrome shows
+  the error message as the first line, safari and firefox don't show
+  the message at all. If the message ended in `:num:num` then we'd
+  have no idea if it was Safari/Firefox or a user's message.
+
+  We can test for that though. Just put our message in an Error
+  and then check if it exists in the stack. Otherwise we need
+  a RegEx that parses lines in both browser. Not sure why
+  the Chrome regex checks for not containing ')'
+
+  chrome:
+    Error: msg
+        at https://jsgistrunner.devcomments.org/user-jsgist.html:24:13
+  firefox:
+    @https://jsgistrunner.devcomments.org/user-jsgist.html:24:13
+  safari:
+    module code@https://jsgistrunner.devcomments.org/user-jsgist.html:24:22
+    evaluate@[native code]
+    moduleEvaluation@[native code]
+    [native code]
+    promiseReactionJob@[native code]
+
+  */
+
   /**
    * @typedef {Object} StackInfo
    * @property {string} url Url of line
