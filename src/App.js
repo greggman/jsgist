@@ -1,7 +1,6 @@
 import React from 'react';
 
 import EditLine from './EditLine.js';
-import {isDevelopment} from './flags.js';
 import Files from './Files.js';
 import Footer from './Footer.js';
 import GitHub from './GitHub.js';
@@ -16,10 +15,6 @@ import Split from './Split.js';
 import Runner from './Runner.js';
 
 import './App.css';
-
-if (isDevelopment) {
-  window.d = model.data;
-}
 
 const backupKey = 'jsGist-backup';
 const noJSX = () => [];
@@ -46,6 +41,7 @@ class App extends React.Component {
       pat: localStorage.getItem('pat'),
       messages: [],
       userData: {},
+      updateVersion: 0,
     };
     this.github = new GitHub();
     this.logManager = new LogManager();
@@ -86,7 +82,7 @@ class App extends React.Component {
     // this is a hack because I can't figure out how to
     // update the CodeMirror areas
     model.subscribe('updateVersion', _ => {
-      this.forceUpdate();
+      this.setState({updateVersion: this.state.updateVersion + 1});
     });
 
     darkMatcher.addEventListener('change', () => {
@@ -166,11 +162,11 @@ class App extends React.Component {
   handleRun = async () => {
     localStorage.setItem(backupKey, JSON.stringify({
       href: window.location.href,
-      data: model.data,
+      data: model.getData(),
     }));
     this.logManager.clear();
     console.clear();
-    this.runnerAPI.run(model.data);
+    this.runnerAPI.run(model.getData());
   }
   handleStop = async () => {
     this.runnerAPI.run(model.getBlankData(), true);
@@ -220,7 +216,7 @@ class App extends React.Component {
     );
   }
   renderSave = () => {
-    const data = model.data;
+    const data = model.getData();
     return (
       <Save
         onSave={this.handleOnSave}
@@ -232,7 +228,7 @@ class App extends React.Component {
     );
   }
   render() {
-    const data = model.data;
+    const data = model.getData();
     const {
       loading,
       dialog,

@@ -4,16 +4,27 @@ import * as model from './model.js';
 import Split from './Split.js';
 import File from './File.js';
 
+const makeId = _ => `${Date.now()}+${Math.random()}`;
+
 export default class Files extends React.Component {
   constructor(props) {
     super(props);
     this.files = new Map();
+    this.fileToKeyMap = new Map();
   }
   handleRegister = (file, api) => {
     this.files.set(file, api);
   }
   handleUnregister = (file) => {
     this.files.delete(file);
+  }
+  getFileKey(test) {
+    let key = this.fileToKeyMap.get(test);
+    if (!key) {
+      key = makeId();
+      this.fileToKeyMap.set(test, key);
+    }
+    return key;
   }
   componentDidMount() {
     const {registerAPI} = this.props;
@@ -37,7 +48,7 @@ export default class Files extends React.Component {
           data.files.map((file, ndx) => {
             return (
               <File
-                key={`ca${ndx}`}
+                key={`ca${this.getFileKey(file)}`}
                 hackKey={hackKey}
                 desc="filename"
                 title={file.name}
