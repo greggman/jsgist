@@ -1,3 +1,5 @@
+# To Do
+
 - [ ] add stack trace to all logs?
 - [ ] click log line to take you to line
 - [ ] errors automatically go to line?
@@ -7,7 +9,7 @@
   
   (we can't do this unless we double save on create as we need to know the gist id to make the link)
 
-# done
+# Done
 - [x] fix model so that each area only updates when its file changes
 - [x] fix embed
 - [x] make embed show more types cb64, etc.
