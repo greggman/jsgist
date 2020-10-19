@@ -42,7 +42,6 @@ class App extends React.Component {
       dark: darkMatcher.matches,
       loading: false,
       dialog: noJSX,
-      dataVersion: 0,
       gistId: '',
       pat: localStorage.getItem('pat'),
       messages: [],
@@ -81,13 +80,13 @@ class App extends React.Component {
     // Things like redux-tools make it less to type those
     // 50 lines but they still execute 50 to 500 lines of code
     // just to set a single value.
-    model.subscribe('dataVersion', (dataVersion) => {
-      this.setState({dataVersion})
+    model.subscribe(model.filesVersionKey, _ => {
+      this.forceUpdate();
     });
     // this is a hack because I can't figure out how to
     // update the CodeMirror areas
-    model.subscribe('updateVersion', (updateVersion) => {
-      this.setState({updateVersion})
+    model.subscribe('updateVersion', _ => {
+      this.forceUpdate();
     });
 
     darkMatcher.addEventListener('change', () => {

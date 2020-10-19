@@ -131,15 +131,22 @@ if (!validator(data)) {
   console.log(validator.errors);
 }
 
-const dataVersionKey = 'dataVersion';
-const updateVersionKey = 'updateVersion';
+export const dataVersionKey = 'dataVersion';
+export const updateVersionKey = 'updateVersion';
+export const filesVersionKey = 'filesVersion';
 
-add(dataVersionKey, 0);   // any data changes
-add(updateVersionKey, 0);  // all data changes
+add(dataVersionKey, 0);   // any data changes (when an item in the data is change)
+add(updateVersionKey, 0);  // all data changes (when the entire data objects replaced with new data)
+add(filesVersionKey, 0);  // files added or removed or the main name is changed
 
-function notify(version = 'dataVersion') {
-  set(version, get(version) + 1);
-}
+const incVersion = key => set(key, get(key) + 1);
+const incDataVersion = _ => incVersion(dataVersionKey);
+const incFilesVersion = _ => incVersion(filesVersionKey);
+const incUpdateVersion = _ => {
+  incVersion(updateVersionKey);
+  incDataVersion();
+  incFilesVersion();
+};
 
 function getUniqueName(basename) {
   const filenames = new Set(data.files.map(f => f.name));
@@ -157,32 +164,35 @@ export function addFile(name = "", content = "") {
     name,
     content,
   });
-  notify();
+  incDataVersion();
+  incFilesVersion();
 }
 
 export function setName(name) {
   data.name = name;
-  notify();
+  incDataVersion();
+  incFilesVersion();
 }
 
 export function setFileName(ndx, newName) {
   data.files[ndx].name = newName;
-  notify();
+  incDataVersion();
 }
 
 export function setFileContent(ndx, content) {
   data.files[ndx].content = content;
-  notify();
+  incDataVersion();
 }
 
 export function setFileType(ndx, type) {
   data.files[ndx].type = type;
-  notify();
+  incDataVersion();
 }
 
 export function deleteFile(ndx) {
   data.files.splice(ndx, 1);
-  notify();
+  incDataVersion();
+  incFilesVersion();
 }
 
 export function validate(data) {
@@ -195,6 +205,5 @@ export function validate(data) {
 export function setData(newData) {
   validate(newData);
   data = newData;
-  notify();
-  set('updateVersion', get('updateVersion') + 1);
+  incUpdateVersion();
 }
