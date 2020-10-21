@@ -3,6 +3,7 @@ import React from 'react';
 import EditLine from './EditLine.js';
 import Files from './Files.js';
 import Footer from './Footer.js';
+import {storageManager} from './globals.js';
 import GitHub from './GitHub.js';
 import Help from './Help.js';
 import Load from './Load.js';
@@ -16,7 +17,7 @@ import Runner from './Runner.js';
 
 import './App.css';
 
-const backupKey = 'jsGist-backup';
+const backupKey = 'backup';
 const noJSX = () => [];
 const darkMatcher = window.matchMedia('(prefers-color-scheme: dark)');
 const makeDisqusId = () => {
@@ -38,7 +39,7 @@ class App extends React.Component {
       loading: false,
       dialog: noJSX,
       gistId: '',
-      pat: localStorage.getItem('pat'),
+      pat: storageManager.get('pat'),
       messages: [],
       userData: {},
       updateVersion: 0,
@@ -90,7 +91,7 @@ class App extends React.Component {
     });
 
     const query = Object.fromEntries(new URLSearchParams(window.location.search).entries());
-    const backup = localStorage.getItem(backupKey);
+    const backup = storageManager.get(backupKey);
     let loaded = false;
     if (backup) {
       try {
@@ -103,7 +104,7 @@ class App extends React.Component {
       } catch (e) {
         console.log('bad backup')
       }
-      localStorage.removeItem(backupKey);
+      storageManager.delete(backupKey);
     }
     if (!loaded && query.src) {
       this.loadData(query.src);
@@ -156,11 +157,9 @@ class App extends React.Component {
   }
   handleNew = async() => {
     window.location.href = window.location.origin;
-    //window.history.pushState({}, '', `${window.location.origin}`);
-    //model.setData(model.getNewData());
   }
   handleRun = async () => {
-    localStorage.setItem(backupKey, JSON.stringify({
+    storageManager.set(backupKey, JSON.stringify({
       href: window.location.href,
       data: model.getData(),
     }));

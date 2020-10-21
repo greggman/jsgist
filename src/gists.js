@@ -1,7 +1,7 @@
 import Ajv from 'ajv';
-import * as model from './model';
-
-const gistsKey = 'jsGist-gists';
+import * as model from './model.js';
+import {storageManager} from './globals.js';
+const gistsKey = 'gists';
 
 const gistSchema = {
   "type": "object",
@@ -23,9 +23,9 @@ const gistValidator = ajv.compile(gistSchema);
 
 function getStoredGists() {
   try {
-    const gists = JSON.parse(localStorage.getItem(gistsKey));
+    const gists = JSON.parse(storageManager.get(gistsKey));
     if (!gistsValidator(gists)) {
-      localStorage.removeIem(gistsKey);
+      storageManager.delete(gistsKey);
       throw new Error();
     }
     return gists;
@@ -37,10 +37,8 @@ function getStoredGists() {
 model.add('gists', getStoredGists());
 
 // does this need to be centralized?
-window.addEventListener('storage', (e) => {
-  if (e.key === 'gists') {
-    model.set('gists', getStoredGists());
-  }
+storageManager.subscribe('gists', () => {
+  model.set('gists', getStoredGists());
 });
 
 export function addGist(id, name, date) {
@@ -56,7 +54,7 @@ export function addGist(id, name, date) {
 
 function saveGistsToLocalStorage(gists) {
   // send to other windows
-  localStorage.setItem(gistsKey, JSON.stringify(gists));
+  storageManager.set(gistsKey, JSON.stringify(gists));
 }
 
 export function getGists() {

@@ -1,6 +1,7 @@
 import React from 'react';
 import {classNames} from './css-utils.js';
 import * as gists from './gists.js';
+import {storageManager} from './globals.js';
 import {updateURL} from './url.js';
 import {noop, wait} from './utils.js';
 
@@ -9,14 +10,14 @@ export default class LoadGist extends React.Component {
     super();
     this.state = {
       loading: false,
-      pat: localStorage.getItem('pat') || '',
+      pat: storageManager.get('pat') || '',
       gists: gists.getGists(),
     };
   }
   handlePATChange = (e) => {
     const pat = e.target.value;
     this.setState({pat});
-    localStorage.setItem('pat', pat);
+    storageManager.set('pat', pat);
   }
   handleSubmit = (e) => {
     e.preventDefault();
