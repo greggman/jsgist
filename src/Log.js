@@ -1,6 +1,11 @@
 import React from 'react';
 import {classNames} from './css-utils';
 
+function basename(url) {
+  const ndx = url.lastIndexOf('/');
+  return ndx >= 0 ? url.substr(ndx + 1) : url;
+}
+
 function isMsgSame(oldMsg, newMsg) {
   if (!!oldMsg !== !!newMsg) {
     return false;
@@ -78,20 +83,24 @@ export default class Log extends React.Component {
     return (
       <div className="logger">
         <div className="log-messages layout-scrollbar" ref={this.logMessagesRef}>
-          { this.logManager.getMsgs().map((msg, ndx) => (
-            <div className={classNames('log-line',{[msg.type]: true})} key={`l${ndx}`}>
-              <div className={msg.count ? "count" : "no-count"}>{msg.count ? msg.count : ''}</div>
-              <div className="msg">
-                {msg.msg}
-                <div
-                  className={classNames('file', {fileLink: msg.section})}
-                  onClick={() => onGoToLine(msg)}
-                >
-                  {msg.section || msg.url}:{msg.lineNo}
+          { this.logManager.getMsgs().map((msg, ndx) => {
+              const tooltip = !msg.section;
+              return (
+                <div className={classNames('log-line',{[msg.type]: true})} key={`l${ndx}`}>
+                  <div className={msg.count ? "count" : "no-count"}>{msg.count ? msg.count : ''}</div>
+                  <div className="msg">
+                    {msg.msg}
+                    <div
+                      className={classNames('file', {tooltip, fileLink: msg.section})}
+                      onClick={() => onGoToLine(msg)}
+                      data-tooltip={`${msg.section || msg.url}:${msg.lineNo}`}
+                    >
+                      {msg.section || basename(msg.url)}:{msg.lineNo}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              );
+            })}
         </div>
       </div>
     );

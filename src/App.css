@@ -146,6 +146,27 @@ html, body {
 }
 .logger .file {
   float: right;
+  position: relative;
+}
+.tooltip {
+  position: relative;
+  border-bottom: 1px dashed #888;
+}
+.tooltip:before {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 100%;
+  transform: translateY(0%);
+  right: 0;
+  background: var(--main-bg-color);
+  display: none;
+  white-space: pre;
+  left: initial;
+  margin: initial;
+  z-index: 2;
+}
+.tooltip:hover:before {
+  display:block;
 }
 .logger .file-link {
   text-decoration: underline;
