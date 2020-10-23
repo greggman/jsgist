@@ -13,7 +13,7 @@ export default class OAuthManager {
     this._state = undefined;  // last state sent to auth
     this._storageManager = storageManager;
     windowMessageManager.on('auth', (data) => {
-      this.closePopup();
+      this._closePopup();
       if (data.state === this.state) {
         this.requestToken(data);
       }
@@ -57,7 +57,7 @@ export default class OAuthManager {
     this._storageManager.delete(patKey);
   }
   login = () => {
-    this.closePopup();
+    this._closePopup();
     this.state = `${Date.now()}-${Math.random()}`;  // does this need to special? Seems like no
     const url = createURL('https://github.com/login/oauth/authorize', {
       client_id: clientId,
