@@ -44,6 +44,7 @@ export default class Runner extends React.Component {
   removeIFrame() {
     if (this.iframe) {
       this.iframe.remove();
+      this.iframe.src = 'about:blank';
       this.iframe = undefined;
     }
   }

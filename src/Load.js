@@ -6,17 +6,17 @@ import LoadURL from './LoadURL.js';
 import Section from './Section.js';
 
 export default function Load(props) {
-  const {data, github, onLoad, onClose, addError} = props;
+  const {data, onLoad, onClose} = props;
   return (
     <Dialog title="Load" onClose={onClose}>
       <Section heading="Load Gist">
-        <LoadGist github={github} data={data} onLoad={onLoad} addError={addError} />
+        <LoadGist data={data} onLoad={onLoad} />
       </Section>
       <Section heading="Load URL">
-        <LoadURL data={data} onLoad={onLoad} addError={addError} />
+        <LoadURL data={data} onLoad={onLoad} />
       </Section>
       <Section heading="Load JSON">
-        <LoadJSON data={data} onLoad={onLoad} addError={addError} />
+        <LoadJSON data={data} onLoad={onLoad} />
       </Section>
     </Dialog>
   )

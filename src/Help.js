@@ -15,15 +15,7 @@ export default function Help(props) {
       <h2>Saving</h2>
       <p>You can save your tests in multiple ways.</p>
       <ol>
-        <li>To a github gist using a <a target="_blank" rel="noopener noreferrer" href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token">Personal Access Token</a>
-          <p>
-           Be sure to give the token <b>ONLY GIST</b> permissions. Paste it into the
-           save as UI click <code>Save to new gist</code>. Be sure to keep a copy of it
-           somewhere so you can use if you clear your browser's storage or switch
-           machines or browser. This site is a static site. The token is saved
-           in the browser only.
-          </p>
-        </li>
+        <li>Save to a github gist by logging in</li>
         <li>Save it manually into github
           <p>
            Copy the JSON. Go to github. Create a new gist. Name the file
@@ -44,8 +36,7 @@ export default function Help(props) {
            If there's some other service that will provide a string via
            http get then copy and save the JSON there then create a URL
            in the form of <code>https://jsgist.org/?src=&lt;url&gt;</code>. Note: you
-           will have to escape the URL although if just paste it into your
-           browser it will likely do the conversion for you.
+           may have to escape the URL.
           </p>
         </li>
         <li>Save it as a bookmark or link

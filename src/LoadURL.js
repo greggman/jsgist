@@ -1,11 +1,13 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import EditLine from './EditLine';
 import * as model from './model.js';
+import ServiceContext from './ServiceContext.js';
 
 export default function LoadURL(props) {
   const [url, setUrl] = useState('');
+  const {addError} = useContext(ServiceContext);
   async function loadUrl() {
-    const {addError, onLoad} = props;
+    const {onLoad} = props;
     try {
       const req = await fetch(url);
       const data = await req.json();

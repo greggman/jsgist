@@ -10,10 +10,12 @@ import Load from './Load.js';
 import {loadGistFromSrc} from './loader.js';
 import Log, {LogManager} from './Log.js';
 import * as model from './model.js';
+import OAuthManager from './OAuthManager.js';
+import Runner from './Runner.js';
 import Save from './Save.js';
+import ServiceContext from './ServiceContext.js';
 import Settings from './Settings.js';
 import Split from './Split.js';
-import Runner from './Runner.js';
 
 import './App.css';
 
@@ -39,13 +41,13 @@ class App extends React.Component {
       loading: false,
       dialog: noJSX,
       gistId: '',
-      pat: storageManager.get('pat'),
       messages: [],
       userData: {},
       updateVersion: 0,
     };
     this.github = new GitHub();
     this.logManager = new LogManager();
+    this.oauthManager = new OAuthManager(storageManager);
   }
   componentDidMount() {
     this.github.addEventListener('userdata', (e) => {
@@ -157,6 +159,8 @@ class App extends React.Component {
   }
   handleNew = async() => {
     window.location.href = window.location.origin;
+    //window.history.pushState({}, '', `${window.location.origin}`);
+    //model.setData(model.getNewData());
   }
   handleRun = async () => {
     storageManager.set(backupKey, JSON.stringify({
@@ -238,6 +242,13 @@ class App extends React.Component {
     const extra = [];
     return (
       <div className="App">
+        <ServiceContext.Provider value={{
+          github: this.github,
+          oauthManager: this.oauthManager,
+          addError: this.addError,
+          addInfo: this.addInfo,
+          storageManager,
+        }}>
         <div className="content">
           <div className="head">
             <div>
@@ -303,6 +314,7 @@ class App extends React.Component {
             this.state.messages.map(({msg, className}, i) => (<div className={className} key={`err${i}`}>{msg}</div>))
           }
         </div>
+        </ServiceContext.Provider>
       </div>
     );
   }
