@@ -5,6 +5,7 @@ import Files from './Files.js';
 import Footer from './Footer.js';
 import {storageManager} from './globals.js';
 import GitHub from './GitHub.js';
+import Head from './Head.js';
 import Help from './Help.js';
 import Load from './Load.js';
 import {loadGistFromSrc} from './loader.js';
@@ -250,24 +251,7 @@ class App extends React.Component {
           storageManager,
         }}>
         <div className="content">
-          <div className="head">
-            <div>
-              <img src="/resources/images/logo-small.svg" alt="logo"/>
-            jsGist.org<span className="beta">(alpha)</span>
-            </div>
-            <div className="fix-help-contribute">
-              <div className="three-words">
-                <div><a target="_blank" rel="noopener noreferrer" href="https://github.com/greggman/jsgist/">Fix</a></div>
-                <div><a target="_blank" rel="noopener noreferrer" href="https://github.com/greggman/jsgist/">Help</a></div>
-                <div><a target="_blank" rel="noopener noreferrer" href="https://github.com/greggman/jsgist/">Contribute</a></div>
-              </div>
-              <div className="octocat">
-                <a target="_blank" rel="noopener noreferrer" href="https://github.com/greggman/jsgist/">
-                  <img alt="github" src="/resources/images/octocat-icon.svg"/>
-                </a>
-              </div>
-            </div>
-          </div>
+          <Head />
           <div className="top">
             <div className="left">
               <div className="name">
