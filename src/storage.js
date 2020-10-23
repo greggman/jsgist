@@ -38,6 +38,7 @@ export default class StorageManager {
       sessionStorage.setItem(k, value);
     }
     localStorage.setItem(k, value);
+    this.subscriptionManager.notify(key);
   }
   delete(key, session) {
     const k = this._addPrefix(key);
