@@ -1,5 +1,6 @@
 # To Do
 
+- [ ] try not making a new iframe each run (they show up in the debugger)
 - [ ] add stack trace to all the logs?
 - [ ] errors automatically go to line?
 - [ ] handle back (need to notice back and re-load)
