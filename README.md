@@ -2,12 +2,13 @@
 
 See [jsgist.org](https://jsgist.org) (alpha)
 
-A client side HTML/CSS/JavaScript playground
+A client side HTML/CSS/JavaScript playground based on gists.
 
 ## Why? 
 
-Just to see if it could be done. Also something we can add
-features to instead of having to beg other services.
+Just to see if it could be done. Also something you can add
+features to instead of having to beg other services. Just make a PR
+though maybe ask first.
 
 ## To Do
 
@@ -19,7 +20,7 @@ There's a long list of desired features. Feel free to help add them
   - [ ] tabs/space
   - [ ] editor? (use monaco?)
   - [ ] support mobile
-  - [ ] log
+  - [ ] log toggle
   - [ ] auto-run
   - [ ] css pre-processors? (lazy load)
   - [ ] js processors? (lazy load)
@@ -58,7 +59,8 @@ There's a long list of desired features. Feel free to help add them
 - [ ] highlight errors in source
 
   the data is already there for js errors. Could also do it for all
-  log messages.
+  log messages. As it is it should show the errors in the log
+  and if you click them they'll move your cursor to the correct box.
 
 - [ ] add export to jsfiddle/codepen/codesandbox etc..
 
@@ -85,13 +87,15 @@ There's a long list of desired features. Feel free to help add them
 
 - [ ] allow more files. 
 
-  The UI already kind of does this but we have to re-write references to blobs
-  or figure out if maybe a service worker could handle it. I'm not sure how
+  The UI already kind of does this, the code to show more and add or delete files
+  is just commented out. I'm not sure how
   handy this would be. If you want to test a worker it's nice to have
   a separate file but how often do people want to do that? My point being
-  this might be lots of effort for little payoff.
+  this might be lots of effort for little payoff. It would also require
+  changing the UI, probably to be more like VSCode with an Explorer panel
+  so lots of work.
 
-- [ ] consider github login?
+- [X] consider github login?
 
   I would be more familiar but it requires a server for oauth. The current impl
   is 100% client side.
@@ -100,8 +104,9 @@ There's a long list of desired features. Feel free to help add them
 
   codepen apparently parses the JavaScript and inserts checks into loops
   so you don't crash the browser with an infinite loop. As it is the code
-  saves your work to local storage before running so if you come back to
-  the same 
+  saves your work to local storage before running so if crash you should 
+  come back to the same result. Note: I haven't thought much about how
+  this flow should work.
 
 - [ ] Mobile
 
@@ -109,8 +114,9 @@ There's a long list of desired features. Feel free to help add them
 
 - [ ] Allow embedding
 
-  - [X] Simple: just a page that shows your code
-  - [ ] Complex: a page that shows your code with UX, links, avatar, etc...
+  - [X] Simple: just a page that shows your result
+  - [X] Basic: shows your result with a banner, a link to your jsgist, and your github.
+  - [ ] Complex: a page that shows your code with edit/run UI etc...
 
 - [X] Use service worker to help debugging
 
