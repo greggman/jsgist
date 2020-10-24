@@ -41,8 +41,8 @@ export default class SaveAsGist extends React.Component {
     }
   }
   saveOverExisting = async() => {
-   const {oauthManager, github, addError} = this.context;
-   this.setState({saving: true});
+    const {oauthManager, github, addError} = this.context;
+    this.setState({saving: true});
     const {data, gistId, onClose} = this.props;
     let success = false;
     github.setPat(oauthManager.pat());
@@ -79,7 +79,7 @@ export default class SaveAsGist extends React.Component {
         <button
           className={classNames({disabled: saving})}
           data-type="new"
-          onClick={this.saveNewGist}
+          onClick={this.saveNew}
         >Save to New Gist</button>
         <button
           className={classNames({disabled: !canUpdate || saving})}

@@ -37,7 +37,7 @@ function getStoredGists() {
 model.add('gists', getStoredGists());
 
 // does this need to be centralized?
-storageManager.subscribe('gists', () => {
+storageManager.subscribe(gistsKey, () => {
   model.set('gists', getStoredGists());
 });
 

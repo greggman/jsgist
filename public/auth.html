@@ -3,11 +3,8 @@
 </body>
 <script>
 const params = Object.fromEntries(new URLSearchParams(window.location.search).entries());
-console.log('send msg');
-//localStorage.setItem('auth', JSON.stringify(params));
 window.opener.postMessage({
   type: 'auth',
   data: params,
 }, '*');
-console.log('sent msg', JSON.stringify(params, null, 2));
 </script>

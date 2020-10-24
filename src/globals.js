@@ -1,4 +1,4 @@
-import StorageManager from './storage.js';
+import StorageManager from './StorageManager.js';
 import {isDevelopment} from './flags.js';
 
 export const storageManager = new StorageManager('jsgist');
