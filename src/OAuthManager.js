@@ -40,7 +40,6 @@ export default class OAuthManager {
       const params = {
         client: clientId,
         code: auth.code,
-        endPoint: 'https://github.com/login/oauth/access_token',
       };
       const url = createURL(getTokenURL, params);
       const req = await fetch(url);
