@@ -29,7 +29,7 @@ export default class Runner extends React.Component {
         const iframe = document.createElement('iframe');
         this.iframe = iframe;
         iframe.src = isDevelopment
-            ? createURL('http://localhost:8081/runner-03.html', {url: 'http://localhost:8080/jsgist-runner.js'})
+            ? createURL(`http://${window.location.hostname}:8081/runner-03.html`, {url: `http://${window.location.hostname}:8080/jsgist-runner.js`})
             : createURL('https://jsgistrunner.devcomments.org/runner-03.html', {url: 'https://jsgist.org/jsgist-runner.js'});
         if (blank) {
           iframe.style.background = 'none';
