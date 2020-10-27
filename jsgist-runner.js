@@ -19,7 +19,7 @@
     }
   }
   await startServiceWorker();
-  const worker = navigator.serviceWorker.controller || navigator.serviceWorker.active;
+  const worker = navigator.serviceWorker?.controller || navigator.serviceWorker?.active;
 
   function cacheFile(pathname, type, content) {
     worker.postMessage({
