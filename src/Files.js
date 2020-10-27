@@ -1,7 +1,7 @@
 import React from 'react';
+import Split from 'react-split-it';
 
 import * as model from './model.js';
-import Split from './Split.js';
 import File from './File.js';
 
 const makeId = _ => `${Date.now()}+${Math.random()}`;

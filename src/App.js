@@ -1,4 +1,5 @@
 import React from 'react';
+import Split from 'react-split-it';
 
 import EditLine from './EditLine.js';
 import Files from './Files.js';
@@ -16,7 +17,6 @@ import Runner from './Runner.js';
 import Save from './Save.js';
 import ServiceContext from './ServiceContext.js';
 import Settings from './Settings.js';
-import Split from './Split.js';
 
 import './App.css';
 

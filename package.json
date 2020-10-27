@@ -18,6 +18,7 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
     "react-split": "^2.0.9",
+    "react-split-it": "^1.0.1",
     "react-split-pane": "^0.1.92",
     "uzip-module": "^1.0.2"
   },

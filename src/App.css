@@ -227,8 +227,18 @@ html, body {
 }
 /* ---------------------- */
 .split {
+  display: flex;
   width: 100%;
   height: 100%;
+}
+.split-vertical {
+  flex-direction: column;
+}
+.split .pane {
+  flex-shrink: 1;
+  flex-grow: 1;
+  overflow: hidden;
+  position: relative;
 }
 .split, .gutter.gutter-horizontal {
     float: left;
