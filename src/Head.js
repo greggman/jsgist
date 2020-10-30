@@ -5,7 +5,7 @@ export default function Head() {
     <div className="head">
       <div>
         <img src="/resources/images/logo-small.svg" alt="logo"/>
-      jsGist.org<span className="beta">(alpha)</span>
+      jsGist.org<span className="beta">(beta)</span>
       </div>
       <div className="fix-help-contribute">
         <div className="three-words">

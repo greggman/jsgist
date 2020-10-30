@@ -1,6 +1,6 @@
 # JSGist
 
-See [jsgist.org](https://jsgist.org) (alpha)
+See [jsgist.org](https://jsgist.org) (beta)
 
 A client side HTML/CSS/JavaScript playground based on gists.
 
