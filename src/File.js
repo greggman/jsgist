@@ -11,8 +11,11 @@ export default class File extends React.Component {
         const {title} =  this.props;
         if (data.section === title) {
           this.codeAPI.goToLine(data.lineNo, data.colNo);
+          return true;
         }
       },
+      refresh: _ => this.codeAPI.refresh(),
+      focus: _ => this.codeAPI.focus(),
     });
   }
   componentWillUnmount() {

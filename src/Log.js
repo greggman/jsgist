@@ -1,5 +1,7 @@
 import React from 'react';
+
 import {classNames} from './css-utils';
+import ServiceContext from './ServiceContext.js';
 
 function basename(url) {
   const ndx = url.lastIndexOf('/');
@@ -51,18 +53,18 @@ export class LogManager extends EventTarget {
 export default class Log extends React.Component {
   constructor(props) {
     super(props);
-    const {logManager} = props;
-    this.logManager = logManager;
     this.logMessagesRef = React.createRef();
   }
   handleChange = () => {
     this.forceUpdate();
   }
   componentDidMount() {
-    this.logManager.addEventListener('change', this.handleChange);
+    const {logManager} = this.context;
+    logManager.addEventListener('change', this.handleChange);
   }
   componentWillUnmount() {
-    this.logManager.removeEventListener('change', this.handleChange);
+    const {logManager} = this.context;
+    logManager.removeEventListener('change', this.handleChange);
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (snapshot !== null) {
@@ -80,10 +82,11 @@ export default class Log extends React.Component {
   }
   render() {
     const {onGoToLine} = this.props;
+    const {logManager} = this.context;
     return (
       <div className="logger">
         <div className="log-messages layout-scrollbar" ref={this.logMessagesRef}>
-          { this.logManager.getMsgs().map((msg, ndx) => {
+          { logManager.getMsgs().map((msg, ndx) => {
               const tooltip = !msg.section;
               return (
                 <div className={classNames('log-line',{[msg.type]: true})} key={`l${ndx}`}>
@@ -106,3 +109,5 @@ export default class Log extends React.Component {
     );
   }
 }
+
+Log.contextType = ServiceContext;

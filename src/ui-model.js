@@ -13,9 +13,12 @@ function init() {
   initialized = true;
   try {
     settings = JSON.parse(storageManager.get(settingsKey, true));
+    if (!settings) {
+      throw new Error('no settings');
+    }
   } catch (e) {
     settings = {
-      layout: 0,
+      layout: (window.screen.width < 540 || window.screen.height << 540) ? 3 : 0,
     };
   }
 }

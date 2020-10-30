@@ -1,19 +1,17 @@
 import React from 'react';
-import Split from 'react-split-it';
 
 import EditLine from './EditLine.js';
-import Files from './Files.js';
 import Footer from './Footer.js';
 import {storageManager} from './globals.js';
 import GitHub from './GitHub.js';
 import Head from './Head.js';
 import Help from './Help.js';
+import IDE from './IDE.js';
 import Load from './Load.js';
 import {loadGistFromSrc} from './loader.js';
-import Log, {LogManager} from './Log.js';
+import {LogManager} from './Log.js';
 import * as model from './model.js';
 import OAuthManager from './OAuthManager.js';
-import Runner from './Runner.js';
 import Save from './Save.js';
 import ServiceContext from './ServiceContext.js';
 import Settings from './Settings.js';
@@ -155,9 +153,6 @@ class App extends React.Component {
     this.runnerAPI = api;
     this.handleStop();
   }
-  registerFilesAPI = (api) => {
-    this.filesAPI = api;
-  }
   handleNew = async() => {
     window.location.href = window.location.origin;
     //window.history.pushState({}, '', `${window.location.origin}`);
@@ -198,9 +193,6 @@ class App extends React.Component {
   handleAbort = () => {
     this.abort();
   };
-  handleGoToLine = (data) => {
-    this.filesAPI.goToLine(data);
-  }
   renderHelp = () => {
     return (<Help onClose={this.closeDialog} />);
   }
@@ -240,7 +232,6 @@ class App extends React.Component {
       updateVersion: hackKey,
       userData,
     } = this.state;
-    const extra = [];
     return (
       <div className="App">
         <ServiceContext.Provider value={{
@@ -249,6 +240,7 @@ class App extends React.Component {
           addError: this.addError,
           addInfo: this.addInfo,
           storageManager,
+          logManager: this.logManager,
         }}>
         <div className="content">
           <Head />
@@ -266,24 +258,18 @@ class App extends React.Component {
               <button tabIndex="1" onClick={this.handleSave}>Save</button>
               <button tabIndex="1" onClick={this.handleNew}>New</button>
               <button tabIndex="1" onClick={this.handleLoad}>Load</button>
-              {/*<button tabIndex="1" onClick={this.handleSettings} title="settings"><img src={`${window.location.origin}/resources/images/gear.svg`} alt="settings"></img></button>*/}
+              <button tabIndex="1" onClick={this.handleSettings} title="settings"><img src={`${window.location.origin}/resources/images/gear.svg`} alt="settings"></img></button>
               <button tabIndex="1" onClick={this.handleHelp} title="help">?</button>
             </div>
           </div>
           {
             loading ? [] : (
               <div className="bottom">
-                <Split direction="horizontal" minSize={0}>
-                  <div className="left">
-                    <Files data={data} hackKey={hackKey} extra={extra} registerAPI={this.registerFilesAPI} />
-                  </div>
-                  <div className="right">
-                    <Split direction="vertical" sizes={[0.9, 0.1]}>
-                      <Runner logManager={this.logManager} registerRunnerAPI={this.registerRunnerAPI} />
-                      <Log logManager={this.logManager} onGoToLine={this.handleGoToLine} />
-                    </Split>
-                  </div>
-                </Split>
+                <IDE
+                  hackKey={hackKey}
+                  data={data}
+                  registerRunnerAPI={this.registerRunnerAPI}
+                />
               </div>
             )
           }

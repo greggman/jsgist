@@ -36,6 +36,12 @@ export default class Code extends React.Component {
           this.editor.focus();
           this.editor.doc.setCursor(lineNo - 1, colNo - 1);
         },
+        refresh: _ => {
+          this.editor.refresh();
+        },
+        focus: _ => {
+          this.editor.focus();
+        },
       });
     }
   }

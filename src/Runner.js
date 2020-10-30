@@ -1,18 +1,22 @@
 import React from 'react';
 
 import {isDevelopment} from './flags.js';
-import * as winMsgMgr from './window-message-manager.js';
+import ServiceContext from './ServiceContext.js';
 import {createURL} from './url.js';
+import * as winMsgMgr from './window-message-manager.js';
+
 export default class Runner extends React.Component {
   constructor(props) {
     super(props);
     this.runnerRef = React.createRef();
   }
   handleJSLog = (data) => {
-    this.props.logManager.addMsg(data);
+    const {logManager} = this.context;
+    logManager.addMsg(data);
   }
   handleJSError = (data) => {
-    this.props.logManager.addMsg({...data, type: 'error'});
+    const {logManager} = this.context;
+    logManager.addMsg({...data, type: 'error'});
   }
   handleGimmeDaCodez = () => {
     this.iframe.contentWindow.postMessage({
@@ -21,8 +25,8 @@ export default class Runner extends React.Component {
     }, "*");
   }
   componentDidMount() {
-    const {registerRunnerAPI} = this.props;
-    registerRunnerAPI({
+    const {registerAPI} = this.props;
+    registerAPI({
       run: (data, blank) => {
         this.data = data;
         this.removeIFrame();
@@ -68,3 +72,4 @@ export default class Runner extends React.Component {
   }
 }
 
+Runner.contextType = ServiceContext;

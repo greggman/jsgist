@@ -1,5 +1,5 @@
 import React from 'react';
-import Split from 'react-split-it';
+import Split, {moveGuttersComputeNewSizes} from 'react-split-it';
 
 import * as model from './model.js';
 import File from './File.js';
@@ -37,12 +37,13 @@ export default class Files extends React.Component {
     });
   }
   render() {
-    const {hackKey, data, extra} = this.props;
+    const {hackKey, data, extra, direction} = this.props;
     return (
       <div className="codes">
         <Split
-          direction="vertical"
+          direction={direction}
           minSize={0}
+          computeNewSizesFn={moveGuttersComputeNewSizes}
         >
         {
           data.files.map((file, ndx) => {
