@@ -6,7 +6,7 @@ export default function Help(props) {
   return (
     <Dialog title="jsGist" onClose={onClose}>
       <div className="markdown">
-      <p>Add your test cases, click <code>Run</code>.</p>
+      <p>A gist based JavaScript/HTML/CSS Playground</p>
       <h2>Contribute, Fix, Enhance!</h2>
       <p>
         <a target="_blank" rel="noopener noreferrer" href="https://github.com/greggman/jsgist">https://github.com/greggman/jsgist</a>
