@@ -16,11 +16,13 @@ There's a long list of desired features. Feel free to help add them
 
 - [ ] add bunch of settings
 
-  - [ ] layout options
+  - [X] layout options
   - [ ] tabs/space
   - [ ] editor? (use monaco?)
-  - [ ] support mobile
-  - [ ] log toggle
+  - [ ] eslint?
+  - [ ] eslint settings?
+  - [X] support mobile
+  - [X] log toggle
   - [ ] auto-run
   - [ ] css pre-processors? (lazy load)
   - [ ] js processors? (lazy load)
