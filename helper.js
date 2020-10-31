@@ -120,7 +120,12 @@
       };
     }
 
-    return function stackParser(stack) {
+    return function stackParser(error) {
+      const stack = error.stack
+          ? (error.stack.startsWith(`Error: ${error.message}`)
+              ? error.stack.substr(7 + error.message.length)
+              : error.stack)
+          : '';
       if (matcher) {
         try {
           const lines = stack.split('\n');
@@ -160,7 +165,7 @@
 
   function sendLog(type, args) {
     const error = new Error(formatArgs(args));
-    const {url, lineNo, colNo} = parseStack(error.stack) || {};
+    const {url, lineNo, colNo} = parseStack(error) || {};
     sendMsgInfo('jsLog', {
       filename: url,
       lineno: lineNo,
