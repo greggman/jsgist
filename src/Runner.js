@@ -18,6 +18,10 @@ export default class Runner extends React.Component {
     const {logManager} = this.context;
     logManager.addMsg({...data, type: 'error'});
   }
+  handleJSUnhandledRejection = (data) => {
+    const {logManager} = this.context;
+    logManager.addMsg({...data, type: 'error'});
+  }
   handleGimmeDaCodez = () => {
     this.iframe.contentWindow.postMessage({
       type: 'run',
@@ -44,6 +48,7 @@ export default class Runner extends React.Component {
     winMsgMgr.on('gimmeDaCodez', this.handleGimmeDaCodez);
     winMsgMgr.on('jsLog', this.handleJSLog);
     winMsgMgr.on('jsError', this.handleJSError);
+    winMsgMgr.on('jsUnhandledRejection', this.handleJSUnhandledRejection);
   }
   removeIFrame() {
     if (this.iframe) {
@@ -57,6 +62,7 @@ export default class Runner extends React.Component {
     winMsgMgr.remove('gimmeDaCodez', this.handleGimmeDaCodez);
     winMsgMgr.remove('jsLog', this.handleJSLog);
     winMsgMgr.remove('jsError', this.handleJSError);
+    winMsgMgr.remove('jsUnhandledRejection', this.handleJSUnhandledRejection);
   }
   handleMessage = (e) => {
     const {type, data} =  e.data;

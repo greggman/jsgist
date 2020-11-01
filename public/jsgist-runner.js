@@ -172,6 +172,9 @@ iframe {
     jsError(data) {
       sendMsgInfo('jsError', data);
     },
+    jsUnhandledRejection(data) {
+      sendMsgInfo('jsUnhandledRejection', data);
+    },
     jsLog(data) {
       sendMsgInfo('jsLog', data);
     },

@@ -37,6 +37,19 @@
     };
   }
 
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function unifyStack(error) {
+    if (!error.stack) {
+      return '';
+    }
+    const re = new RegExp(`(^\\w+: ${escapeRegExp(error.message || error.reason)})\n`)
+    const m = re.exec(error?.stack);
+    return m ? error.stack.substr(m[1].length).trim() : error.stack;
+  }
+
   /*
   Examples of stacks. Ideally I'd like to automatic this.
   Could maybe just scan from the top line down for the second
@@ -78,11 +91,9 @@
    */
   const parseStack = function() {
     const browser = getBrowser();
-    let lineNdx;
     let matcher;
     if ((/chrome|opera/i).test(browser.name)) {
-      lineNdx = 3;
-      matcher = function(line) {
+      matcher = function(line, stack) {
         const m = /at ([^(]+)*\(*(.*?):(\d+):(\d+)/.exec(line);
         if (m) {
           let userFnName = m[1];
@@ -98,13 +109,13 @@
             lineNo: lineNo,
             colNo: colNo,
             funcName: userFnName,
+            stack,
           };
         }
         return undefined;
       };
     } else if ((/firefox|safari/i).test(browser.name)) {
-      lineNdx = 2;
-      matcher = function(line) {
+      matcher = function(line, stack) {
         const m = /@(.*?):(\d+):(\d+)/.exec(line);
         if (m) {
           const url = m[1];
@@ -114,26 +125,19 @@
             url: url,
             lineNo: lineNo,
             colNo: colNo,
+            stack,
           };
         }
         return undefined;
       };
     }
 
-    return function stackParser(error) {
-      const stack = error.stack
-          ? (error.stack.startsWith(`Error: ${error.message}`)
-              ? error.stack.substr(7 + error.message.length)
-              : error.stack)
-          : '';
+    return function stackParser(error, lineNdx = 2) {
+      const stack = unifyStack(error);
       if (matcher) {
         try {
           const lines = stack.split('\n');
-          // window.fooLines = lines;
-          // lines.forEach(function(line, ndx) {
-          //   origConsole.log("#", ndx, line);
-          // });
-          return matcher(lines[lineNdx]);
+          return matcher(lines[lineNdx], stack);
         } catch (e) {
           // do nothing
         }
@@ -143,11 +147,13 @@
   }();
 
   function sendMsgInfo(type, e, msgType) {
-    const msg = e.message || e.error?.message || e.error;
-    const url = e.filename;
-    const lineNo = e.lineno || 1;
-    const colNo = e.colno || 1;
-    const stack = e.error?.stack;
+    const {
+      message: msg,
+      url,
+      lineNo,
+      colNo,
+      stack,
+    } = e;
     window.parent.postMessage({
       type,
       data: {msg, url, lineNo, colNo, stack, type: msgType},
@@ -156,21 +162,43 @@
 
   window.addEventListener('error', function(e) {
     originalConsole.error(e.error);
-    sendMsgInfo('jsError', e);
+    const {url, lineNo, colNo, stack} = parseStack(e.error, 0) || {};
+    sendMsgInfo('jsError', {
+      url: e.filename || url,
+      message: e.message || e.error?.message,
+      stack,
+      lineNo: e.lineno || lineNo,
+      colNo: e.colno || colNo,
+    });
   });
 
+  window.addEventListener('unhandledrejection', function(e) {
+    originalConsole.error(e.reason);
+    const {url, lineNo, colNo, stack} = parseStack(e.reason, 0) || {};
+    sendMsgInfo('jsUnhandledRejection', {
+      url: e.filename || url,
+      message: e.message || e.reason?.message,
+      stack,
+      lineNo: e.lineno || lineNo,
+      colNo: e.colno || colNo,
+    });
+  });
+
+  // TODO: implement the console.log rules where the first string
+  // is a format string and various codes use the following arguments
   function formatArgs(args) {
     return args.join(' ');
   }
 
   function sendLog(type, args) {
-    const error = new Error(formatArgs(args));
-    const {url, lineNo, colNo} = parseStack(error) || {};
+    const error = new Error('--');
+    const {url, lineNo, colNo, stack} = parseStack(error) || {};
     sendMsgInfo('jsLog', {
-      filename: url,
-      lineno: lineNo,
-      colno: colNo,
-      error,
+      url,
+      lineNo,
+      colNo,
+      message: formatArgs(args),
+      stack,
     }, type);
   }
 
