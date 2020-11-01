@@ -18,7 +18,7 @@ function init() {
     }
   } catch (e) {
     settings = {
-      layout: (window.screen.width < 540 || window.screen.height << 540) ? 3 : 0,
+      layout: (window.screen.width < 540 || window.screen.height < 540) ? 3 : 0,
     };
   }
 }
