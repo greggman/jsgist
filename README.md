@@ -66,6 +66,10 @@ There's a long list of desired features. Feel free to help add them
 
 - [ ] add export to jsfiddle/codepen/codesandbox etc..
 
+- [ ] make log wrapper support console.log formatting options
+
+- [ ] show stack in log for warn/error messages
+
 - [ ] allow deleting gists
 
   as it is you go to github to delete gists.
@@ -87,7 +91,7 @@ There's a long list of desired features. Feel free to help add them
     Hmmm, I guess if each revision stores the id it was then you can
     read that gist and find the top revision.
 
-- [ ] allow more files. 
+- [ ] allow more files.
 
   The UI already kind of does this, the code to show more and add or delete files
   is just commented out. I'm not sure how
@@ -102,6 +106,19 @@ There's a long list of desired features. Feel free to help add them
   I would be more familiar but it requires a server for oauth. The current impl
   is 100% client side.
 
+- [ ] use gist comments
+
+  Currently disqus is used for comments. Using gist comments
+  would arguably be more appropriate but unfortunately github
+  does not provide a UI to do so which means implementing one
+  from scratch. That sucks because the built in one in github
+  supports features like drag and drop files and other things.
+  It would be so nice to just be able to link to an iframe
+  of their UI but ATM that's not an option.
+
+  Adding basic UX for markdown is semi-trivial though. Maybe
+  that's enough?
+
 - [ ] check for infinite loops?
 
   codepen apparently parses the JavaScript and inserts checks into loops
@@ -110,7 +127,7 @@ There's a long list of desired features. Feel free to help add them
   come back to the same result. Note: I haven't thought much about how
   this flow should work.
 
-- [ ] Mobile
+- [X] Mobile
 
   Mobile works but could use better styling/layout
 
