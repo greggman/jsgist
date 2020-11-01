@@ -8,7 +8,7 @@ export default class File extends React.Component {
     const {register} = this.props;
     register(this, {
       goToLine: (data) => {
-        const {title} =  this.props;
+        const {title} = this.props;
         if (data.section === title) {
           this.codeAPI.goToLine(data.lineNo, data.colNo);
           return true;
