@@ -5,9 +5,12 @@
     "codemirror",
     "disqus",
     "hidee",
+    "hljs",
     "jsgist",
     "noopener",
     "noreferrer",
-    "octokit"
+    "octokit",
+    "strikethrough",
+    "tasklists"
   ]
 }
