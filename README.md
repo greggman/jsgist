@@ -106,7 +106,7 @@ There's a long list of desired features. Feel free to help add them
   I would be more familiar but it requires a server for oauth. The current impl
   is 100% client side.
 
-- [ ] use gist comments
+- [X] use gist comments
 
   Currently disqus is used for comments. Using gist comments
   would arguably be more appropriate but unfortunately github
