@@ -1,0 +1,208 @@
+:root {
+  --main-bg-color: #FFF;
+  --main-fg-color: #000;
+  --link-fg-color: #24C;
+  --msg-head-bg-color: #DEF;
+  --msg-border-color: #89A;
+  --msg-accent-color: #EEE;
+}
+html {
+  background: var(--main-bg-color);
+  color: var(--main-fg-color);
+}
+@media (prefers-color-scheme: light) {
+  .comment pre {
+    background-color: #EEE;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --main-bg-color: #444;
+    --main-fg-color: #fff;
+    --link-fg-color: #ACF;
+    --msg-head-bg-color: #456;
+    --msg-border-color: #678;
+    --msg-accent-color: #222;
+  }
+}
+
+body {
+  font-family: sans-serif;
+}
+.comment {
+  margin: 0 auto 0.5em;
+}
+.comment-inner {
+  background: var(--msg-head-bg-color);
+  border-radius: 0.5em;
+  border: 1px solid var(--msg-border-color);
+  margin-left: 42px;
+}
+.comment ul p,
+.comment ol p {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+.comment .user {
+  padding: 0.5em;
+  border-bottom: 1px solid var(--msg-border-color);
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;  
+}
+.comment .avatar {
+  position: absolute;
+  top: 50%;
+  transform: translateX(-48px) translateY(-50%);
+}
+.comment .edit {
+  user-select: none;
+}
+.comment .edit .pop-down {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: 8em;
+}
+.comment .edit .pop-down a {
+  background: var(--msg-accent-color);
+  display: block;
+  padding: 0.5em;
+}
+.comment .edit .pop-down hr {
+  margin: 0;
+}
+.comment .edit input[type="checkbox"] {
+  opacity: 0;
+}
+.comment .edit input[type="checkbox"] + label {
+  cursor: pointer;
+}
+.comment .edit input[type="checkbox"] + label + * {
+  display: none;
+}
+.comment .edit input[type="checkbox"]:checked + label + * {
+  display: initial;
+}
+.comment .edit input[type="checkbox"]:checked + label:before {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0);
+  position: fixed;
+  left: 0;
+  top: 0;
+  content: " ";
+  cursor: default;
+}
+.comment .edit button {
+  width: 100%;
+  border: none;
+  padding: 0.5em;
+  cursor: pointer;
+  text-align: left;
+}
+.comment .edit button:hover {
+  background: #888;
+}
+.comment a {
+  color: var(--link-fg-color);
+  text-decoration: none;
+}
+.comment h1 {
+  border-bottom: 1px solid var(--msg-border-color);
+}
+.comment blockquote {
+  border-left: 0.25em solid var(--msg-border-color);
+  padding: 0 1em;
+  margin: 0;
+}
+.comment .user img {
+  height: 32px;
+  border-radius: 100%;
+}
+.comment .body {
+  background: var(--main-bg-color);
+  padding: 0.5em;
+  border-radius: 0.5em;
+}
+.comment img {
+  max-width: 100%;
+}
+
+.comment .body code {
+  background-color: var(--msg-accent-color);
+  padding: 0.25em;
+}
+.comment .body pre>code {
+  padding: 0;
+  background-color: inherit;
+}
+.comment .body pre {
+  padding: 0.5em;
+  max-width: 100%;
+  overflow: auto;
+}
+
+/* ------------------------- */
+/* Variables */
+:root {
+  --scrollbar-size: .375rem;
+  --scrollbar-minlength: 1.5rem; /* Minimum length of scrollbar thumb (width of horizontal, height of vertical) */
+  --scrollbar-ff-width: thin; /* FF-only accepts auto, thin, none */
+  --scrollbar-track-color: transparent;
+  --scrollbar-color: rgba(0,0,0,.2);
+  --scrollbar-color-hover: rgba(0,0,0,.3);
+  --scrollbar-color-active: rgb(0,0,0);
+}
+
+/* Use .layout-scrollbar-obtrusive to only use overflow if scrollbars don’t overlay */
+.scrollbar-test,
+.layout-cell {
+  overscroll-behavior: contain;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  scrollbar-width: var(--scrollbar-ff-width);
+}
+
+/* This class controls what elements have the new fancy scrollbar CSS */
+.layout-scrollbar {
+  scrollbar-color: var(--scrollbar-color) var(--scrollbar-track-color);
+}
+/* Only apply height/width to ::-webkit-scrollbar if is obtrusive */
+.layout-scrollbar-obtrusive .layout-scrollbar::-webkit-scrollbar {
+  height: var(--scrollbar-size);
+  width: var(--scrollbar-size);
+}
+.layout-scrollbar::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track-color);
+}
+.layout-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-color);
+  border-radius: 3px;
+}
+.layout-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-color-hover);
+}
+.layout-scrollbar::-webkit-scrollbar-thumb:active {
+  background-color: var(--scrollbar-color-active);
+}
+.scrollbar-test::-webkit-scrollbar-thumb:vertical,
+.layout-scrollbar::-webkit-scrollbar-thumb:vertical {
+  min-height: var(--scrollbar-minlength);
+}
+.scrollbar-test::-webkit-scrollbar-thumb:horizontal,
+.layout-scrollbar::-webkit-scrollbar-thumb:horizontal {
+  min-width: var(--scrollbar-minlength);
+}
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --scrollbar-color:#555;
+    --scrollbar-color-hover: #555;
+    --scrollbar-color-active: #555;
+  }
+}
+

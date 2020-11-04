@@ -47,12 +47,12 @@ export default class Disqus extends React.Component {
     const url = createURL('https://jsgist.devcomments.org/comments.html', {disqusId, title});
     return (
       <div>
-        { disqusId ?
+        { !!disqusId &&
           <iframe
             ref={this.iframeRef}
             title="comments"
             src={url}
-          /> : []
+          />
         }
       </div>
     );

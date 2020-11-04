@@ -46,6 +46,7 @@ export default class StorageManager {
       sessionStorage.removeItem(k);
     }
     localStorage.removeItem(k);
+    this.subscriptionManager.notify(key);
   }
   cleanup() {
     window.removeEventListener('storage', this._handleNewValue);

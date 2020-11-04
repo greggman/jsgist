@@ -382,6 +382,7 @@ a {
   font-weight: bold;
   margin: 10px;
   position: relative;
+  user-select: none;
 }
 .dialog-content {
   margin: 10px;
@@ -409,6 +410,7 @@ a {
   font-size: large;
   border-bottom: 1px solid #888;
   margin-bottom: 1em;
+  user-select: none;
 }
 .save-as-gist-pat {
   display: flex;
@@ -462,6 +464,9 @@ a {
   background-color: red;
   border-radius: 0.25em;
 }
+.radio img {
+  display: block;
+}
 /* -------------------- */
 .layout .radio>* {
   width: 3.5em;
@@ -488,6 +493,7 @@ input {
 }
 .avatar {
   height: 2em;
+  border-radius: 100%;;
 }
 input[type="text"],
 input[type="password"] {
@@ -556,6 +562,9 @@ button {
   margin-right: 0.25em;
   min-width: 2.5em;
   font-weight: bold;
+  user-select: none;
+  height: 2.25em;
+  line-height: calc(1em - 12px);
 }
 button img {
   height: 1em;
@@ -617,6 +626,60 @@ hr {
   border: none;
   background: var(--title-bg-color);
   height: 2px;
+}
+/*-------------*/
+.logout {
+  display: flex;
+  align-items: center;
+}
+/*-------------*/
+.new-comment {
+  border-radius: 0.5em;
+  border: 1px solid var(--code-area-bg-color);
+  margin-left: calc(0.5em + 42px);
+  margin-right: 0.5em;
+  margin-bottom: 15em;
+  position: relative;
+}
+.new-comment .new-comment-head {
+  background: var(--code-area-bg-color);
+  padding: 0.5em;
+}
+.new-comment .new-comment-head .user-avatar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translateX(-42px);
+}
+.new-comment .react-codemirror2 {
+  padding: 0 0.5em 0.5em 0.5em;
+  height: 10em;
+  resize: vertical;
+  overflow: auto;
+}
+.new-comment .new-comment-preview {
+  min-height: 10em;
+  padding: 0.5em;
+}
+.new-comment .new-comment-tabs {
+  margin-top: 1em;
+}
+.new-comment input[type="radio"] {
+  opacity: 0;
+  width: 0;
+}
+.new-comment input + label {
+  padding: 0.5em 0.5em 0 0.5em;
+  margin-right: 0.125em;
+  background: rgba(0,0,0,0.1);
+}
+.new-comment input:checked + label {
+  background: var(--editor-bg-color);
+}
+.new-comment-submit {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1em;
 }
 
 @media (max-width: 740px) {

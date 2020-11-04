@@ -8,34 +8,26 @@ import Head from './Head.js';
 import Help from './Help.js';
 import IDE from './IDE.js';
 import Load from './Load.js';
-import {loadGistFromSrc} from './loader.js';
+import {isGistId, loadGistFromSrc} from './loader.js';
 import {LogManager} from './Log.js';
 import * as model from './model.js';
 import OAuthManager from './OAuthManager.js';
 import Save from './Save.js';
 import ServiceContext from './ServiceContext.js';
 import Settings from './Settings.js';
+import UserManager from './UserManager.js';
 
 import './App.css';
 
 const backupKey = 'backup';
 const noJSX = () => [];
 const darkMatcher = window.matchMedia('(prefers-color-scheme: dark)');
-const makeDisqusId = () => {
-  const loc = window.location;
-  const query = Object.fromEntries(new URLSearchParams(loc.search).entries());
-  const src = query.src;
-  return src
-      ? `${encodeURIComponent(src)}`
-      : '';
-}
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
       path: window.location.pathname,
-      disqusId: makeDisqusId(),
       dark: darkMatcher.matches,
       loading: false,
       dialog: noJSX,
@@ -47,6 +39,11 @@ class App extends React.Component {
     this.github = new GitHub();
     this.logManager = new LogManager();
     this.oauthManager = new OAuthManager(storageManager);
+    this.userManager = new UserManager({
+      oauthManager: this.oauthManager,
+      github: this.github,
+      addError: this.addError,
+    });
   }
   componentDidMount() {
     this.github.addEventListener('userdata', (e) => {
@@ -59,7 +56,6 @@ class App extends React.Component {
       window.history.pushState({}, '', newValue);
       this.setState({
         path: newValue,
-        disqusId: makeDisqusId(),
       });
     });
     // I still am not sure how I'm supposed to handle this.
@@ -99,6 +95,11 @@ class App extends React.Component {
         const data = JSON.parse(backup);
         if (data.href === window.location.href) {
           model.setData(data.data);
+          const url = new URL(data.href);
+          const {src} = Object.fromEntries(new URLSearchParams(url.search).entries());
+          if (isGistId(src)) {
+            this.setState({gistId: src});
+          }
           loaded = true;
           this.addInfo('loaded backup from local storage')
         }
@@ -228,19 +229,19 @@ class App extends React.Component {
     const {
       loading,
       dialog,
-      // disqusId,
       updateVersion: hackKey,
       userData,
+      gistId,
     } = this.state;
     return (
       <div className="App">
         <ServiceContext.Provider value={{
           github: this.github,
-          oauthManager: this.oauthManager,
           addError: this.addError,
           addInfo: this.addInfo,
           storageManager,
           logManager: this.logManager,
+          userManager: this.userManager,
         }}>
         <div className="content">
           <Head />
@@ -248,8 +249,8 @@ class App extends React.Component {
             <div className="left">
               <div className="name">
                 <EditLine value={data.name} onChange={v => model.setName(v)} />
-                {userData.name ? <div className="username"><a target="_blank" rel="noopener noreferrer" href={`https://github.com/${userData.name}`}>{userData.name}</a></div> : [] }
-                {userData.avatarURL ? <a target="_blank" rel="noopener noreferrer" href={`https://github.com/${userData.name}`}><img className="avatar" src={userData.avatarURL} alt="avatar"/></a> : []}
+                {!!userData.name && <div className="username"><a target="_blank" rel="noopener noreferrer" href={`https://github.com/${userData.name}`}>{userData.name}</a></div>}
+                {!!userData.avatarURL && <a target="_blank" rel="noopener noreferrer" href={`https://github.com/${userData.name}`}><img className="avatar" src={userData.avatarURL} alt="avatar"/></a>}
               </div>
             </div>
             <div className="right">
@@ -263,7 +264,7 @@ class App extends React.Component {
             </div>
           </div>
           {
-            loading ? [] : (
+            !loading &&
               <div className="bottom">
                 <IDE
                   hackKey={hackKey}
@@ -271,11 +272,10 @@ class App extends React.Component {
                   registerRunnerAPI={this.registerRunnerAPI}
                 />
               </div>
-            )
           }
         </div>
         <Footer
-          disqusId={makeDisqusId()}
+          gistId={gistId}
           title={data.name}
         />
         {dialog()}

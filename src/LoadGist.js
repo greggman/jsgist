@@ -14,28 +14,26 @@ export default class LoadGist extends React.Component {
   handleNewGists = (gists) => {
     this.setState({gists});
   }
-  onPatChange = () => {
+  onUserStatusChange = () => {
     this.forceUpdate();
-    const {oauthManager} = this.context;
-    const pat = oauthManager.pat();
-    if (pat) {
+    const {userManager} = this.context;
+    if (userManager.getUserData()) {
       this.loadGists();
     }
   }
   componentDidMount() {
-    const {oauthManager} = this.context;
+    const {userManager} = this.context;
     gists.subscribe(this.handleNewGists);
-    oauthManager.subscribe(this.onPatChange);
+    userManager.subscribe(this.onUserStatusChange);
   }
   componentWillUnmount() {
-    const {oauthManager} = this.context;
+    const {userManager} = this.context;
     gists.unsubscribe(this.handleNewGists);
-    oauthManager.unsubscribe(this.onPatChange);
+    userManager.unsubscribe(this.onUserStatusChange);
   }
   loadGists = async(e) => {
-    const {addError, github, oauthManager} = this.context;
+    const {addError, github} = this.context;
     this.setState({loading: true});
-    github.setPat(oauthManager.pat());
     try {
       const gistArray = await github.getUserGists();
       const gistsById = gistArray.reduce((gists, gist) => {
@@ -52,20 +50,20 @@ export default class LoadGist extends React.Component {
     this.setState({loading: false});
   }
   renderLogin() {
-    const {oauthManager} = this.context;
+    const {userManager} = this.context;
     return (
       <div>
         <button
-          onClick={oauthManager.login}
+          onClick={userManager.login}
         >Login with github</button>
       </div>
     );
   }
   renderLoad() {
-    const {oauthManager} = this.context;
+    const {userManager} = this.context;
     const {gists, loading} = this.state;
-    const pat = oauthManager.pat();
-    const canLoad = !!pat && !loading;
+    const userData = userManager.getUserData();
+    const canLoad = !!userData && !loading;
     const gistArray = Object.entries(gists).map(([id, {name, date}]) => {
       return {id, name, date};
     }).sort((b, a) => a.date < b.date ? -1 : ((a.date > b.date) ? 1 : 0));
@@ -78,7 +76,7 @@ export default class LoadGist extends React.Component {
           >{gistArray.length ? 'Reload' : 'Load'} Your Gists</button>
         </p>
          {
-            gistArray.length ?
+            gistArray.length >= 0 &&
               <table className="gists">
                 <tbody>
                 {
@@ -92,15 +90,15 @@ export default class LoadGist extends React.Component {
                   })
                 }
                 </tbody>
-              </table> : []
+              </table>
           }
       </div>
     );
   }
   render() {
-    const {oauthManager} = this.context;
-    const pat = oauthManager.pat();
-    return pat ? this.renderLoad() : this.renderLogin();
+    const {userManager} = this.context;
+    const userData = userManager.getUserData();
+    return userData ? this.renderLoad() : this.renderLogin();
   }
 }
 

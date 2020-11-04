@@ -17,8 +17,7 @@ export default function Embed(props) {
         than put in an iframe. <a target="_blank" rel="noopener noreferrer" href="https://jsgist.org/embed.html?src=bad0a8491bd6614e729ff01cc14089c9">[example]</a>{' '}
         <a target="_blank" rel="noopener noreferrer" href={'https://jsgist.org/embed.html?src=bad0a8491bd6614e729ff01cc14089c9&noheader=true'}>[example no header]</a>
         </p>
-        { gistId
-          ? (
+        { !!gistId &&
             <React.Fragment>
               <p>
               For example:
@@ -27,8 +26,6 @@ export default function Embed(props) {
       &lt;iframe src="https://jsgist.org/embed.html?src={gistId}" &gt;&lt;/iframe&gt;
               </code></pre>
             </React.Fragment>
-          )
-          : []
         }
         <p>
         </p>

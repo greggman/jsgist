@@ -2,7 +2,7 @@
 import {clientId} from './globals.js';
 import {createURL} from './url.js';
 import {createPopup} from './utils.js';
-import * as windowMessageManager from './window-message-manager.js';
+import * as winMsgMgr from './window-message-manager.js';
 
 const patKey = 'pat';
 
@@ -12,7 +12,7 @@ export default class OAuthManager {
     this._popup = undefined;
     this._state = undefined;  // last state sent to auth
     this._storageManager = storageManager;
-    windowMessageManager.on('auth', (data) => {
+    winMsgMgr.on('auth', null, (data) => {
       this._closePopup();
       if (data.state === this.state) {
         this.requestToken(data);

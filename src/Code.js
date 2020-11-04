@@ -4,8 +4,9 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 import 'codemirror/theme/eclipse.css';
 import 'codemirror/mode/css/css.js';
-import 'codemirror/mode/javascript/javascript.js';
+import 'codemirror/mode/gfm/gfm.js';
 import 'codemirror/mode/htmlmixed/htmlmixed.js';
+import 'codemirror/mode/javascript/javascript.js';
 import 'codemirror/addon/scroll/simplescrollbars.js';
 import 'codemirror/addon/scroll/simplescrollbars.css';
 
@@ -59,8 +60,8 @@ export default class Code extends React.Component {
           mode: 'javascript',
           scrollbarStyle: 'overlay',
           theme: isDarkMode ? 'material' : 'eclipse',
-          ...(options.editor && options.editor),
           lineNumbers: true,
+          ...(options.editor && options.editor),
         }}
         onBeforeChange={(editor, data, value) => {
           this.setState({value});

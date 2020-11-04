@@ -45,10 +45,10 @@ export default class Runner extends React.Component {
         this.runnerRef.current.appendChild(iframe);
       },
     })
-    winMsgMgr.on('gimmeDaCodez', this.handleGimmeDaCodez);
-    winMsgMgr.on('jsLog', this.handleJSLog);
-    winMsgMgr.on('jsError', this.handleJSError);
-    winMsgMgr.on('jsUnhandledRejection', this.handleJSUnhandledRejection);
+    winMsgMgr.on('gimmeDaCodez', null, this.handleGimmeDaCodez);
+    winMsgMgr.on('jsLog', null, this.handleJSLog);
+    winMsgMgr.on('jsError', null, this.handleJSError);
+    winMsgMgr.on('jsUnhandledRejection', null, this.handleJSUnhandledRejection);
   }
   removeIFrame() {
     if (this.iframe) {
@@ -59,10 +59,10 @@ export default class Runner extends React.Component {
   }
   componentWillUnmount() {
     this.removeIFrame();
-    winMsgMgr.remove('gimmeDaCodez', this.handleGimmeDaCodez);
-    winMsgMgr.remove('jsLog', this.handleJSLog);
-    winMsgMgr.remove('jsError', this.handleJSError);
-    winMsgMgr.remove('jsUnhandledRejection', this.handleJSUnhandledRejection);
+    winMsgMgr.remove('gimmeDaCodez', null, this.handleGimmeDaCodez);
+    winMsgMgr.remove('jsLog', null, this.handleJSLog);
+    winMsgMgr.remove('jsError', null, this.handleJSError);
+    winMsgMgr.remove('jsUnhandledRejection', null, this.handleJSUnhandledRejection);
   }
   handleMessage = (e) => {
     const {type, data} =  e.data;

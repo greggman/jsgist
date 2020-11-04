@@ -2,6 +2,7 @@ import React from 'react';
 
 import Dialog from './Dialog.js';
 import Section from './Section.js';
+import ServiceContext from './ServiceContext.js';
 
 import verticalIcon from './icons/vertical-layout.svg';
 import horizontalIcon from './icons/horizontal-layout.svg';
@@ -40,13 +41,45 @@ function Radio(props) {
     });
   });
 
-
   return (
     <div className="radio">
       {newChildren}
     </div>
   );
 }
+
+class Logout extends React.Component {
+  componentDidMount() {
+    const {userManager} = this.context;
+    userManager.subscribe(this.handleChange);
+  }
+  componentWillUnmount() {
+    const {userManager} = this.context;
+    userManager.unsubscribe(this.handleChange);
+  }
+  handleChange = () => {
+    this.forceUpdate();
+  }
+  handleLogout = () => {
+    const {userManager} = this.context;
+    userManager.logout();
+  }
+  render() {
+    const {userManager} = this.context;
+    const userData = userManager.getUserData();
+    return (
+      <Section heading="Logout">
+        <div className="logout">Logged in as:&nbsp;
+          {!!userData.login && <div className="username"><a target="_blank" rel="noopener noreferrer" href={`https://github.com/${userData.login}`}>{userData.login}</a></div>}
+          {!!userData.avatar_url && <a className="user-avatar" target="_blank" rel="noopener noreferrer" href={`https://github.com/${userData.login}`}><img className="avatar" src={userData.avatar_url} alt="avatar"/></a>}
+        </div>
+        <button onClick={this.handleLogout}>Logout</button>
+      </Section>
+    );
+  }
+}
+
+Logout.contextType = ServiceContext;
 
 export default class Settings extends React.Component {
   //constructor(props) {
@@ -66,8 +99,11 @@ export default class Settings extends React.Component {
   }
   render() {
     const {onClose} = this.props;
+    const {userManager} = this.context;
+    const userData = userManager.getUserData();
     return (
       <Dialog title="Settings" onClose={onClose}>
+        { !!userData && <Logout /> }
         <Section heading="Layout">
           <div className="layout">
             <Radio selectedNdx={uiModel.get().layout} onChange={this.handleLayoutChange}>
@@ -82,3 +118,5 @@ export default class Settings extends React.Component {
     );
   }
 }
+
+Settings.contextType = ServiceContext;

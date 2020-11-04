@@ -98,6 +98,7 @@ export default class GitHub extends EventTarget {
   get octokit() {
     return this.authorizedOctokit || this.unAuthorizedOctokit;
   }
+  // TODO: this does not belong here!
   _updateUserData(data) {
     const userData = getUserData(data);
     if (userData) {
@@ -110,12 +111,60 @@ export default class GitHub extends EventTarget {
   setPat(pat) {
     if (pat !== this.pat) {
       this.pat = pat;
-      this.authorizedOctokit = new Octokit({
-        auth: pat,
-        userAgent,
-      });
+      if (pat) {
+        this.authorizedOctokit = new Octokit({
+          auth: pat,
+          userAgent,
+        });
+      } else {
+        this.authorizedOctokit = undefined;
+      }
     }
   }
+  /*
+  "{
+    "login": "greggman",
+    "id": 234804,
+    "node_id": "MDQ6VXNlcjIzNDgwNA==",
+    "avatar_url": "https://avatars2.githubusercontent.com/u/234804?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/greggman",
+    "html_url": "https://github.com/greggman",
+    "followers_url": "https://api.github.com/users/greggman/followers",
+    "following_url": "https://api.github.com/users/greggman/following{/other_user}",
+    "gists_url": "https://api.github.com/users/greggman/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/greggman/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/greggman/subscriptions",
+    "organizations_url": "https://api.github.com/users/greggman/orgs",
+    "repos_url": "https://api.github.com/users/greggman/repos",
+    "events_url": "https://api.github.com/users/greggman/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/greggman/received_events",
+    "type": "User",
+    "site_admin": false,
+    "name": "Greggman",
+    "company": null,
+    "blog": "http://games.greggman.com",
+    "location": "Earth",
+    "email": "github@greggman.com",
+    "hireable": null,
+    "bio": "30 years of games\r\n5 years of Chrome",
+    "twitter_username": null,
+    "public_repos": 283,
+    "public_gists": 79,
+    "followers": 1037,
+    "following": 3,
+    "created_at": "2010-04-01T08:48:05Z",
+    "updated_at": "2020-10-24T06:05:24Z"
+  }"
+  */
+  async getAuthenticatedUser() {
+    const response = await this.authorizedOctokit.users.getAuthenticated();
+    if (response.status !== 200) {
+      throw new Error(response.message);
+    }
+    return response.data;
+  }
+
   async getUserGists() {
     const gists = await this.authorizedOctokit.paginate(this.authorizedOctokit.gists.list);
     return gists.filter(gist => !!gist.files['jsGist.json']);
@@ -154,5 +203,15 @@ export default class GitHub extends EventTarget {
     };
   }
 
+  async createGistComment(gist_id, body) {
+    const result = await this.authorizedOctokit.gists.createComment({
+      gist_id,
+      body,
+    });
+    if (result.status < 200 || result.status >= 300) {
+      throw new Error(result.message);
+    }
+    return result.data;
+  }
 }
 

@@ -11,22 +11,21 @@ export default class SaveAsGist extends React.Component {
     };
   }
   componentDidMount() {
-    const {oauthManager} = this.context;
-    oauthManager.subscribe(this.onPatChange);
+    const {userManager} = this.context;
+    userManager.subscribe(this.onPatChange);
   }
   componentWillUnmount() {
-    const {oauthManager} = this.context;
-    oauthManager.unsubscribe(this.onPatChange);
+    const {userManager} = this.context;
+    userManager.unsubscribe(this.onPatChange);
   }
   onPatChange = () => {
     this.forceUpdate();
   }
   saveNew = async() => {
-    const {oauthManager, github, addError} = this.context;
+    const {github, addError} = this.context;
     this.setState({saving: true});
     const {data, onSave, onClose} = this.props;
     let success = false;
-    github.setPat(oauthManager.pat());
     try {
       const {id, name, date} = await github.createGist(data);
       gists.addGist(id, name, date);
@@ -41,11 +40,10 @@ export default class SaveAsGist extends React.Component {
     }
   }
   saveOverExisting = async() => {
-    const {oauthManager, github, addError} = this.context;
+    const {github, addError} = this.context;
     this.setState({saving: true});
     const {data, gistId, onClose} = this.props;
     let success = false;
-    github.setPat(oauthManager.pat());
     try {
       const {id, name, date} = await github.updateGist(gistId, data);
       gists.addGist(id, name, date);
@@ -59,21 +57,21 @@ export default class SaveAsGist extends React.Component {
     }
   }
   renderLogin() {
-    const {oauthManager} = this.context;
+    const {userManager} = this.context;
     return (
       <div>
         <button
-          onClick={oauthManager.login}
+          onClick={userManager.login}
         >Login with github</button>
       </div>
     );
   }
   renderSave() {
     const {saving} = this.state;
-    const {oauthManager} = this.context;
-    const pat = oauthManager.pat();
+    const {userManager} = this.context;
+    const userData = userManager.getUserData();
     const {gistId} = this.props;
-    const canUpdate = pat && gistId;
+    const canUpdate = userData && gistId;
     return (
       <div>
         <button
@@ -90,9 +88,9 @@ export default class SaveAsGist extends React.Component {
     );
   }
   render() {
-    const {oauthManager} = this.context;
-    const pat = oauthManager.pat();
-    return pat ? this.renderSave() : this.renderLogin();
+    const {userManager} = this.context;
+    const userData = userManager.getUserData();
+    return userData ? this.renderSave() : this.renderLogin();
   }
 }
 
