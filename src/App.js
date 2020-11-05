@@ -122,7 +122,7 @@ class App extends React.Component {
         this.setState({
           gistId: src,
           gistOwnerId: rawData?.owner?.id,
-        })
+        });
       }
     } catch (e) {
       success = false;
@@ -213,8 +213,6 @@ class App extends React.Component {
       <Load
         onLoad={this.handleOnLoad}
         onClose={this.closeDialog}
-        addError={this.addError}
-        github={this.github}
       />
     );
   }
@@ -224,8 +222,6 @@ class App extends React.Component {
       <Save
         onSave={this.handleOnSave}
         onClose={this.closeDialog}
-        addError={this.addError}
-        github={this.github}
         gistId={this.state.gistId}
         gistOwnerId={this.state.gistOwnerId}
         data={data} />
