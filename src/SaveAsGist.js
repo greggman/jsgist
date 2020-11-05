@@ -56,6 +56,25 @@ export default class SaveAsGist extends React.Component {
       onClose();
     }
   }
+  forkAndSave = async() => {
+    const {github, addError} = this.context;
+    const {data, gistId, onSave, onClose} = this.props;
+    this.setState({saving: true});
+    let success = false;
+    try {
+      const {id: newId} = await github.forkGist(gistId);
+      const {id, name, date} = await github.updateGist(newId, data);
+      gists.addGist(id, name, date);
+      onSave(id);
+      success = true
+    } catch (e) {
+      addError(`could not fork and update gist: ${e}`);
+    }
+    this.setState({saving: false});
+    if (success) {
+      onClose();
+    }
+  }
   renderLogin() {
     const {userManager} = this.context;
     return (
@@ -70,8 +89,9 @@ export default class SaveAsGist extends React.Component {
     const {saving} = this.state;
     const {userManager} = this.context;
     const userData = userManager.getUserData();
-    const {gistId} = this.props;
-    const canUpdate = userData && gistId;
+    const {gistId, gistOwnerId} = this.props;
+    const canUpdate = userData && gistId && userData.id === gistOwnerId;
+    const canFork = userData && gistId && userData.id !== gistOwnerId;
     return (
       <div>
         <button
@@ -84,6 +104,11 @@ export default class SaveAsGist extends React.Component {
           data-type="update"
           onClick={this.saveOverExisting}
         >Update Current Gist</button>
+        <button
+          className={classNames({disabled: !canFork || saving})}
+          data-type="fork"
+          onClick={this.forkAndSave}
+        >Fork and Save Gist</button>
       </div>
     );
   }

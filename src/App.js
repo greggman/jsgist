@@ -116,10 +116,13 @@ class App extends React.Component {
     this.setState({loading: true});
     let success = true;
     try {
-      const {data, id} = await loadGistFromSrc(src, this.github);
+      const {data, id, rawData} = await loadGistFromSrc(src, this.github);
       model.setData(data);
       if (id) {
-        this.setState({gistId: src})
+        this.setState({
+          gistId: src,
+          gistOwnerId: rawData?.owner?.id,
+        })
       }
     } catch (e) {
       success = false;
@@ -189,7 +192,10 @@ class App extends React.Component {
   }
   handleOnSave = (gistId) => {
     window.history.pushState({}, '', `${window.location.origin}?src=${gistId}`);
-    this.setState({gistId});
+    this.setState({
+      gistId,
+      gistOwnerId: this.userManager.getUserData().id,
+    });
   }
   handleAbort = () => {
     this.abort();
@@ -221,6 +227,7 @@ class App extends React.Component {
         addError={this.addError}
         github={this.github}
         gistId={this.state.gistId}
+        gistOwnerId={this.state.gistOwnerId}
         data={data} />
     );
   }

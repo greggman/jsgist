@@ -18,6 +18,148 @@ export function getGistContent(gist) {
   return data;
 } 
 
+/*
+  "url": "https://api.github.com/gists/bad0a8491bd6614e729ff01cc14089c9",
+  "forks_url": "https://api.github.com/gists/bad0a8491bd6614e729ff01cc14089c9/forks",
+  "commits_url": "https://api.github.com/gists/bad0a8491bd6614e729ff01cc14089c9/commits",
+  "id": "bad0a8491bd6614e729ff01cc14089c9",
+  "node_id": "MDQ6R2lzdGJhZDBhODQ5MWJkNjYxNGU3MjlmZjAxY2MxNDA4OWM5",
+  "git_pull_url": "https://gist.github.com/bad0a8491bd6614e729ff01cc14089c9.git",
+  "git_push_url": "https://gist.github.com/bad0a8491bd6614e729ff01cc14089c9.git",
+  "html_url": "https://gist.github.com/bad0a8491bd6614e729ff01cc14089c9",
+  "files": {
+    "index.css": {
+      "filename": "index.css",
+      "type": "text/css",
+      "language": "CSS",
+      "raw_url": "https://gist.githubusercontent.com/greggman/bad0a8491bd6614e729ff01cc14089c9/raw/1847e2c75f6b76223402f69bada71e72db880605/index.css",
+      "size": 243,
+      "truncated": false,
+      "content": "body {\n  margin: 0;\n}\n#c {\n  width: 100vw;\n  height: 100vh;\n  display: block;\n}\n#info { \n  position: absolute; \n  left: 1em; \n  top: 1em; \n  background: rgba(0,0,0,.8); \n  padding: .5em;\n        color: white;\n        font-family: monospace;\n}\n"
+    },
+    "index.html": {
+      "filename": "index.html",
+      "type": "text/html",
+      "language": "HTML",
+      "raw_url": "https://gist.githubusercontent.com/greggman/bad0a8491bd6614e729ff01cc14089c9/raw/c9e9e838f601e2d98d448b035ce3052629969c11/index.html",
+      "size": 46,
+      "truncated": false,
+      "content": "<canvas id=\"c\"></canvas>\n<div id=\"info\"></div>"
+    },
+    "index.js": {
+      "filename": "index.js",
+      "type": "application/javascript",
+      "language": "JavaScript",
+      "raw_url": "https://gist.githubusercontent.com/greggman/bad0a8491bd6614e729ff01cc14089c9/raw/77a7fca481ff157da44f4196ce253ea282f0abdc/index.js",
+      "size": 8413,
+      "truncated": false,
+      "content": "import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r119/build/three.module.js';\n\nfunction main() {\n  const canvas = document.querySelector('#c');\n  const renderer = new THREE.WebGLRenderer({canvas: canvas});\n  renderer.setClearColor(0x88AACC);\n  renderer.shadowMap.enabled = true;\n\n  function makeCamera(fov = 40) {\n    const aspect = 2;  // the canvas default\n    const zNear = 0.1;\n    const zFar = 1000;\n    return new THREE.PerspectiveCamera(fov, aspect, zNear, zFar);\n  }\n  const camera = makeCamera();\n  camera.position.set(8, 4, 10).multiplyScalar(3);\n  camera.lookAt(0, 0, 0);\n\n  const scene = new THREE.Scene();\n\n  {\n    const light = new THREE.DirectionalLight(0xffffff, 1);\n    light.position.set(0, 20, 0);\n    scene.add(light);\n    light.castShadow = true;\n    light.shadow.mapSize.width = 2048;\n    light.shadow.mapSize.height = 2048;\n\n    const d = 50;\n    light.shadow.camera.left = -d;\n    light.shadow.camera.right = d;\n    light.shadow.camera.top = d;\n    light.shadow.camera.bottom = -d;\n    light.shadow.camera.near = 1;\n    light.shadow.camera.far = 50;\n    light.shadow.bias = 0.001;\n  }\n\n  {\n    const light = new THREE.DirectionalLight(0xffffff, 1);\n    light.position.set(1, 2, 4);\n    scene.add(light);\n  }\n\n  const groundGeometry = new THREE.PlaneBufferGeometry(50, 50);\n  const groundMaterial = new THREE.MeshPhongMaterial({color: 0xCC8866});\n  const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);\n  groundMesh.rotation.x = Math.PI * -.5;\n  groundMesh.receiveShadow = true;\n  scene.add(groundMesh);\n\n  const carWidth = 4;\n  const carHeight = 1;\n  const carLength = 8;\n\n  const tank = new THREE.Object3D();\n  scene.add(tank);\n\n  const bodyGeometry = new THREE.BoxBufferGeometry(carWidth, carHeight, carLength);\n  const bodyMaterial = new THREE.MeshPhongMaterial({color: 0x66AA88});\n  const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);\n  bodyMesh.position.y = 1.4;\n  bodyMesh.castShadow = true;\n  tank.add(bodyMesh);\n\n  const tankCameraFov = 75;\n  const tankCamera = makeCamera(tankCameraFov);\n  tankCamera.position.y = 3;\n  tankCamera.position.z = -6;\n  tankCamera.rotation.y = Math.PI;\n  bodyMesh.add(tankCamera);\n\n  const wheelRadius = 1;\n  const wheelThickness = .5;\n  const wheelSegments = 6;\n  const wheelGeometry = new THREE.CylinderBufferGeometry(\n      wheelRadius,     // top radius\n      wheelRadius,     // bottom radius\n      wheelThickness,  // height of cylinder\n      wheelSegments);\n  const wheelMaterial = new THREE.MeshPhongMaterial({color: 0x888888});\n  const wheelPositions = [\n    [-carWidth / 2 - wheelThickness / 2, -carHeight / 2,  carLength / 3],\n    [ carWidth / 2 + wheelThickness / 2, -carHeight / 2,  carLength / 3],\n    [-carWidth / 2 - wheelThickness / 2, -carHeight / 2, 0],\n    [ carWidth / 2 + wheelThickness / 2, -carHeight / 2, 0],\n    [-carWidth / 2 - wheelThickness / 2, -carHeight / 2, -carLength / 3],\n    [ carWidth / 2 + wheelThickness / 2, -carHeight / 2, -carLength / 3],\n  ];\n  const wheelMeshes = wheelPositions.map((position) => {\n    const mesh = new THREE.Mesh(wheelGeometry, wheelMaterial);\n    mesh.position.set(...position);\n    mesh.rotation.z = Math.PI * .5;\n    mesh.castShadow = true;\n    bodyMesh.add(mesh);\n    return mesh;\n  });\n\n  const domeRadius = 2;\n  const domeWidthSubdivisions = 12;\n  const domeHeightSubdivisions = 12;\n  const domePhiStart = 0;\n  const domePhiEnd = Math.PI * 2;\n  const domeThetaStart = 0;\n  const domeThetaEnd = Math.PI * .5;\n  const domeGeometry = new THREE.SphereBufferGeometry(\n    domeRadius, domeWidthSubdivisions, domeHeightSubdivisions,\n    domePhiStart, domePhiEnd, domeThetaStart, domeThetaEnd);\n  const domeMesh = new THREE.Mesh(domeGeometry, bodyMaterial);\n  domeMesh.castShadow = true;\n  bodyMesh.add(domeMesh);\n  domeMesh.position.y = .5;\n\n  const turretWidth = .1;\n  const turretHeight = .1;\n  const turretLength = carLength * .75 * .2;\n  const turretGeometry = new THREE.BoxBufferGeometry(\n      turretWidth, turretHeight, turretLength);\n  const turretMesh = new THREE.Mesh(turretGeometry, bodyMaterial);\n  const turretPivot = new THREE.Object3D();\n  turretMesh.castShadow = true;\n  turretPivot.scale.set(5, 5, 5);\n  turretPivot.position.y = .5;\n  turretMesh.position.z = turretLength * .5;\n  turretPivot.add(turretMesh);\n  bodyMesh.add(turretPivot);\n\n  const turretCamera = makeCamera();\n  turretCamera.position.y = .75 * .2;\n  turretMesh.add(turretCamera);\n\n  const targetGeometry = new THREE.SphereBufferGeometry(.5, 6, 3);\n  const targetMaterial = new THREE.MeshPhongMaterial({color: 0x00FF00, flatShading: true});\n  const targetMesh = new THREE.Mesh(targetGeometry, targetMaterial);\n  const targetOrbit = new THREE.Object3D();\n  const targetElevation = new THREE.Object3D();\n  const targetBob = new THREE.Object3D();\n  targetMesh.castShadow = true;\n  scene.add(targetOrbit);\n  targetOrbit.add(targetElevation);\n  targetElevation.position.z = carLength * 2;\n  targetElevation.position.y = 8;\n  targetElevation.add(targetBob);\n  targetBob.add(targetMesh);\n\n  const targetCamera = makeCamera();\n  const targetCameraPivot = new THREE.Object3D();\n  targetCamera.position.y = 1;\n  targetCamera.position.z = -2;\n  targetCamera.rotation.y = Math.PI;\n  targetBob.add(targetCameraPivot);\n  targetCameraPivot.add(targetCamera);\n\n  // Create a sine-like wave\n  const curve = new THREE.SplineCurve( [\n    new THREE.Vector2( -10, 0 ),\n    new THREE.Vector2( -5, 5 ),\n    new THREE.Vector2( 0, 0 ),\n    new THREE.Vector2( 5, -5 ),\n    new THREE.Vector2( 10, 0 ),\n    new THREE.Vector2( 5, 10 ),\n    new THREE.Vector2( -5, 10 ),\n    new THREE.Vector2( -10, -10 ),\n    new THREE.Vector2( -15, -8 ),\n    new THREE.Vector2( -10, 0 ),\n  ] );\n\n  const points = curve.getPoints( 50 );\n  const geometry = new THREE.BufferGeometry().setFromPoints( points );\n  const material = new THREE.LineBasicMaterial( { color : 0xff0000 } );\n  const splineObject = new THREE.Line( geometry, material );\n  splineObject.rotation.x = Math.PI * .5;\n  splineObject.position.y = 0.05;\n  scene.add(splineObject);\n\n  function resizeRendererToDisplaySize(renderer) {\n    const canvas = renderer.domElement;\n    const width = canvas.clientWidth;\n    const height = canvas.clientHeight;\n    const needResize = canvas.width !== width || canvas.height !== height;\n    if (needResize) {\n      renderer.setSize(width, height, false);\n    }\n    return needResize;\n  }\n\n  const targetPosition = new THREE.Vector3();\n  const tankPosition = new THREE.Vector2();\n  const tankTarget = new THREE.Vector2();\n\n  const cameras = [\n    { cam: camera, desc: 'detached camera', },\n    { cam: turretCamera, desc: 'on turret looking at target', },\n    { cam: targetCamera, desc: 'near target looking at tank', },\n    { cam: tankCamera, desc: 'above back of tank', },\n  ];\n\n  const infoElem = document.querySelector('#info');\n\n  function render(time) {\n    time *= 0.001;\n\n    if (resizeRendererToDisplaySize(renderer)) {\n      const canvas = renderer.domElement;\n      cameras.forEach((cameraInfo) => {\n        const camera = cameraInfo.cam;\n        camera.aspect = canvas.clientWidth / canvas.clientHeight;\n        camera.updateProjectionMatrix();\n      });\n    }\n\n    // move target\n    targetOrbit.rotation.y = time * .27;\n    targetBob.position.y = Math.sin(time * 2) * 4;\n    targetMesh.rotation.x = time * 7;\n    targetMesh.rotation.y = time * 13;\n    targetMaterial.emissive.setHSL(time * 10 % 1, 1, .25);\n    targetMaterial.color.setHSL(time * 10 % 1, 1, .25);\n\n    // move tank\n    const tankTime = time * .05;\n    curve.getPointAt(tankTime % 1, tankPosition);\n    curve.getPointAt((tankTime + 0.01) % 1, tankTarget);\n    tank.position.set(tankPosition.x, 0, tankPosition.y);\n    tank.lookAt(tankTarget.x, 0, tankTarget.y);\n\n    // face turret at target\n    targetMesh.getWorldPosition(targetPosition);\n    turretPivot.lookAt(targetPosition);\n\n    // make the turretCamera look at target\n    turretCamera.lookAt(targetPosition);\n\n    // make the targetCameraPivot look at the at the tank\n    tank.getWorldPosition(targetPosition);\n    targetCameraPivot.lookAt(targetPosition);\n\n    wheelMeshes.forEach((obj) => {\n      obj.rotation.x = time * 3;\n    });\n\n    const camera = cameras[time * .25 % cameras.length | 0];\n    infoElem.textContent = camera.desc;\n\n    renderer.render(scene, camera.cam);\n\n    requestAnimationFrame(render);\n  }\n\n  requestAnimationFrame(render);\n}\n\nmain();\n"
+    },
+    "jsGist.json": {
+      "filename": "jsGist.json",
+      "type": "application/json",
+      "language": "JSON",
+      "raw_url": "https://gist.githubusercontent.com/greggman/bad0a8491bd6614e729ff01cc14089c9/raw/ac014ca1eb788c3c05b1612902b142f59fca3f7c/jsGist.json",
+      "size": 60,
+      "truncated": false,
+      "content": "{\"name\":\"ThreeJSFundamentals Scenegraph Tank\",\"settings\":{}}"
+    }
+  },
+  "public": true,
+  "created_at": "2020-10-11T08:16:53Z",
+  "updated_at": "2020-11-04T17:41:21Z",
+  "description": "ThreeJSFundamentals Scenegraph Tank",
+  "comments": 9,
+  "user": null,
+  "comments_url": "https://api.github.com/gists/bad0a8491bd6614e729ff01cc14089c9/comments",
+  "owner": {
+    "login": "greggman",
+    "id": 234804,
+    "node_id": "MDQ6VXNlcjIzNDgwNA==",
+    "avatar_url": "https://avatars2.githubusercontent.com/u/234804?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/greggman",
+    "html_url": "https://github.com/greggman",
+    "followers_url": "https://api.github.com/users/greggman/followers",
+    "following_url": "https://api.github.com/users/greggman/following{/other_user}",
+    "gists_url": "https://api.github.com/users/greggman/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/greggman/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/greggman/subscriptions",
+    "organizations_url": "https://api.github.com/users/greggman/orgs",
+    "repos_url": "https://api.github.com/users/greggman/repos",
+    "events_url": "https://api.github.com/users/greggman/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/greggman/received_events",
+    "type": "User",
+    "site_admin": false
+  },
+  "forks": [
+
+  ],
+  "history": [
+    {
+      "user": {
+        "login": "greggman",
+        "id": 234804,
+        "node_id": "MDQ6VXNlcjIzNDgwNA==",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/234804?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/greggman",
+        "html_url": "https://github.com/greggman",
+        "followers_url": "https://api.github.com/users/greggman/followers",
+        "following_url": "https://api.github.com/users/greggman/following{/other_user}",
+        "gists_url": "https://api.github.com/users/greggman/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/greggman/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/greggman/subscriptions",
+        "organizations_url": "https://api.github.com/users/greggman/orgs",
+        "repos_url": "https://api.github.com/users/greggman/repos",
+        "events_url": "https://api.github.com/users/greggman/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/greggman/received_events",
+        "type": "User",
+        "site_admin": false
+      },
+      "version": "fcbedffeccec982c99bc3963ed77f41762a8dd5a",
+      "committed_at": "2020-10-17T02:08:28Z",
+      "change_status": {
+        "total": 4,
+        "additions": 2,
+        "deletions": 2
+      },
+      "url": "https://api.github.com/gists/bad0a8491bd6614e729ff01cc14089c9/fcbedffeccec982c99bc3963ed77f41762a8dd5a"
+    },
+    {
+      "user": {
+        "login": "greggman",
+        "id": 234804,
+        "node_id": "MDQ6VXNlcjIzNDgwNA==",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/234804?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/greggman",
+        "html_url": "https://github.com/greggman",
+        "followers_url": "https://api.github.com/users/greggman/followers",
+        "following_url": "https://api.github.com/users/greggman/following{/other_user}",
+        "gists_url": "https://api.github.com/users/greggman/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/greggman/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/greggman/subscriptions",
+        "organizations_url": "https://api.github.com/users/greggman/orgs",
+        "repos_url": "https://api.github.com/users/greggman/repos",
+        "events_url": "https://api.github.com/users/greggman/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/greggman/received_events",
+        "type": "User",
+        "site_admin": false
+      },
+      "version": "16bda36d8000991414a7240edaf7f5aa709183af",
+      "committed_at": "2020-10-11T08:16:53Z",
+      "change_status": {
+        "total": 273,
+        "additions": 273,
+        "deletions": 0
+      },
+      "url": "https://api.github.com/gists/bad0a8491bd6614e729ff01cc14089c9/16bda36d8000991414a7240edaf7f5aa709183af"
+    }
+  ],
+  "truncated": false
+}
+*/
 export async function getAnonGist(gist_id) {
   const req = await fetch(`https://api.github.com/gists/${gist_id}`);
   const gist = await req.json();
@@ -200,6 +342,12 @@ export default class GitHub extends EventTarget {
       id: gist.data.id,
       name: gist.data.description,
       date: gist.data.updated_at,
+    };
+  }
+  async forkGist(gist_id) {
+    const gist = await this.authorizedOctokit.gists.fork({gist_id});
+    return {
+      id: gist.data.id
     };
   }
 

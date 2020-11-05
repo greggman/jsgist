@@ -7,11 +7,11 @@ import Section from './Section.js';
 import Embed from './Embed.js';
 
 export default function Save(props) {
-  const {data, gistId, onSave, onClose} = props;
+  const {data, gistId, gistOwnerId, onSave, onClose} = props;
   return (
     <Dialog title="Save As" onClose={onClose}>
       <Section heading="Save As Gist">
-        <SaveAsGist gistId={gistId} data={data} onClose={onClose} onSave={onSave} />
+        <SaveAsGist gistId={gistId} gistOwnerId={gistOwnerId} data={data} onClose={onClose} onSave={onSave} />
       </Section>
       <Section heading="Save As URL">
         <SaveAsURL data={data} />
