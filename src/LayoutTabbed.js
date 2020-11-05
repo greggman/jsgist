@@ -1,3 +1,4 @@
+import Ajv from 'ajv';
 import React from 'react';
 import Split from 'react-split-it';
 
@@ -5,6 +6,22 @@ import File from './File.js';
 import Log from './Log.js';
 import * as model from './model.js';
 import Runner from './Runner.js';
+import * as uiModel from './ui-model.js';
+
+const kUIStateKey = 'layoutTabbed';
+const uiStateSchema = {
+  "type": "object",
+  "properties": {
+    "showResult": { "type": "boolean" },
+    "showLog": { "type": "boolean" },
+    "currentNdx": { "type": "integer" },
+    "sizes:": { "type": "array", "items": {"type": "number"}, "minItems": 3 },
+    "lastSizes:": { "type": "array", "items": {"type": "number"}, "minItems": 3 },
+  },
+  "required": ["sizes", "lastSizes", "showResult", "showLog", "currentNdx"],
+};
+const ajv = new Ajv() // options can be passed, e.g. {allErrors: true}
+const uiStateValidator = ajv.compile(uiStateSchema);
 
 const makeId = _ => `${Date.now()}-${Math.random()}`;
 
@@ -30,13 +47,14 @@ function fixSizes(sizes, lastSizes, ndx, show) {
 export default class Layout3Horizontal extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    const state = uiModel.get()[kUIStateKey];
+    this.state = uiStateValidator(state) ? state : {
       showResult: true,
       showLog: true,
-      sizes: [0.45, 0.45, 0.1],
       currentNdx: 2,
+      sizes: [0.45, 0.45, 0.1],
+      lastSizes: [0.45, 0.45, 0.1],
     };
-    this.lastSizes = this.state.sizes.slice();
     this.files = new Map();
     this.fileToKeyMap = new Map();
   }
@@ -55,10 +73,12 @@ export default class Layout3Horizontal extends React.Component {
     return key;
   }
   setSizes = (sizes) => {
-    if (this.state.currentNdx >= 0) { this.lastSizes[0] = sizes[0] }
-    if (this.state.showResult) { this.lastSizes[1] = sizes[1]; }
-    if (this.state.showLow) { this.lastSizes[2] = sizes[2]; }
-    this.setState({sizes});
+    const lastSizes = this.state.lastSizes.slice()
+    if (this.state.currentNdx >= 0) { lastSizes[0] = sizes[0] }
+    if (this.state.showResult) { lastSizes[1] = sizes[1]; }
+    if (this.state.showLow) { lastSizes[2] = sizes[2]; }
+    this.setState({sizes, lastSizes});
+    uiModel.set(kUIStateKey, this.state);
   }
   handleGoToLine = (data) => {
     // this.files is Map of File components
@@ -77,22 +97,25 @@ export default class Layout3Horizontal extends React.Component {
     const currentNdx = this.state.currentNdx === ndx ? -1 : ndx;
     this.setState({
       currentNdx,
-      sizes: fixSizes(this.state.sizes, this.lastSizes, 0, currentNdx >= 0),
+      sizes: fixSizes(this.state.sizes, this.state.lastSizes, 0, currentNdx >= 0),
     });
+    uiModel.set(kUIStateKey, this.state);
   }
   toggleShowLog = () => {
     const showLog = !this.state.showLog;
     this.setState({
       showLog,
-      sizes: fixSizes(this.state.sizes, this.lastSizes, 2, showLog),
+      sizes: fixSizes(this.state.sizes, this.state.lastSizes, 2, showLog),
     });
+    uiModel.set(kUIStateKey, this.state);
   }
   toggleShowResult = () => {
     const showResult = !this.state.showResult;
     this.setState({
       showResult,
-      sizes: fixSizes(this.state.sizes, this.lastSizes, 1, showResult),
+      sizes: fixSizes(this.state.sizes, this.state.lastSizes, 1, showResult),
     });
+    uiModel.set(kUIStateKey, this.state);
   }
   componentDidUpdate() {
     if (this.previousNdx !== this.state.currentNdx) {
