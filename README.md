@@ -64,7 +64,7 @@ There's a long list of desired features. Feel free to help add them
   log messages. As it is it should show the errors in the log
   and if you click them they'll move your cursor to the correct box.
 
-- [ ] add export to jsfiddle/codepen/codesandbox etc..
+- [ ] add export to jsfiddle/codepen/codesandbox/snippet etc..
 
 - [ ] make log wrapper support console.log formatting options
 
