@@ -4,8 +4,9 @@ export default function Head() {
   return (
     <div className="head">
       <div>
+        <a target="_blank" rel="noopener noreferrer" href={window.location.origin}>
         <img src="/resources/images/logo-small.svg" alt="logo"/>
-      jsGist.org<span className="beta">(beta)</span>
+      jsGist.org<span className="beta">(beta)</span></a>
       </div>
       <div className="fix-help-contribute">
         <div className="three-words">

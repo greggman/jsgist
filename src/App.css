@@ -12,7 +12,6 @@
   --editor-bg-color: #fff;
 }
 
-
 html {
   box-sizing: border-box;
   font-family: sans-serif;
@@ -49,6 +48,10 @@ html, body {
   margin: 0;
   padding: 10px;
   background: var(--title-bg-color);
+}
+.head a {
+  text-decoration: none;
+  color: var(--main-fg-color);
 }
 .head img {
   height: 1em;
