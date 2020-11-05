@@ -8,7 +8,7 @@ export default function SaveAsJSON(props) {
         Copy the text below, paste into the load ui or put somewhere on the net
         and make your own URL with <code>{window.location.origin}?src=url-to-json</code>.
       </div>
-      <pre style={{userSelect: 'all'}}>{JSON.stringify(data)}</pre>
+      <pre className="layout-scrollbar" style={{userSelect: 'all'}}>{JSON.stringify(data)}</pre>
       <div><a href={`${window.location.origin}?src=${encodeURIComponent(`${window.location.origin}/example.json`)}`}>Example</a></div>
     </div>
   );
