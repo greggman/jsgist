@@ -16,11 +16,11 @@ export default class Runner extends React.Component {
   }
   handleJSError = (data) => {
     const {logManager} = this.context;
-    logManager.addMsg({...data, type: 'error'});
+    logManager.addMsg({...data, type: 'error', showStack: true});
   }
   handleJSUnhandledRejection = (data) => {
     const {logManager} = this.context;
-    logManager.addMsg({...data, type: 'error'});
+    logManager.addMsg({...data, type: 'error', showStack: true});
   }
   handleGimmeDaCodez = () => {
     this.iframe.contentWindow.postMessage({
