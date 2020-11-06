@@ -23,8 +23,10 @@
   "scripts": {
     "start": "concurrently -r \"servez public\" \"react-scripts start\"",
     "build": "npm run build-react && npm run build-embed",
+    "build-ci": "npm run build-react && npm run build-embed",
     "build-react": "react-scripts build",
     "build-embed": "node src/embed/embed.webpack.config.js",
+    "pre-build": "echo \"TBD\" && exit 0",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
