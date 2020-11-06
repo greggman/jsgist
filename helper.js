@@ -135,14 +135,19 @@
     return function stackParser(error, lineNdx = 2) {
       const stack = unifyStack(error);
       if (matcher) {
+        const lines = stack.split('\n').slice(lineNdx);
         try {
-          const lines = stack.split('\n');
-          return matcher(lines[lineNdx], stack);
+          for (const line of lines) {
+            const result = matcher(line, stack);
+            if (result) {
+              return result;
+            }
+          }
         } catch (e) {
           // do nothing
         }
       }
-      return undefined;
+      return {stack};
     };
   }();
 
