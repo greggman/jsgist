@@ -98,7 +98,7 @@ export default class Log extends React.Component {
                       onClick={() => onGoToLine(msg)}
                       data-tooltip={`${msg.section || msg.url}:${msg.lineNo}`}
                     >
-                      {msg.section || basename(msg.url)}:{msg.lineNo}
+                      {msg.section || basename(msg.url || '')}:{msg.lineNo}
                     </div>
                   </div>
                 </div>
