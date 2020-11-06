@@ -98,7 +98,7 @@ class App extends React.Component {
           const url = new URL(data.href);
           const {src} = Object.fromEntries(new URLSearchParams(url.search).entries());
           if (isGistId(src)) {
-            this.setState({gistId: src});
+            this.setState({gistId: src, gistOwnerId: data.gistOwnerId});
           }
           loaded = true;
           this.addInfo('loaded backup from local storage')
@@ -166,6 +166,7 @@ class App extends React.Component {
     storageManager.set(backupKey, JSON.stringify({
       href: window.location.href,
       data: model.getData(),
+      gistOwnerId: this.state.gistOwnerId,
     }));
     this.logManager.clear();
     console.clear();
