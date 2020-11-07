@@ -56,6 +56,7 @@ export default class UserManager {
     return this.userData;
   }
   _handleNewAuth = async() => {
+    this.userData = undefined;
     const pat = this.oauthManager.pat();
     this.github.setPat(pat);
     if (pat) {
@@ -64,7 +65,6 @@ export default class UserManager {
         this.userData = data;
       } catch (e) {
         this.addError(e);
-        this.userData = undefined;
       }
     }
     this.subscriptionManager.notify(kUserManagerKey);

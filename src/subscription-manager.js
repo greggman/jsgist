@@ -1,9 +1,17 @@
 
+function assertIsFunction(fn) {
+  const type = typeof fn;
+  if (type !== 'function') {
+    throw new Error('not a function');
+  }
+}
+
 export default class SubscriptionManager {
   constructor() {
     this.itemToSubscriptionMap = new Map();
   }
   subscribe(item, fn) {
+    assertIsFunction(fn);
     this.unsubscribe(item, fn);
     let fns = this.itemToSubscriptionMap.get(item);
     if (!fns) {
@@ -13,6 +21,7 @@ export default class SubscriptionManager {
     fns.push(fn);
   }
   unsubscribe(item, fn) {
+    assertIsFunction(fn);
     const fns = this.itemToSubscriptionMap.get(item);
     if (fns) {
       const ndx = fns.indexOf(fn);
