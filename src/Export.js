@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {getOrFind} from './utils.js';
+import {getOrFind} from './utils';
 
 /*
 

@@ -3,15 +3,20 @@ import {classNames} from './css-utils.js';
 import * as gists from './gists.js';
 import ServiceContext from './ServiceContext.js';
 
-export default class LoadGist extends React.Component {
-  constructor () {
-    super();
+type LoadGistState = {
+  loading: boolean,
+  gists: any[],
+};
+
+export default class LoadGist extends React.Component<{}, LoadGistState> {
+  constructor (props: {}) {
+    super(props);
     this.state = {
       loading: false,
       gists: gists.getGists(),
     };
   }
-  handleNewGists = (gists) => {
+  handleNewGists = (gists: any[]) => {
     this.setState({gists});
   }
   onUserStatusChange = () => {
@@ -31,12 +36,12 @@ export default class LoadGist extends React.Component {
     gists.unsubscribe(this.handleNewGists);
     userManager.unsubscribe(this.onUserStatusChange);
   }
-  loadGists = async(e) => {
+  loadGists = async() => {
     const {addError, github} = this.context;
     this.setState({loading: true});
     try {
       const gistArray = await github.getUserGists();
-      const gistsById = gistArray.reduce((gists, gist) => {
+      const gistsById = gistArray.reduce((gists: any[], gist: any) => {
         gists[gist.id] = {
           name: gist.description,
           date: gist.updated_at,

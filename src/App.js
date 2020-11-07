@@ -11,7 +11,7 @@ import Load from './Load.js';
 import {isGistId, loadGistFromSrc} from './loader.js';
 import {LogManager} from './Log.js';
 import * as model from './model.js';
-import OAuthManager from './OAuthManager.js';
+import OAuthManager from './OAuthManager';
 import Save from './Save.js';
 import ServiceContext from './ServiceContext.js';
 import Settings from './Settings.js';

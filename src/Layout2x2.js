@@ -7,7 +7,7 @@ import Log from './Log.js';
 import * as model from './model.js';
 import Runner from './Runner.js';
 import * as uiModel from './ui-model.js';
-import {getOrFindNdx} from './utils.js';
+import {getOrFindNdx} from './utils';
 
 const kUIStateKey = 'layout2x2';
 

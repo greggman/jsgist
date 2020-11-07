@@ -1,6 +1,6 @@
 import React from 'react';
 import Dialog from './Dialog.js';
-import LoadGist from './LoadGist.js';
+import LoadGist from './LoadGist';
 import LoadJSON from './LoadJSON.js';
 import LoadURL from './LoadURL.js';
 import Section from './Section.js';

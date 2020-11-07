@@ -1,7 +1,9 @@
-const nullHandlers = new Map();
-const fromToHandlersMap = new Map([[null, nullHandlers]]);
+type Handler = (data: any) => void;
+type StringToHandlers = Map<string, Handler[]>;
+const nullHandlers : StringToHandlers = new Map();
+const fromToHandlersMap : Map<Window | null, StringToHandlers> = new Map([[null, nullHandlers]]);
 
-export function on(type, from = null, fn) {
+export function on(type: string, from: Window | null, fn: (data: any) => void) {
   remove(type, from, fn);
   let handlers = fromToHandlersMap.get(from);
   if (!handlers) {
@@ -16,7 +18,7 @@ export function on(type, from = null, fn) {
   fns.push(fn);
 }
 
-export function remove(type, from = null, fn) {
+export function remove(type: string, from: Window | null, fn: (data: any) => void) {
   let handlers = fromToHandlersMap.get(from);
   if (!handlers) {
     return;
@@ -36,7 +38,7 @@ export function remove(type, from = null, fn) {
   }
 }
 
-function callHandler(handlers, type, data) {
+function callHandler(handlers: StringToHandlers, type: string, data: any) {
   const fns = handlers.get(type);
   if (fns) {
     for (const fn of fns) {
@@ -47,9 +49,9 @@ function callHandler(handlers, type, data) {
   return false;
 }
 
-window.addEventListener('message', (e) => {
+window.addEventListener('message', (e: MessageEvent) => {
   const {type, data} = e.data;
-  const handlers = fromToHandlersMap.get(e.source);
+  const handlers = fromToHandlersMap.get(e.source as Window);
   if (handlers) {
     if (callHandler(handlers, type, data)) {
       return;

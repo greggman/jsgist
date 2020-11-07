@@ -1,28 +1,31 @@
-import SubscriptionManager from './subscription-manager.js';
+import SubscriptionManager from './SubscriptionManager';
 
 export default class StorageManager {
-  constructor(prefix) {
+  prefix: string;
+  subscriptionManager: SubscriptionManager;
+
+  constructor(prefix: string) {
     this.prefix = `${prefix}-`;
     this.subscriptionManager = new SubscriptionManager();
     window.addEventListener('storage', this._handleNewValue);
   }
-  _handleNewValue = (e) => {
+  private _handleNewValue = (e: StorageEvent) => {
     const key = e.key;
-    if (key.startsWith(this.prefix)) {
+    if (key && key.startsWith(this.prefix)) {
       const unPrefixedKey = key.substr(this.prefix.length);
       this.subscriptionManager.notify(unPrefixedKey);
     }
   }
-  _addPrefix(key) {
+  private _addPrefix(key: string): string {
     return `${this.prefix}${key}`;
   }
-  subscribe(key, fn) {
+  subscribe(key: string, fn: () => void): void {
     this.subscriptionManager.subscribe(key, fn);
   }
-  unsubscribe(key, fn) {
+  unsubscribe(key: string, fn: () => void): void {
     this.subscriptionManager.unsubscribe(key, fn);
   }
-  get(key, session = false) {
+  get(key: string, session = false) {
     const k = this._addPrefix(key);
     if (session) {
       const v = sessionStorage.getItem(k);
@@ -32,7 +35,7 @@ export default class StorageManager {
     }
     return localStorage.getItem(k);
   }
-  set(key, value, session = false) {
+  set(key: string, value: string, session = false) {
     const k = this._addPrefix(key);
     if (session) {
       sessionStorage.setItem(k, value);
@@ -40,7 +43,7 @@ export default class StorageManager {
     localStorage.setItem(k, value);
     this.subscriptionManager.notify(key);
   }
-  delete(key, session) {
+  delete(key: string, session = false) {
     const k = this._addPrefix(key);
     if (session) {
       sessionStorage.removeItem(k);
@@ -52,4 +55,3 @@ export default class StorageManager {
     window.removeEventListener('storage', this._handleNewValue);
   }
 }
-

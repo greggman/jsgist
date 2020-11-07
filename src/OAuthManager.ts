@@ -1,20 +1,25 @@
 
 import {clientId} from './globals.js';
 import {createURL} from './url.js';
-import {createPopup} from './utils.js';
-import * as winMsgMgr from './window-message-manager.js';
+import {createPopup} from './utils';
+import StorageManager from './StorageManager';
+import * as winMsgMgr from './WindowMessageManager';
 
 const patKey = 'pat';
 
 const getTokenURL = 'https://auth.jsgist.org/oauth-helper'
 export default class OAuthManager {
-  constructor(storageManager) {
+  private _popup?: Window;
+  private _state?: string;
+  private _storageManager: StorageManager;
+
+  constructor(storageManager: StorageManager) {
     this._popup = undefined;
     this._state = undefined;  // last state sent to auth
     this._storageManager = storageManager;
-    winMsgMgr.on('auth', null, (data) => {
+    winMsgMgr.on('auth', null, (data: any) => {
       this._closePopup();
-      if (data.state === this.state) {
+      if (data.state === this._state) {
         this.requestToken(data);
       }
     });
@@ -23,19 +28,19 @@ export default class OAuthManager {
   pat() {
     return this._storageManager.get(patKey);
   }
-  subscribe(fn) {
+  subscribe(fn: () => void) {
     this._storageManager.subscribe(patKey, fn);
   }
-  unsubscribe(fn) {
+  unsubscribe(fn: () => void) {
     this._storageManager.unsubscribe(patKey, fn);
   }
   _closePopup() {
-    if (this.popup) {
-      this.popup.close();
-      this.popup = undefined;
+    if (this._popup) {
+      this._popup.close();
+      this._popup = undefined;
     }
   }
-  requestToken = async (auth) => {
+  requestToken = async (auth: any) => {
     try {
       const params = {
         client: clientId,
@@ -57,12 +62,12 @@ export default class OAuthManager {
   }
   login = () => {
     this._closePopup();
-    this.state = `${Date.now()}-${Math.random()}`;  // does this need to special? Seems like no
+    this._state = `${Date.now()}-${Math.random()}`;  // does this need to special? Seems like no
     const url = createURL('https://github.com/login/oauth/authorize', {
       client_id: clientId,
       scope: 'gist',
-      state: this.state,
+      state: this._state,
     });
-    this.popup = createPopup(url);
+    this._popup = createPopup(url);
   }
 }
