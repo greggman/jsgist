@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {classNames} from './css-utils';
-import ServiceContext from './ServiceContext.js';
+import {classNames} from '../libs/css-utils';
+import ServiceContext from '../ServiceContext.js';
 
 function basename(url) {
   const ndx = url.lastIndexOf('/');

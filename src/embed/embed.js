@@ -1,6 +1,6 @@
-import {createURL} from '../url.js';
-import {loadGistFromSrc} from '../loader.js';
-import {getAnonGist, getUserData} from '../GitHub.js';
+import {createURL} from '../libs/url.js';
+import {loadGistFromSrc} from '../libs/loader.js';
+import {getAnonGist, getUserData} from '../libs/GitHub.js';
 
 async function main() {
   const github = {

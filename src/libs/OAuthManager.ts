@@ -1,5 +1,5 @@
 
-import {clientId} from './globals.js';
+import {clientId} from '../globals.js';
 import {createURL} from './url.js';
 import {createPopup} from './utils';
 import StorageManager from './StorageManager';

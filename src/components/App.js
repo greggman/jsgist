@@ -2,20 +2,20 @@ import React from 'react';
 
 import EditLine from './EditLine.js';
 import Footer from './Footer.js';
-import {storageManager} from './globals.js';
-import GitHub from './GitHub.js';
+import {storageManager} from '../globals.js';
+import GitHub from '../libs/GitHub.js';
 import Head from './Head.js';
 import Help from './Help.js';
 import IDE from './IDE.js';
 import Load from './Load.js';
-import {isGistId, loadGistFromSrc} from './loader.js';
+import {isGistId, loadGistFromSrc} from '../libs/loader.js';
 import {LogManager} from './Log.js';
-import * as model from './model.js';
-import OAuthManager from './OAuthManager';
+import * as model from '../libs/model.js';
+import OAuthManager from '../libs/OAuthManager';
 import Save from './Save.js';
-import ServiceContext from './ServiceContext.js';
+import ServiceContext from '../ServiceContext.js';
 import Settings from './Settings.js';
-import UserManager from './UserManager.js';
+import UserManager from '../libs/UserManager.js';
 
 import './App.css';
 

@@ -5,7 +5,7 @@ import Layout3Horizontal from './Layout3Horizontal.js';
 import Layout2x2 from './Layout2x2.js';
 import LayoutTabbed from './LayoutTabbed.js';
 
-import * as uiModel from './ui-model.js';
+import * as uiModel from '../libs/ui-model.js';
 
 const layoutModes = [
   Layout3Vertical,

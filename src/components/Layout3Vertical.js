@@ -5,7 +5,7 @@ import Split from 'react-split-it';
 import Files from './Files.js';
 import Log from './Log.js';
 import Runner from './Runner.js';
-import * as uiModel from './ui-model.js';
+import * as uiModel from '../libs/ui-model.js';
 
 const kUIStateKey = 'layout3Vertical';
 

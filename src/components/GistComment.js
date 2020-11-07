@@ -1,10 +1,10 @@
 import React from 'react';
 
 import Code from './Code.js';
-import {isDevelopment} from './flags.js';
-import ServiceContext from './ServiceContext.js';
-import {createURL} from './url.js';
-import * as winMsgMgr from './WindowMessageManager';
+import {isDevelopment} from '../libs/flags.js';
+import ServiceContext from '../ServiceContext.js';
+import {createURL} from '../libs/url.js';
+import * as winMsgMgr from '../libs/WindowMessageManager';
 
 const helperUrl = isDevelopment
     ? 'http://localhost:8080/gist-comments.js'

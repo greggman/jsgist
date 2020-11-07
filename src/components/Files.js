@@ -2,9 +2,9 @@ import Ajv from 'ajv';
 import React from 'react';
 import Split, {moveGuttersComputeNewSizes} from 'react-split-it';
 
-import * as model from './model.js';
+import * as model from '../libs/model.js';
 import File from './File.js';
-import * as uiModel from './ui-model.js';
+import * as uiModel from '../libs/ui-model.js';
 
 const makeId = _ => `${Date.now()}+${Math.random()}`;
 

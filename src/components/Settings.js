@@ -2,15 +2,15 @@ import React from 'react';
 
 import Dialog from './Dialog.js';
 import Section from './Section.js';
-import ServiceContext from './ServiceContext.js';
+import ServiceContext from '../ServiceContext.js';
 
-import verticalIcon from './icons/vertical-layout.svg';
-import horizontalIcon from './icons/horizontal-layout.svg';
-import twoByTwoIcon from './icons/two-by-two-layout.svg';
-import tabbedIcon from './icons/tabbed-layout.svg';
+import verticalIcon from '../icons/vertical-layout.svg';
+import horizontalIcon from '../icons/horizontal-layout.svg';
+import twoByTwoIcon from '../icons/two-by-two-layout.svg';
+import tabbedIcon from '../icons/tabbed-layout.svg';
 
-import {classNames} from './css-utils.js';
-import * as uiModel from './ui-model.js';
+import {classNames} from '../libs/css-utils.js';
+import * as uiModel from '../libs/ui-model.js';
 
 function RadioOption(props) {
   const {children, onChange, selected} = props;

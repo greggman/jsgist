@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import Code from './Code.js';
-import * as model from './model.js';
-import ServiceContext from './ServiceContext.js';
+import * as model from '../libs/model.js';
+import ServiceContext from '../ServiceContext.js';
 
 export default function LoadJSON(props) {
   const [json, setJSON] = useState('');

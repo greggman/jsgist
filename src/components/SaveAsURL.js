@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {jsonToCompressedBase64} from './compression.js';
+import {jsonToCompressedBase64} from '../libs/compression.js';
 
 export default function SaveAsURL(props) {
   const {data} = props;

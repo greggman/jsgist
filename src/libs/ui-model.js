@@ -1,4 +1,4 @@
-import {storageManager} from './globals.js';
+import {storageManager} from '../globals.js';
 import * as model from './model.js';
 
 const settingsKey = 'ui-settings';

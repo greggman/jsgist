@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import * as model from './model';
-import {classNames} from './css-utils.js';
+import * as model from '../libs/model';
+import {classNames} from '../libs/css-utils.js';
 
 function SetFeature(props) {
   function setFeature() {

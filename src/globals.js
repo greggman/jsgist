@@ -1,5 +1,5 @@
-import StorageManager from './StorageManager';
-import {isDevelopment} from './flags.js';
+import StorageManager from './libs/StorageManager';
+import {isDevelopment} from './libs/flags.js';
 
 export const storageManager = new StorageManager('jsgist');
 export const clientId = isDevelopment

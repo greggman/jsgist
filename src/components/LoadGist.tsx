@@ -1,7 +1,7 @@
 import React from 'react';
-import {classNames} from './css-utils.js';
-import * as gists from './gists.js';
-import ServiceContext from './ServiceContext.js';
+import {classNames} from '../libs/css-utils.js';
+import * as gists from '../libs/gists.js';
+import ServiceContext from '../ServiceContext.js';
 
 type LoadGistState = {
   loading: boolean,

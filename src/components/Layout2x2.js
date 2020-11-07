@@ -4,10 +4,10 @@ import Split from 'react-split-it';
 
 import File from './File.js';
 import Log from './Log.js';
-import * as model from './model.js';
+import * as model from '../libs/model.js';
 import Runner from './Runner.js';
-import * as uiModel from './ui-model.js';
-import {getOrFindNdx} from './utils';
+import * as uiModel from '../libs/ui-model.js';
+import {getOrFindNdx} from '../libs/utils';
 
 const kUIStateKey = 'layout2x2';
 
