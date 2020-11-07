@@ -64,7 +64,7 @@ There's a long list of desired features. Feel free to help add them
   log messages. As it is it should show the errors in the log
   and if you click them they'll move your cursor to the correct box.
 
-- [ ] add export to jsfiddle/codepen/codesandbox/snippet etc..
+- [X] add export to jsfiddle/codepen/codesandbox/snippet etc..
 
 - [ ] make log wrapper support console.log formatting options
 
@@ -75,21 +75,6 @@ There's a long list of desired features. Feel free to help add them
   as it is you go to github to delete gists.
 
 - [ ] show revisions and forks
-
-  I'm not sure there's a good solution here. I don't think gists are
-  a good place to store revisions? 
-  
-  * We could add them inside the main gist. This would make the data
-    stored and the time save/load get slower and slower.
-  
-  * We could load the old gist and save it as a new gist then save
-    the current gist over the old gists (so the id stays the first)
-    gist. The problem with this is there's easy way to handle loading
-    an old gist and saving. If you make revisions 1, 2, 3, 4, then go
-    to revision 2 and save it has no knowledge of revision 3 and 4?
-    
-    Hmmm, I guess if each revision stores the id it was then you can
-    read that gist and find the top revision.
 
 - [ ] allow more files.
 
