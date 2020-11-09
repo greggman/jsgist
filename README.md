@@ -128,4 +128,8 @@ There's a long list of desired features. Feel free to help add them
 
   There are currently no tests.
 
+## Development
+
+See [here](DEVELOPMENT.md)
+
 ## License: [MIT](LICENSE.md)
