@@ -42,7 +42,7 @@
   }
 
   function unifyStack(error) {
-    if (!error.stack) {
+    if (!error?.stack) {
       return '';
     }
     const re = new RegExp(`(^\\w+: ${escapeRegExp(error.message || error.reason)})\n`)
@@ -166,7 +166,7 @@
   }
 
   window.addEventListener('error', function(e) {
-    originalConsole.error(e.error);
+    originalConsole.error(e.error || e);
     const {url, lineNo, colNo, stack} = parseStack(e.error, 0) || {};
     sendMsgInfo('jsError', {
       url: e.filename || url,
@@ -178,7 +178,7 @@
   });
 
   window.addEventListener('unhandledrejection', function(e) {
-    originalConsole.error(e.reason);
+    originalConsole.error(e.reason || e);
     const {url, lineNo, colNo, stack} = parseStack(e.reason, 0) || {};
     sendMsgInfo('jsUnhandledRejection', {
       url: e.filename || url,
