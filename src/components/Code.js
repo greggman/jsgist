@@ -9,6 +9,14 @@ import 'codemirror/mode/htmlmixed/htmlmixed.js';
 import 'codemirror/mode/javascript/javascript.js';
 import 'codemirror/addon/scroll/simplescrollbars.js';
 import 'codemirror/addon/scroll/simplescrollbars.css';
+import 'codemirror/addon/search/search.js';
+import 'codemirror/addon/search/searchcursor.js';
+import 'codemirror/addon/search/jump-to-line.js';
+import 'codemirror/addon/dialog/dialog.js';
+import 'codemirror/addon/dialog/dialog.css';
+import 'codemirror/addon/edit/matchbrackets.js';
+import 'codemirror/addon/edit/matchtags.js';
+import 'codemirror/addon/fold/xml-fold.js';
 
 const darkMatcher = window.matchMedia
     ? window.matchMedia('(prefers-color-scheme: dark)')
@@ -53,16 +61,21 @@ export default class Code extends React.Component {
     const {options = {}, onValueChange = noop} = this.props;
     const {value} =  this.state;
     const isDarkMode = darkMatcher.matches;
+    const codeMirrorOptions = {
+      mode: 'javascript',
+      scrollbarStyle: 'overlay',
+      theme: isDarkMode ? 'material' : 'eclipse',
+      matchBrackets: true,
+      lineNumbers: true,
+      ...(options.editor && options.editor),
+    };
+    if (codeMirrorOptions.mode.indexOf('html') >= 0) {
+      codeMirrorOptions.matchTags = true;
+    }
     return (
       <CodeMirror
         value={value}
-        options={{
-          mode: 'javascript',
-          scrollbarStyle: 'overlay',
-          theme: isDarkMode ? 'material' : 'eclipse',
-          lineNumbers: true,
-          ...(options.editor && options.editor),
-        }}
+        options={codeMirrorOptions}
         onBeforeChange={(editor, data, value) => {
           this.setState({value});
         }}

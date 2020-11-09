@@ -48,7 +48,7 @@ async function main() {
     }
   });
 
-  iframe.src = 'https://jsgistrunner.devcomments.org/runner.html';
+  iframe.src = createURL('https://jsgistrunner.devcomments.org/runner-03.html', {url: 'https://jsgist.org/jsgist-runner.js'});
 }
 
 main();
