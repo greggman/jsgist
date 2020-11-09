@@ -4,7 +4,7 @@ export default function Embed(props) {
   const {gistId} = props;
   return (
     <div>
-      <div>
+      <div className="markdown">
         <p>
         You can embed a jsGist by creating an iframe pointing to
         {' '}<code>https://jsgist.org/embed.html?src=&lt;src&gt;</code>{' '} where
@@ -22,8 +22,8 @@ export default function Embed(props) {
               <p>
               For example:
               </p>
-              <pre><code>
-      &lt;iframe src="https://jsgist.org/embed.html?src={gistId}" &gt;&lt;/iframe&gt;
+              <pre><code style={{userSelect: 'all'}}>
+      &lt;iframe src="https://jsgist.org/embed.html?src={gistId}"&gt;&lt;/iframe&gt;
               </code></pre>
             </React.Fragment>
         }
