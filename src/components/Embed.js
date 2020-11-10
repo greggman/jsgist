@@ -20,7 +20,7 @@ export default function Embed(props) {
         { !!gistId &&
             <React.Fragment>
               <p>
-              For example:
+              For example to embed the current gist:
               </p>
               <pre><code style={{userSelect: 'all'}}>
       &lt;iframe src="https://jsgist.org/embed.html?src={gistId}"&gt;&lt;/iframe&gt;
