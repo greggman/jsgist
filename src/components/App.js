@@ -16,6 +16,7 @@ import Save from './Save.js';
 import ServiceContext from '../ServiceContext.js';
 import Settings from './Settings.js';
 import UserManager from '../libs/UserManager.js';
+import * as winMsgMgr from '../libs/WindowMessageManager';
 
 import './App.css';
 
@@ -46,6 +47,7 @@ class App extends React.Component {
     });
   }
   componentDidMount() {
+    winMsgMgr.on('newGist', null, this.handleNewGist);
     this.github.addEventListener('userdata', (e) => {
       this.setState({
         userData: e.data,
@@ -108,8 +110,12 @@ class App extends React.Component {
       }
       storageManager.delete(backupKey);
     }
-    if (!loaded && query.src) {
-      this.loadData(query.src);
+    if (!loaded) {
+      if (query.src) {
+        this.loadData(query.src);
+      } else if (query.newGist) {
+        window.opener.postMessage({type: 'gimmeDaCodez'}, '*');
+      }
     }
   }
   async loadData(src) {
@@ -134,6 +140,19 @@ class App extends React.Component {
       this.handleRun();
     }
   }
+  handleNewGist = (data) => {
+    let success = true;
+    try {
+      model.setData(data);
+    } catch (e) {
+      success = false;
+      console.warn(e);
+      this.addError(`could create new jsGist: ${e}`);
+    }
+    if (success) {
+      this.handleRun();
+    }
+  };
   addMsg = (msg, className) => {
     switch (className) {
       case 'error':
