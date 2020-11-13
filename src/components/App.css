@@ -33,6 +33,9 @@ html, body {
 .App {
   height: 100%;
 }
+.error-msg {
+  color: var(--error-fg-color);
+}
 .content {
   height: 100%;
   display: flex;
