@@ -4,15 +4,15 @@
   "files": [
     {
       "name": "index.html",
-      "content": "<div>hello</div>",
+      "content": "<div>hello</div>"
     },
     {
       "name": "index.css",
-      "content": "body { background: yellow; }",
+      "content": "body { background: yellow; }"
     },
     {
       "name": "index.js",
-      "content": "console.log('world');",
+      "content": "console.log('world');"
     }
   ]
 }
