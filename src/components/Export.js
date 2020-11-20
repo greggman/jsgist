@@ -148,7 +148,6 @@ export default class Export extends React.Component {
       <div>
         <button onClick={this.exportToCodepen}>Codepen</button>
         <button onClick={this.exportToJSFiddle}>JSFiddle</button>
-        JSFiddle
         <p>StackOverflow Snippet (copy the code below paste into S.O.)</p>
         <div>
           <div><input type="radio" id="export-as-module" checked={asModule} onChange={_ => this.onChange(true)}/><label htmlFor="export-as-module">As es6 module</label></div>
