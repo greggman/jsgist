@@ -3,18 +3,40 @@ import { Octokit } from '@octokit/rest';
 const userAgent = 'jsGist v0.0.1';
 const emptyValue = '/*bug-in-github-api-content-can-not-be-empty*/';
 
+function getEmptyFileHack(file) {
+  return file.content.startsWith(emptyValue)
+                ? file.content.substr(emptyValue.length)
+                : file.content;
+}
+
+// there are 3 forms current
+//
+// 1. files are stored by filename (legacy)
+// 2. files are stored as JSON (this happens if there are any duplicate names)
+// 3. files are stored by filename and filenames references them in order
+
 export function getGistContent(gist) {
   const data = JSON.parse(gist.files['jsGist.json'].content);
-  data.files = Object.entries(gist.files)
-    .filter(([name]) => name !== 'jsGist.json')
-    .map(([name, file]) => {
+  // github stores files by filename but we need them in the same order in the array
+  // they started with so they go to the correct pane.
+  if (data.filenames) {
+    data.files = data.filenames.map(name => {
       return {
-        name,
-        content: file.content.startsWith(emptyValue)
-            ? file.content.substr(emptyValue.length)
-            : file.content,
-      }
-    }).concat(data.files || []);
+        name: name,
+        content: getEmptyFileHack(gist.files[name]),
+      };
+    });
+  } else {
+    // legacy path if there are no filenames
+    data.files = Object.entries(gist.files)
+      .filter(([name]) => name !== 'jsGist.json')
+      .map(([name, file]) => {
+        return {
+          name,
+          content: getEmptyFileHack(file),
+        }
+      }).concat(data.files || []);
+  }
   return data;
 } 
 
@@ -206,6 +228,7 @@ function createGistData(data, gist_id) {
   const noDuplicateNames = Object.keys(files).length === data.files.length + 1;
   if (noDuplicateNames) {
     delete saveData.files;
+    saveData.filenames = data.files.map(({name}) => name);
   } else {
     // save the files in the json
     files = {
