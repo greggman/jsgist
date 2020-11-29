@@ -52,6 +52,13 @@ export function addGist(id, name, date, _public) {
   saveGistsToLocalStorage(gists);
 }
 
+export function removeGist(id) {
+  const gists = {...model.get('gists')};
+  delete gists[id];
+  model.set('gists', gists);
+  saveGistsToLocalStorage(gists);
+}
+
 function saveGistsToLocalStorage(gists) {
   // send to other windows
   storageManager.set(gistsKey, JSON.stringify(gists));

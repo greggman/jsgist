@@ -372,7 +372,10 @@ export default class GitHub extends EventTarget {
       id: gist.data.id
     };
   }
-
+  async deleteGist(gist_id) {
+    const result = await this.authorizedOctokit.gists.delete({gist_id});
+    return result;
+  }
   async createGistComment(gist_id, body) {
     const result = await this.authorizedOctokit.gists.createComment({
       gist_id,
