@@ -93,6 +93,7 @@ export default class Log extends React.Component {
                   <div className={msg.count ? "count" : "no-count"}>{msg.count ? msg.count : ''}</div>
                   <div className="msg">
                     {msg.msg}
+                    <span>&nbsp;</span> {/* this is to prevent auto-selection to the next element when double clicking */}
                     <div
                       className={classNames('file', {tooltip, fileLink: msg.section})}
                       onClick={() => onGoToLine(msg)}
