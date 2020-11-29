@@ -8,6 +8,7 @@ export default class SaveAsGist extends React.Component {
     super();
     this.state = {
       saving: false,
+      secret: false,
     };
   }
   componentDidMount() {
@@ -21,14 +22,18 @@ export default class SaveAsGist extends React.Component {
   onPatChange = () => {
     this.forceUpdate();
   }
+  toggleSecret = () => {
+    this.setState({secret: !this.state.secret});
+  }
   saveNew = async() => {
     const {github, addError} = this.context;
+    const {secret} = this.state;
     this.setState({saving: true});
     const {data, onSave, onClose} = this.props;
     let success = false;
     try {
-      const {id, name, date} = await github.createGist(data);
-      gists.addGist(id, name, date);
+      const {id, name, date, public: _public} = await github.createGist(data, secret);
+      gists.addGist(id, name, date, _public);
       onSave(id);
       success = true;
     } catch (e) {
@@ -45,8 +50,8 @@ export default class SaveAsGist extends React.Component {
     const {data, gistId, onClose} = this.props;
     let success = false;
     try {
-      const {id, name, date} = await github.updateGist(gistId, data);
-      gists.addGist(id, name, date);
+      const {id, name, date, public: _public} = await github.updateGist(gistId, data);
+      gists.addGist(id, name, date, _public);
       success = true;
     } catch (e) {
       addError(`could not update gist: ${e}`)
@@ -59,12 +64,13 @@ export default class SaveAsGist extends React.Component {
   forkAndSave = async() => {
     const {github, addError} = this.context;
     const {data, gistId, onSave, onClose} = this.props;
+    const {secret} = this.state;
     this.setState({saving: true});
     let success = false;
     try {
-      const {id: newId} = await github.forkGist(gistId);
-      const {id, name, date} = await github.updateGist(newId, data);
-      gists.addGist(id, name, date);
+      const {id: newId} = await github.forkGist(gistId, secret);
+      const {id, name, date, public: _public} = await github.updateGist(newId, data);
+      gists.addGist(id, name, date, _public);
       onSave(id);
       success = true
     } catch (e) {
@@ -86,7 +92,7 @@ export default class SaveAsGist extends React.Component {
     );
   }
   renderSave() {
-    const {saving} = this.state;
+    const {saving, secret} = this.state;
     const {userManager} = this.context;
     const userData = userManager.getUserData();
     const {gistId, gistOwnerId} = this.props;
@@ -94,21 +100,40 @@ export default class SaveAsGist extends React.Component {
     const canFork = userData && gistId && userData.id !== gistOwnerId;
     return (
       <div>
-        <button
-          className={classNames({disabled: saving})}
-          data-type="new"
-          onClick={this.saveNew}
-        >Save to New Gist</button>
-        <button
-          className={classNames({disabled: !canUpdate || saving})}
-          data-type="update"
-          onClick={this.saveOverExisting}
-        >Update Current Gist</button>
-        <button
-          className={classNames({disabled: !canFork || saving})}
-          data-type="fork"
-          onClick={this.forkAndSave}
-        >Fork and Save Gist</button>
+        <div>
+          <button
+            className={classNames({disabled: saving})}
+            data-type="new"
+            onClick={this.saveNew}
+          >Save to New Gist</button>
+          <button
+            className={classNames({disabled: !canUpdate || saving})}
+            data-type="update"
+            onClick={this.saveOverExisting}
+          >Update Current Gist</button>
+          <button
+            className={classNames({disabled: !canFork || saving})}
+            data-type="fork"
+            onClick={this.forkAndSave}
+          >Fork and Save Gist</button>
+        </div>
+        <div>
+          <br/>
+          <input
+            type="checkbox"
+            checked={secret}
+            id="save-secret"
+            onChange={this.toggleSecret}
+          />
+          <label htmlFor="save-secret">Secret (unlisted)</label>
+          <blockquote>Warning:
+            <ul>
+              <li>You can not change a gist from public to secret</li>
+              <li>Secret gists are still publicly accessible they're just unlisted</li>
+            </ul>
+            (<a href="https://docs.github.com/en/free-pro-team@latest/github/writing-on-github/creating-gists" target="_blank" rel="noopener noreferrer">see docs</a>)
+          </blockquote>
+        </div>
       </div>
     );
   }

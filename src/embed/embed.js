@@ -4,7 +4,7 @@ import {getAnonGist, getUserData} from '../libs/GitHub.js';
 
 async function main() {
   const github = {
-    async getAnonGist(gist_id) {
+    async getGist(gist_id) {
       return await getAnonGist(gist_id);
     }
   };

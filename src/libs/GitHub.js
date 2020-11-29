@@ -200,7 +200,7 @@ export function getUserData(data) {
       : undefined;
 }
 
-function createGistData(data, gist_id) {
+function createGistData(data, secret, gist_id) {
   let files = data.files.reduce((files, file) => {
     files[file.name] = {
       content: file.content.trim() ? file.content : `${emptyValue}${file.content}`,
@@ -246,7 +246,7 @@ function createGistData(data, gist_id) {
   return {
     files,
     description: data.name,
-    ...(!gist_id && {public: !data.settings.private}),
+    ...(!gist_id && {public: !secret}),
     ...(gist_id && {gist_id}),
   };
 }
@@ -336,35 +336,34 @@ export default class GitHub extends EventTarget {
     // return await this.authorizedOctokit.gists.list();
   }
 
-  async getAnonGist(gist_id) {
-    const {data, rawData} = await getAnonGist(gist_id);
-    this._updateUserData(rawData);
-    return {data, rawData};
+  async getGist(gist_id) {
+    const octokit = this.authorizedOctokit || this.octokit;
+    const gist = await octokit.gists.get({gist_id});
+    return {
+      data: getGistContent(gist.data),
+      rawData: gist.data,
+    };
   }
 
-  async getUserGist(gist_id) {
-    const gist = await this.octokit.gists.get({gist_id});
-    this._updateUserData(gist.data);
-    return getGistContent(gist.data);
-  }
-
-  async createGist(data) {
-    const gistData = createGistData(data);
+  async createGist(data, secret = false) {
+    const gistData = createGistData(data, secret);
     const gist = await this.authorizedOctokit.gists.create(gistData);
     this._updateUserData(gist.data);
     return {
       id: gist.data.id,
       name: gist.data.description,
       date: gist.data.updated_at,
+      public: gist.data.public,
     };
   }
   async updateGist(gist_id, data) {
-    const gistData = createGistData(data, gist_id);
+    const gistData = createGistData(data, false, gist_id);
     const gist = await this.authorizedOctokit.gists.update(gistData);
     return {
       id: gist.data.id,
       name: gist.data.description,
       date: gist.data.updated_at,
+      public: gist.data.public,
     };
   }
   async forkGist(gist_id) {

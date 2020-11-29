@@ -45,6 +45,7 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
         gists[gist.id] = {
           name: gist.description,
           date: gist.updated_at,
+          public: gist.public,
         };
         return gists;
       }, {});
@@ -69,8 +70,8 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
     const {gists, loading} = this.state;
     const userData = userManager.getUserData();
     const canLoad = !!userData && !loading;
-    const gistArray = Object.entries(gists).map(([id, {name, date}]) => {
-      return {id, name, date};
+    const gistArray = Object.entries(gists).map(([id, {name, date, public: _public}]) => {
+      return {id, name, date, public: _public};
     }).sort((b, a) => a.date < b.date ? -1 : ((a.date > b.date) ? 1 : 0));
     return (
       <div>
@@ -90,6 +91,7 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
                       <tr key={`g${ndx}`}>
                         <td><a href={`${window.location.origin}?src=${encodeURIComponent(gist.id)}`}>{gist.name}</a></td>
                         <td>{gist.date.substring(0, 10)}</td>
+                        <td>{gist.public ? '' : '🔒'}</td>
                       </tr>
                     );
                   })

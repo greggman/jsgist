@@ -41,8 +41,8 @@ storageManager.subscribe(gistsKey, () => {
   model.set('gists', getStoredGists());
 });
 
-export function addGist(id, name, date) {
-  const gist = {name, date};
+export function addGist(id, name, date, _public) {
+  const gist = {name, date, public: _public};
   if (!gistValidator(gist)) {
     throw new Error(`gist not valid:\n${gistValidator.errors.map(e => `${e.message}: ${e.dataPath}`)}`)
   }
