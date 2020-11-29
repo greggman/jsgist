@@ -151,7 +151,7 @@ iframe {
 
   function sendMsgInfo(msgType, data) {
     const {msg, url, lineNo, colNo, type, stack} = data;
-    const {section, lineNo: fixedLineNo} = (url && url.endsWith('user-jsgist.html'))
+    const {section, lineNo: fixedLineNo} = (url && url.endsWith(iframe.src))
        ? lineNumberToSectionLineNumber(lineNo)
        : {lineNo};
     window.parent.postMessage({
