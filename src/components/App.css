@@ -380,6 +380,7 @@ a {
   max-height: 90%;
   overflow: auto;
   width: 800px;
+  outline: none;
 }
 .dialog-heading {
   display: flex;
