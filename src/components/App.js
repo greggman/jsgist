@@ -162,7 +162,7 @@ class App extends React.Component {
         console.log(msg);
         break;
     }
-    this.setState({messages: [{msg, className}, ...this.state.messages]});
+    this.setState({messages: [{msg: msg.toString(), className}, ...this.state.messages]});
     setTimeout(() => {
       this.setState({messages: this.state.messages.slice(0, this.state.messages.length - 1)});
     }, 5000);
