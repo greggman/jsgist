@@ -48,6 +48,10 @@
   }
 
   function makePageHTML(mainHTML, mainJS, mainCSS) {
+    const isModule = /\bimport\b/.test(mainJS.content);
+    const module = isModule
+      ? ' type="module"'
+      : '';
     return `<!DOCTYPE html>
 <html>
   <head>
@@ -70,7 +74,7 @@ ${mainCSS.content}
 ${mainHTML.content}
   </body>
 <!-- jsgist-section[${encodeURIComponent(mainJS.name)}] -->
-  <${'script'} type="module">
+  <${'script'}${module}>
 ${mainJS.content}
   </${'script'}>
 </html>
