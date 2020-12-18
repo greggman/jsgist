@@ -120,6 +120,10 @@ function highlightAndFixup(elem) {
     elem.classList.add('hljs');
     elem.classList.add('layout-scrollbar');
   });
+  elem.querySelectorAll('a').forEach(elem => {
+    elem.target = '_blank';
+    elem.setAttribute('rel', 'noopener noreferrer');
+  });
 }
 
 function getMarkdownConverter() {
