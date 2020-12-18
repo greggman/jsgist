@@ -28,7 +28,7 @@ export default function Help(props) {
            Create a url in the form <code>https://jsgist.org/?src=&lt;gist_id&gt;--</code>.
           </p>
           <p>
-           Example: <a target="_blank" rel="noopener noreferrer" href="https://jsgist.org/?src=bad0a8491bd6614e729ff01cc14089c9">https://jsgist.org/?src=bad0a8491bd6614e729ff01cc14089c9</a>
+           Example: <a target="_blank" rel="noopener noreferrer" href="https://jsgist.org/?src=f793cb359f2571409983351a6099d5d1">https://jsgist.org/?src=f793cb359f2571409983351a6099d5d1</a>
           </p>
         </li>
         <li>Save it manually somewhere else.
