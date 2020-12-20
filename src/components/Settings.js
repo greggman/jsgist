@@ -67,7 +67,7 @@ class Logout extends React.Component {
   render() {
     const {userManager} = this.context;
     const userData = userManager.getUserData();
-    return (
+    return (!!userData &&
       <Section heading="Logout">
         <div className="logout">Logged in as:&nbsp;
           {!!userData.login && <div className="username"><a target="_blank" rel="noopener noreferrer" href={`https://github.com/${userData.login}`}>{userData.login}</a></div>}
