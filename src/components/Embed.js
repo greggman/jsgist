@@ -2,6 +2,7 @@ import React from 'react';
 
 export default function Embed(props) {
   const {gistId} = props;
+  const exampleId = gistId || 'f793cb359f2571409983351a6099d5d1';
   return (
     <div>
       <div className="markdown">
@@ -14,8 +15,8 @@ export default function Embed(props) {
         {' '}<code>?src=&lt;url_to_json&gt;</code>{' '}.
         You can also add {' '}<code>noheader=true</code>{' '} if you don't want the header
         to appear. You can also just run them directly rather
-        than put in an iframe. <a target="_blank" rel="noopener noreferrer" href="https://jsgist.org/embed.html?src=f793cb359f2571409983351a6099d5d1">[example]</a>{' '}
-        <a target="_blank" rel="noopener noreferrer" href={'https://jsgist.org/embed.html?src=f793cb359f2571409983351a6099d5d1&noheader=true'}>[example no header]</a>
+        than put in an iframe. <a target="_blank" rel="noopener noreferrer" href={`https://jsgist.org/embed.html?src=${exampleId}`}>[example]</a>{' '}
+        <a target="_blank" rel="noopener noreferrer" href={`https://jsgist.org/embed.html?src=${exampleId}&noheader=true`}>[example no header]</a>
         </p>
         { !!gistId &&
             <React.Fragment>
