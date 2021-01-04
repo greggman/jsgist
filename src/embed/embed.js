@@ -22,11 +22,13 @@ async function main() {
     const avatarElem = document.querySelector('#avatar');
     avatarElem.src = userData.avatarURL;
   }
+  const title = `jsGist - ${data.name}`;
+  document.title = title;
   const a = document.querySelector('.head a');
-  a.textContent = `jsGist - ${data.name}`;
+  a.textContent = title;
   a.href = createURL(window.location.origin, {src: params.src});
-  if (params.noheader) {
-    document.querySelector('.head').style.display = 'none';
+  if (!params.noheader) {
+    document.querySelector('.head').style.display = '';
   }
 
   const iframe = document.querySelector('iframe');
