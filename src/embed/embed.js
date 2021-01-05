@@ -22,7 +22,7 @@ async function main() {
     const avatarElem = document.querySelector('#avatar');
     avatarElem.src = userData.avatarURL;
   }
-  const title = `jsGist - ${data.name}`;
+  const title = data.name || 'jsGist';
   document.title = title;
   const a = document.querySelector('.head a');
   a.textContent = title;

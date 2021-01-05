@@ -117,6 +117,14 @@ class App extends React.Component {
         window.opener.postMessage({type: 'gimmeDaCodez'}, '*');
       }
     }
+    this.updateTitle();
+  }
+  componentDidUpdate() {
+    this.updateTitle();
+  }
+  updateTitle() {
+    const data = model.getData();
+    document.title = data.name || 'jsGist';
   }
   async loadData(src) {
     this.setState({loading: true});
