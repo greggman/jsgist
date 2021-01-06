@@ -1,6 +1,12 @@
 export const noop = () => {};
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+export function escapeTextForHTMLContent(s: string) {
+  return s.replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+}
+
 function findNdx(files: any, endings: string[]) {
   // calling toLowerCase a bunch is bad but there will never be more than a few files
   for (const ending of endings) {

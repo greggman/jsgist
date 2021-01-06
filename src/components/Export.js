@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {getOrFind} from '../libs/utils';
+import {escapeTextForHTMLContent, getOrFind} from '../libs/utils';
 
 /*
 
@@ -124,6 +124,35 @@ function openInJSFiddle(data) {
   document.body.removeChild(elem);
 }
 
+function makeHTML(data, asModule) {
+  const files = data.files;
+  const mainHTML = getOrFind(files, 'index.html', 'html');
+  const mainJS = getOrFind(files, 'index.js', 'js', 'js', 'javascript');
+  const mainCSS = getOrFind(files, 'index.css', 'css');
+  const isModule = asModule !== undefined ? asModule : /\bimport\b/.test(mainJS.content);
+  const module = isModule
+    ? ' type="module"'
+    : '';
+  return `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${escapeTextForHTMLContent(data.name)}</title>
+    <style>
+${mainCSS.content}
+    </style>
+  </head>
+  <body>
+${mainHTML.content}
+  </body>
+  <${'script'}${module}>
+${mainJS.content}
+  </${'script'}>
+</html>
+`;
+}
+
 export default class Export extends React.Component {
   constructor(props) {
     super(props);
@@ -155,6 +184,12 @@ export default class Export extends React.Component {
           <p>S.O. does not support es6 modules yet so picking "As Module" puts the code in a &lt;script&gt; in the HTML.</p>
         </div>
         <pre className="layout-scrollbar" style={{userSelect: 'all', overflow: 'auto', height: '5em'}}>{makeSnippet(data, asModule)}</pre>
+        <p>HTML (copy the code below paste into a file)</p>
+        <div>
+          <div><input type="radio" id="export-as-module" checked={asModule} onChange={_ => this.onChange(true)}/><label htmlFor="export-as-module">As es6 module</label></div>
+          <div><input type="radio" id="export-as-script" checked={!asModule} onChange={_ => this.onChange(false)}/><label htmlFor="export-as-script">As script</label></div>
+        </div>
+        <pre className="layout-scrollbar" style={{userSelect: 'all', overflow: 'auto', height: '5em'}}>{makeHTML(data, asModule)}</pre>
       </div>
     );
   }
