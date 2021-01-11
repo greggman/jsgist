@@ -1,89 +1,87 @@
 import React from 'react';
-import {Controlled as CodeMirror} from 'react-codemirror2';
-import 'codemirror/lib/codemirror.css';
-import 'codemirror/theme/material.css';
-import 'codemirror/theme/eclipse.css';
-import 'codemirror/mode/css/css.js';
-import 'codemirror/mode/gfm/gfm.js';
-import 'codemirror/mode/htmlmixed/htmlmixed.js';
-import 'codemirror/mode/javascript/javascript.js';
-import 'codemirror/addon/scroll/simplescrollbars.js';
-import 'codemirror/addon/scroll/simplescrollbars.css';
-import 'codemirror/addon/search/search.js';
-import 'codemirror/addon/search/searchcursor.js';
-import 'codemirror/addon/search/jump-to-line.js';
-import 'codemirror/addon/dialog/dialog.js';
-import 'codemirror/addon/dialog/dialog.css';
-import 'codemirror/addon/edit/matchbrackets.js';
-import 'codemirror/addon/edit/matchtags.js';
-import 'codemirror/addon/fold/xml-fold.js';
+import CodeMirrorEditor from './CodeMirrorEditor';
+import MonacoEditor from './MonacoEditor';
+import {isDevelopment} from '../libs/flags.js';
+import * as uiModel from '../libs/ui-model.js';
 
-const darkMatcher = window.matchMedia
-    ? window.matchMedia('(prefers-color-scheme: dark)')
-    : {};
-// darkMatcher.addListener(render);
+const monacoUrl = isDevelopment
+    ? 'http://localhost:8080/monaco-editor/vs/loader.js'
+    : `${window.location.origin}/monaco-editor/vs/loader.js`;
 
-const noop = () => {};
+let loading;
+
+function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const elem = document.createElement('script');
+    elem.addEventListener('load', resolve);
+    elem.addEventListener('error', reject);
+    elem.type = 'application/javascript';
+    elem.src = url;
+    document.body.appendChild(elem);
+  });
+}
+
+function loadMonaco() {
+  return new Promise(resolve => {
+    const r = window.require; // to shut up CRA
+    r.config({ paths: { 'vs': 'monaco-editor/vs' }});
+    r(['vs/editor/editor.main'], resolve);
+  });
+}
+
+function canRunMonaco() {
+  return !(/iPhone|iPad|iPod|Android/i.test(window.navigator.userAgent));
+}
+
+function getEditor() {
+  switch( uiModel.get().editor) {
+    case 0:
+      return canRunMonaco() ? MonacoEditor : CodeMirrorEditor;
+    case 1:
+      return CodeMirrorEditor;
+    case 2:
+      return MonacoEditor;
+    default:
+      return CodeMirrorEditor;
+  }
+}
 
 export default class Code extends React.Component {
   constructor(props) {
     super(props);
-    const {value, hackKey} = props;
-    this.state = {value, hackKey}
-  }
-  static getDerivedStateFromProps(props, state) {
-    const needNewData = state.hackKey !== props.hackKey;
-    return (needNewData)
-       ? {hackKey: props.hackKey, value: props.value}
-       : null;
+    this.state = {Editor: window.monaco ? getEditor() : CodeMirrorEditor};
   }
   componentDidMount() {
-    const {registerAPI} = this.props;
-    if (registerAPI) {
-      registerAPI({
-        goToLine: (lineNo, colNo) => {
-          this.editor.focus();
-          this.editor.doc.setCursor(lineNo - 1, colNo - 1);
-        },
-        refresh: _ => {
-          this.editor.refresh();
-        },
-        focus: _ => {
-          this.editor.focus();
-        },
-      });
+    uiModel.subscribe(this.handleChange);
+    this.load();
+  }
+  componentDidUpdate() {
+    this.load();
+  }
+  componentWillUnmount() {
+    uiModel.subscribe(this.handleChange);
+  }
+  handleChange = () => {
+    this.setState({Editor: getEditor()});
+    this.forceUpdate();
+  }
+  async loadMonaco() {
+    await loadScript(monacoUrl);
+    await loadMonaco();
+  }
+  async load() {
+    if (!window.monaco && getEditor() === MonacoEditor) {
+      if (!loading) {
+        loading = this.loadMonaco();
+      }
+      await loading;
+      this.setState({Editor: getEditor()});
     }
   }
-  registerEditor = (editor) => {
-    this.editor = editor;
-  }
+
   render() {
-    const {options = {}, onValueChange = noop} = this.props;
-    const {value} =  this.state;
-    const isDarkMode = darkMatcher.matches;
-    const codeMirrorOptions = {
-      mode: 'javascript',
-      scrollbarStyle: 'overlay',
-      theme: isDarkMode ? 'material' : 'eclipse',
-      matchBrackets: true,
-      lineNumbers: true,
-      ...(options.editor && options.editor),
-    };
-    if (codeMirrorOptions.mode.indexOf('html') >= 0) {
-      codeMirrorOptions.matchTags = true;
-    }
-    return (
-      <CodeMirror
-        value={value}
-        options={codeMirrorOptions}
-        onBeforeChange={(editor, data, value) => {
-          this.setState({value});
-        }}
-        onChange={(editor, data, value) => {
-          onValueChange(value);
-        }}
-        editorDidMount={this.registerEditor}
-      />
-    );
+    const props = this.props;
+    const {Editor} = this.state;
+    return (<Editor {...props} />);
   }
 };
