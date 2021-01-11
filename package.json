@@ -23,8 +23,9 @@
   "scripts": {
     "start": "concurrently -r \"servez public\" \"react-scripts start\"",
     "build": "npm run build-react && npm run build-embed",
-    "build-ci": "npm run build-react && npm run build-embed",
+    "build-ci": "npm run build-react && npm run update-monaco && npm run build-embed",
     "build-react": "react-scripts build",
+    "update-monaco": "ldcp -R node_modules/monaco-editor/min public/monaco-editor",
     "build-embed": "node src/embed/embed.webpack.config.js",
     "pre-build": "echo \"TBD\" && exit 0",
     "test": "react-scripts test",
@@ -51,6 +52,8 @@
     "@types/react": "^16.9.56",
     "@types/react-dom": "^16.9.9",
     "concurrently": "^5.3.0",
+    "ldcp": "^0.1.5",
+    "monaco-editor": "^0.21.2",
     "servez": "^1.10.0",
     "typescript": "^4.0.5"
   }
