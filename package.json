@@ -23,7 +23,7 @@
   "scripts": {
     "start": "concurrently -r \"servez public\" \"react-scripts start\"",
     "build": "npm run build-react && npm run build-embed",
-    "build-ci": "npm run build-react && npm run update-monaco && npm run build-embed",
+    "build-ci": "npm run build-react && npm run build-embed",
     "build-react": "react-scripts build",
     "update-monaco": "ldcp -R node_modules/monaco-editor/min public/monaco-editor",
     "build-embed": "node src/embed/embed.webpack.config.js",
