@@ -497,7 +497,7 @@ a {
   background: #00F;
 }
 /* -------------------- */
-.icon-radio .radio {
+.radio {
   display: flex;
 }
 .radio-selected {

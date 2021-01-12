@@ -97,9 +97,6 @@ export default class Settings extends React.Component {
   handleLayoutChange = (v) => {
     uiModel.set('layout', v);
   }
-  handleEditorChange = (v) => {
-    uiModel.set('editor', v);
-  }
   render() {
     const {onClose} = this.props;
     const {userManager} = this.context;
@@ -108,21 +105,12 @@ export default class Settings extends React.Component {
       <Dialog title="Settings" onClose={onClose}>
         { !!userData && <Logout /> }
         <Section heading="Layout">
-          <div className="layout icon-radio">
+          <div className="layout">
             <Radio selectedNdx={uiModel.get().layout} onChange={this.handleLayoutChange}>
               <RadioOption><img src={verticalIcon} alt="vertical"/></RadioOption>
               <RadioOption><img src={horizontalIcon} alt="horizontal"/></RadioOption>
               <RadioOption><img src={twoByTwoIcon} alt="2x2" /></RadioOption>
               <RadioOption><img src={tabbedIcon} alt="tabbed" /></RadioOption>
-            </Radio>
-          </div>
-        </Section>
-        <Section heading="Editor">
-          <div className="editor-settings">
-            <Radio selectedNdx={uiModel.get().editor || 0} onChange={this.handleEditorChange}>
-              <RadioOption>auto</RadioOption>
-              <RadioOption>CodeMirror</RadioOption>
-              <RadioOption>Monaco</RadioOption>
             </Radio>
           </div>
         </Section>
