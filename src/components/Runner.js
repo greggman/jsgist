@@ -68,6 +68,7 @@ export default class Runner extends React.Component {
     winMsgMgr.remove('jsLog', null, this.handleJSLog);
     winMsgMgr.remove('jsError', null, this.handleJSError);
     winMsgMgr.remove('jsUnhandledRejection', null, this.handleJSUnhandledRejection);
+    winMsgMgr.remove('infoMessages', null, this.handleInfoMessages);
   }
   handleMessage = (e) => {
     const {type, data} =  e.data;
