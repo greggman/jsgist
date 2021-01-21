@@ -6,6 +6,36 @@
     error: console.error.bind(console),
   };
 
+  function throttle(fn, timeout) {
+    let id;
+    let args;
+    let once;
+
+    const execute = () => {
+      id = undefined;
+      fn(...args);
+    };
+
+    const tFn = (...a) => {
+      args = a;
+      if (!id) {
+        const tm = once ? timeout : 0; 
+        once = true;
+        id = setTimeout(execute, tm);
+      }
+    };
+
+    tFn.cancel = () => {
+      if (id) {
+        clearTimeout(id);
+        id = undefined;
+        once = undefined;
+      }
+    };
+
+    return tFn;
+  }
+
   // adapted from http://stackoverflow.com/a/2401861/128511
   function getBrowser() {
     const userAgent = navigator.userAgent;
@@ -151,6 +181,24 @@
     };
   }();
 
+  const queueMessage = (() => {
+    let msgQueue = [];
+
+    const sendMessages = throttle(function sendMessages() {
+      const msgToSend = msgQueue;
+      msgQueue = [];
+      window.parent.postMessage({
+        type: 'infoMessages',
+        data: msgToSend,
+      });
+    }, 100);
+
+    return function queueMessage(msg) {
+      msgQueue.push(msg);
+      sendMessages();
+    }
+  })();
+
   function sendMsgInfo(type, e, msgType) {
     const {
       message: msg,
@@ -159,7 +207,7 @@
       colNo,
       stack,
     } = e;
-    window.parent.postMessage({
+    queueMessage({
       type,
       data: {msg, url, lineNo, colNo, stack, type: msgType},
     }, '*');

@@ -153,12 +153,12 @@ iframe {
     return iframe;
   }
 
-  function sendMsgInfo(msgType, data) {
+  function makeMsgInfo(msgType, data) {
     const {msg, url, lineNo, colNo, type, stack} = data;
     const {section, lineNo: fixedLineNo} = (url && url.endsWith(iframe.src))
        ? lineNumberToSectionLineNumber(lineNo)
        : {lineNo};
-    window.parent.postMessage({
+    return {
       type: msgType,
       data: {
         msg,
@@ -169,7 +169,11 @@ iframe {
         type,
         stack,
       },
-    }, '*');
+    };
+  }
+
+  function sendMsgInfo(msgType, data) {
+    window.parent.postMessage(makeMsgInfo(msgType, data), '*');
   }
 
   const handlers = {
@@ -181,6 +185,13 @@ iframe {
     },
     jsLog(data) {
       sendMsgInfo('jsLog', data);
+    },
+    infoMessages(data) {
+      const msgs = data.map(({type, data}) => makeMsgInfo(type, data));
+      window.parent.postMessage({
+        type: 'infoMessages',
+        data: msgs,
+      }, '*');
     },
     run(data) {
       const files = data.files;

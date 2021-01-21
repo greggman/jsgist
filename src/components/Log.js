@@ -36,12 +36,31 @@ export class LogManager extends EventTarget {
     this._msgs = [];
     this._notify();
   }
-  addMsg = (data) => {
+  _addMsg = (data) => {
     const lastData = this._msgs[this._msgs.length - 1];
     if (isMsgSame(lastData, data)) {
       lastData.count = (lastData.count || 0) + 1;
     } else {
       this._msgs.push(data);
+    }
+  }
+  addMsg = (data) => {
+    this._addMsg(data);
+    this._notify();
+  }
+  addMsgs = (msgs) => {
+    for (const {type, data} of msgs) {
+      switch (type) {
+        case 'jsError':
+          this._addMsg({...data, type: 'error', showStack: true});
+          break;
+        case 'jsUnhandledRejection':
+          this._addMsg({...data, type: 'error', showStack: true});
+          break;
+        default:
+          this._addMsg(data);
+          break;
+      }
     }
     this._notify();
   }
