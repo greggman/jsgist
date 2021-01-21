@@ -182,20 +182,38 @@
   }();
 
   const queueMessage = (() => {
+    const maxDuration = 100;
     let msgQueue = [];
+    let lastSendTime = -100;
 
-    const sendMessages = throttle(function sendMessages() {
+    const sendMessages = () => {
+      if (msgQueue.length === 0) {
+        return;
+      }
       const msgToSend = msgQueue;
       msgQueue = [];
       window.parent.postMessage({
         type: 'infoMessages',
         data: msgToSend,
       });
-    }, 100);
+    };
+
+    const throttledSendMessages = throttle(sendMessages, maxDuration);
+
+    const pumpMessages = () => {
+      const now = performance.now();
+      const elapsed = now - lastSendTime;
+      if (elapsed > maxDuration) {
+        sendMessages();
+      } else {
+        throttledSendMessages();
+      }
+      
+    };
 
     return function queueMessage(msg) {
       msgQueue.push(msg);
-      sendMessages();
+      pumpMessages();
     }
   })();
 
