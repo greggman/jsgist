@@ -205,6 +205,7 @@
       const elapsed = now - lastSendTime;
       if (elapsed > maxDuration) {
         sendMessages();
+        lastSendTime = performance.now();
       } else {
         throttledSendMessages();
       }
