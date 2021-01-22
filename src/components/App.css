@@ -26,37 +26,6 @@ html, body {
   box-sizing: inherit;
 }
 /* ---------------- */
-/* Base for label styling */
-[type="checkbox"]:not(:checked),
-[type="checkbox"]:checked {
-  position: absolute;
-  left: -9999px;
-}
-[type="checkbox"]:not(:checked) + label,
-[type="checkbox"]:checked + label {
-  position: relative;
-  padding-left: 1.1em;
-  cursor: pointer;
-}
-
-/* checkbox aspect */
-[type="checkbox"] + label:before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0;
-  width: 1em; height: 1em;
-  border: 1px solid var(--code-area-bg-color);
-  background: var(--title-bg-color);
-  border-radius: 4px;
-  text-align: center;
-}
-[type="checkbox"]:checked + label:before {
-  content: '●';
-  background: red;  
-}
-[type="checkbox"]:checked + label:hover:before {
-  border: 1px solid var(--button-color);
-}
 
 /* ---------------- */
 #root {
