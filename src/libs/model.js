@@ -179,7 +179,6 @@ export function deleteFile(ndx) {
 
 export function validate(data) {
   if (!validator(data)) {
-    debugger;
     throw new Error(`data not valid:\n${validator.errors.map(e => `${e.message}: ${e.dataPath}`)}`);
   }
 }
