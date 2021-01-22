@@ -331,7 +331,9 @@ export default class GitHub extends EventTarget {
   }
 
   async getUserGists() {
-    const gists = await this.authorizedOctokit.paginate(this.authorizedOctokit.gists.list);
+    const gists = await this.authorizedOctokit.paginate(
+        this.authorizedOctokit.gists.list,
+        {per_page: 100});
     return gists.filter(gist => !!gist.files['jsGist.json']);
     // return await this.authorizedOctokit.gists.list();
   }
