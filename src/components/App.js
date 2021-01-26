@@ -185,6 +185,7 @@ class App extends React.Component {
     this.handleStop();
   }
   handleNew = async() => {
+    storageManager.delete(backupKey);
     window.location.href = window.location.origin;
     //window.history.pushState({}, '', `${window.location.origin}`);
     //model.setData(model.getNewData());
