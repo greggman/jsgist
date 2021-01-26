@@ -70,7 +70,7 @@ There's a long list of desired features. Feel free to help add them
 
 - [ ] show stack in log for warn/error messages
 
-- [ ] allow deleting gists
+- [X] allow deleting gists
 
   as it is you go to github to delete gists.
 
@@ -78,13 +78,11 @@ There's a long list of desired features. Feel free to help add them
 
 - [ ] allow more files.
 
-  The UI already kind of does this, the code to show more and add or delete files
-  is just commented out. I'm not sure how
-  handy this would be. If you want to test a worker it's nice to have
-  a separate file but how often do people want to do that? My point being
-  this might be lots of effort for little payoff. It would also require
-  changing the UI, probably to be more like VSCode with an Explorer panel
-  so lots of work.
+  I'm not sure
+  how handy this would be. If you want to test a worker it's nice to have a
+  separate file but how often do people want to do that? My point being this
+  might be lots of effort for little payoff. It would also require changing the
+  UI, probably to be more like VSCode with an Explorer panel so lots of work.
 
 - [X] consider github login?
 
@@ -116,7 +114,7 @@ There's a long list of desired features. Feel free to help add them
 
   Mobile works but could use better styling/layout
 
-- [ ] Allow embedding
+- [X] Allow embedding
 
   - [X] Simple: just a page that shows your result
   - [X] Basic: shows your result with a banner, a link to your jsgist, and your github.
