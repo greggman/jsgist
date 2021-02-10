@@ -70,19 +70,60 @@ There's a long list of desired features. Feel free to help add them
 
 - [ ] show stack in log for warn/error messages
 
+- [ ] optimize Log
+
+  As it is the log prints all the messages. This is too slow. It should
+  use a virtual list and just show the message visible.
+
+- [ ] show confirmation when loading backup
+
+  In general consider what the flow should be. As it is it saves the current
+  data to local storage just before running. The idea is if it crashes
+  for some reason like an infinite loop, that reloading the you should be
+  able to recover your work. But, sometimes you want to discard your work
+  by just reloading the page and is it is that doesn't happen.
+
+  A few things
+
+  1. It should not save to local storage if the current data is the same
+     as was loaded.
+  
+  2. It should not offer to recover if the data in local storage matches
+     the data loaded.
+
+  3. If they are different it should ask?
+
+     Should asking be modal?
+
+- [ ] allow browsing gists with pagination
+
+  - [ ] search (if there is a search API)
+
+  - [ ] by username (maybe use keywords?)
+
 - [X] allow deleting gists
 
   as it is you go to github to delete gists.
+
+- [ ] Try to reload only up to last gist unread?
+
+  Each machine needs to track the highest gist it has read
+  separate from the db of gists it knows.
+
+  A is its `id` and its `node_id` and its `updated_at`
+  so when reading we stop when we hit that id.
+
+  (unless control is pressed or something to reset)
 
 - [ ] show revisions and forks
 
 - [ ] allow more files.
 
-  I'm not sure
-  how handy this would be. If you want to test a worker it's nice to have a
-  separate file but how often do people want to do that? My point being this
-  might be lots of effort for little payoff. It would also require changing the
-  UI, probably to be more like VSCode with an Explorer panel so lots of work.
+  I'm not sure how handy this would be. If you want to test a worker it's nice
+  to have a separate file but how often do people want to do that? My point
+  being this might be lots of effort for little payoff. It would also require
+  changing the UI, probably to be more like VSCode with an Explorer panel so
+  lots of work.
 
 - [X] consider github login?
 
@@ -91,24 +132,22 @@ There's a long list of desired features. Feel free to help add them
 
 - [X] use gist comments
 
-  Currently disqus is used for comments. Using gist comments
-  would arguably be more appropriate but unfortunately github
-  does not provide a UI to do so which means implementing one
-  from scratch. That sucks because the built in one in github
-  supports features like drag and drop files and other things.
-  It would be so nice to just be able to link to an iframe
-  of their UI but ATM that's not an option.
+  Currently disqus is used for comments. Using gist comments would arguably be
+  more appropriate but unfortunately github does not provide a UI to do so which
+  means implementing one from scratch. That sucks because the built in one in
+  github supports features like drag and drop files and other things. It would
+  be so nice to just be able to link to an iframe of their UI but ATM that's not
+  an option.
 
   Adding basic UX for markdown is semi-trivial though. Maybe
   that's enough?
 
 - [ ] check for infinite loops?
 
-  codepen apparently parses the JavaScript and inserts checks into loops
-  so you don't crash the browser with an infinite loop. As it is the code
-  saves your work to local storage before running so if crash you should 
-  come back to the same result. Note: I haven't thought much about how
-  this flow should work.
+  codepen apparently parses the JavaScript and inserts checks into loops so you
+  don't crash the browser with an infinite loop. As it is the code saves your
+  work to local storage before running so if crash you should come back to the
+  same result. Note: I haven't thought much about how this flow should work.
 
 - [X] Mobile
 
