@@ -1,5 +1,6 @@
 import React from 'react';
 
+import BackupManager from './BackupManager.js';
 import EditLine from './EditLine.js';
 import Footer from './Footer.js';
 import {storageManager} from '../globals.js';
@@ -20,7 +21,6 @@ import * as winMsgMgr from '../libs/WindowMessageManager';
 
 import './App.css';
 
-const backupKey = 'backup';
 const noJSX = () => [];
 const darkMatcher = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -40,6 +40,7 @@ class App extends React.Component {
     this.github = new GitHub();
     this.logManager = new LogManager();
     this.oauthManager = new OAuthManager(storageManager);
+    this.backupManager = new BackupManager(storageManager);
     this.userManager = new UserManager({
       oauthManager: this.oauthManager,
       github: this.github,
@@ -90,7 +91,7 @@ class App extends React.Component {
     });
 
     const query = Object.fromEntries(new URLSearchParams(window.location.search).entries());
-    const backup = storageManager.get(backupKey);
+    const backup = this.backupManager.getBackup();
     let loaded = false;
     if (backup) {
       try {
@@ -108,7 +109,7 @@ class App extends React.Component {
       } catch (e) {
         console.log('bad backup')
       }
-      storageManager.delete(backupKey);
+      this.backupManager.clearBackup();
     }
     if (!loaded) {
       if (query.src) {
@@ -185,13 +186,13 @@ class App extends React.Component {
     this.handleStop();
   }
   handleNew = async() => {
-    storageManager.delete(backupKey);
+    this.backupManager.clearBackup();
     window.location.href = window.location.origin;
     //window.history.pushState({}, '', `${window.location.origin}`);
     //model.setData(model.getNewData());
   }
   handleRun = async () => {
-    storageManager.set(backupKey, JSON.stringify({
+    this.backupManager.setBackup(JSON.stringify({
       href: window.location.href,
       data: model.getData(),
       gistOwnerId: this.state.gistOwnerId,
@@ -274,6 +275,7 @@ class App extends React.Component {
           storageManager,
           logManager: this.logManager,
           userManager: this.userManager,
+          backupManager: this.backupManager,
         }}>
         <div className="content">
           <Head />

@@ -106,6 +106,10 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
     }
     this.setState({loading: false});
   }
+  clearBackup = () => {
+    const {backupManager} = this.context;
+    backupManager.clearBackup();
+  }
   renderLogin() {
     const {userManager} = this.context;
     return (
@@ -140,7 +144,7 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
                     return (
                       <tr key={`g${ndx}`}>
                         <td><input type="checkbox" id={`gc${ndx}`} checked={checks.has(gist.id)} onChange={() => this.toggleCheck(gist.id)}/><label htmlFor={`gc${ndx}`}/></td>
-                        <td><a href={`${window.location.origin}?src=${encodeURIComponent(gist.id)}`}>{gist.name}</a></td>
+                        <td><a onClick={this.clearBackup} href={`${window.location.origin}?src=${encodeURIComponent(gist.id)}`}>{gist.name}</a></td>
                         <td>{gist.date.substring(0, 10)}</td>
                         <td>{gist.public ? '' : '🔒'}</td>
                       </tr>
