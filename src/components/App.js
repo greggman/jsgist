@@ -153,6 +153,7 @@ class App extends React.Component {
     let success = true;
     try {
       model.setData(data);
+      this.backupManager.clearBackup();
     } catch (e) {
       success = false;
       console.warn(e);
