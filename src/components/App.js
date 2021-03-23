@@ -91,6 +91,12 @@ class App extends React.Component {
     });
 
     const query = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+    if (query.newGist) {
+      window.history.pushState({}, '', `${window.location.origin}`);
+      window.opener.postMessage({type: 'gimmeDaCodez'}, '*');
+      return;
+    }
+
     const backup = this.backupManager.getBackup();
     let loaded = false;
     if (backup) {
@@ -114,8 +120,6 @@ class App extends React.Component {
     if (!loaded) {
       if (query.src) {
         this.loadData(query.src);
-      } else if (query.newGist) {
-        window.opener.postMessage({type: 'gimmeDaCodez'}, '*');
       }
     }
     this.updateTitle();
