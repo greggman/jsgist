@@ -610,6 +610,7 @@ button:hover {
 }
 .gists td:nth-child(3n) {
   text-align: right;
+  white-space: nowrap;
 }
 
 .comment-notes {
