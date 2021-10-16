@@ -1,4 +1,5 @@
 import React from 'react';
+import EditLine from './EditLine.js';
 import {classNames} from '../libs/css-utils.js';
 import * as gists from '../libs/gists.js';
 import ServiceContext from '../ServiceContext.js';
@@ -17,12 +18,23 @@ type LoadGistState = {
   loading: boolean,
   gists: GistIdMap,
   checks: Set<string>,
+  filter: string,
 };
 
 function gistsToSortedArray(gists: GistIdMap) {
   return Object.entries(gists).map(([id, {name, date, public: _public}]) => {
     return {id, name, date, public: _public};
   }).sort((b, a) => a.date < b.date ? -1 : ((a.date > b.date) ? 1 : 0));
+}
+
+function matchFilter(filter: string) {
+  filter = filter.trim().toLowerCase();
+  return function(gist: Gist) {
+    const {name, date} = gist;
+    return filter === '' ||
+           name.toLowerCase().includes(filter) ||
+           date.substring(0, 10).includes(filter);
+  }
 }
 
 export default class LoadGist extends React.Component<{}, LoadGistState> {
@@ -33,6 +45,7 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
       loading: false,
       gists: _gists,
       checks: new Set(),
+      filter: '',
     };
   }
   handleNewGists = (gists: GistIdMap) => {
@@ -122,7 +135,7 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
   }
   renderLoad() {
     const {userManager} = this.context;
-    const {gists, checks, loading} = this.state;
+    const {gists, checks, loading, filter} = this.state;
     const userData = userManager.getUserData();
     const canLoad = !!userData && !loading;
     const gistArray = gistsToSortedArray(gists);
@@ -137,10 +150,13 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
          {
             gistArray.length >= 0 &&
               <React.Fragment>
+              <p>
+                <EditLine className="foobar" placeholder="search:" value={filter} onChange={(filter:string) => {this.setState({filter})}} />
+              </p>
               <table className="gists">
                 <tbody>
                 {
-                  gistArray.map((gist, ndx) => {
+                  gistArray.filter(matchFilter(filter)).map((gist, ndx) => {
                     return (
                       <tr key={`g${ndx}`}>
                         <td><input type="checkbox" id={`gc${ndx}`} checked={checks.has(gist.id)} onChange={() => this.toggleCheck(gist.id)}/><label htmlFor={`gc${ndx}`}/></td>
