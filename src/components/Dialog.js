@@ -13,9 +13,9 @@ export default class Dialog extends React.Component {
     }
   }
   render() {
-    const {title, children, onClose} = this.props;
+    const {title, children, onClose, className = ''} = this.props;
     return (
-      <div onClick={onClose} className="dialog">
+      <div onClick={onClose} className={`${className} dialog`}>
         <div
           tabIndex="-1"
           onClick={(e) =>{e.stopPropagation()}}

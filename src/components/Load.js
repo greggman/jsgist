@@ -8,7 +8,7 @@ import Section from './Section.js';
 export default function Load(props) {
   const {data, onLoad, onClose} = props;
   return (
-    <Dialog title="Load" onClose={onClose}>
+    <Dialog title="Load" className="fixed-size-dialog" onClose={onClose}>
       <Section heading="Load Gist">
         <LoadGist data={data} onLoad={onLoad} />
       </Section>

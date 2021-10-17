@@ -384,6 +384,9 @@ a {
   width: 800px;
   outline: none;
 }
+.fixed-size-dialog>* {
+  min-height: 90%;
+}
 .dialog-heading {
   display: flex;
   justify-content: space-between;
@@ -604,6 +607,13 @@ button:hover {
   background-color: rgba(0, 0, 255, 0.1);
   width: 100%;
   border: none;
+}
+.gists td>div {
+  transition: max-height 0.3s;
+  max-height: 100%;
+}
+.gists .hide td>div {
+  max-height: 0;
 }
 .gists tr:nth-child(2n) {
   background-color: rgba(128, 160, 255, 0.2);
