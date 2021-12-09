@@ -210,19 +210,6 @@ function createGistData(data, secret, gist_id) {
   const saveData = {
     ...data,
   };
-  /*
-  // we can't add a readme because we don't know the gist_id. I guess we would double
-  // save? create then update?
-
-  const lowerCaseFiles = Object.keys(files).map(n => n.toLowerCase());
-  const hadReadme = 
-      lowerCaseFiles.includes('readme.md') ||
-      lowerCaseFiles.includes('readme.txt') ||
-      lowerCaseFiles.includes('readme');
-  if (!hadReadme) {
-    files['README.md'] = `# ${data.name}\n\n[jsGist Link](${window.location.origin}?src=${})`
-  }
-  */
   const jsGistData = {}
   files['jsGist.json'] = jsGistData;
   const noDuplicateNames = Object.keys(files).length === data.files.length + 1;
@@ -237,6 +224,18 @@ function createGistData(data, secret, gist_id) {
   }
   jsGistData.content = JSON.stringify(saveData);
   if (gist_id) {
+    // TODO: rather than check if there's a readme
+    // insert the readme in our wrapped readme.
+    // Maybe add a "notes" field to the save dialog
+    const lowerCaseFiles = Object.keys(files).map(n => n.toLowerCase());
+    const hadReadme = 
+        lowerCaseFiles.includes('readme.md') ||
+        lowerCaseFiles.includes('readme.txt') ||
+        lowerCaseFiles.includes('readme');
+    if (!hadReadme) {
+      const content = `## ${data.name}\n\n[view on jsgist](${window.location.origin}?src=${gist_id})`
+      files['README.md'] = {content};
+    }
     // if we have a gist_id this is an update
     // updates need filenames (which allows renaming)
     for (const [filename, file] of Object.entries(files)) {
@@ -348,15 +347,13 @@ export default class GitHub extends EventTarget {
   }
 
   async createGist(data, secret = false) {
+    // TODO: Since we're doing the double save (create gist to get an id
+    // so we can make the README.me) we should probably not send any data
+    // the first time.
     const gistData = createGistData(data, secret);
     const gist = await this.authorizedOctokit.gists.create(gistData);
     this._updateUserData(gist.data);
-    return {
-      id: gist.data.id,
-      name: gist.data.description,
-      date: gist.data.updated_at,
-      public: gist.data.public,
-    };
+    return await this.updateGist(gist.data.id, data);
   }
   async updateGist(gist_id, data) {
     const gistData = createGistData(data, false, gist_id);
