@@ -64,3 +64,23 @@ Two workarounds.
    ```
    localStorage.setItem('jsgist-pat', '<access-token>');
    ```
+
+## Logging in with github via ngrok
+
+Note: you need to your your own [auth-helper](https://github.com/greggman/aws-oauth-helper).
+Mine is configured only to respond to requests for domains I control.
+
+Then, in one terminal
+
+```
+REACT_APP_OAUTH_HELPER_URL=<url-to-your-auth-helper> npm start
+```
+
+and in another.
+
+```
+ngron http --subdomain=somedomain 3000
+```
+
+Then go to `https://somedomain.ngrok.io`. Note that at the moment the preview won't
+work but you can test authenticating, etc...
