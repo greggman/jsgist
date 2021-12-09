@@ -2,6 +2,8 @@
   --main-bg-color: #eee;
   --main-fg-color: #000;
   --title-bg-color: #CCC;
+  --unselected-color: #ccc;
+  --table-head-bg-color: #DDD;
   --button-color: #48F;
   --link-color: #36C;
   --code-area-bg-color: #CCC;
@@ -605,8 +607,31 @@ button:hover {
 }
 .gists {
   background-color: rgba(0, 0, 255, 0.1);
-  width: 100%;
   border: none;
+  display: block;
+  min-height: 20vh;
+  max-height: 40vh;
+  overflow-y: scroll;
+  position: relative;
+}
+.gists table {
+  width: 100%;  
+}
+.gists thead {
+  background-color: var(--title-bg-color);
+  border: none;
+}
+.gists th {
+  position: sticky; 
+  top: 0;
+  background-color: var(--title-bg-color);
+}
+.gists thead span {
+  cursor: pointer;
+  color: var(--unselected-color);
+}
+.gists thead .current-sort-key {
+  color: var(--main-fg-color);
 }
 .gists td>div {
   transition: max-height 0.3s;
@@ -747,9 +772,11 @@ hr {
   :root {
     --main-bg-color: #444;
     --main-fg-color: #fff;
+    --unselected-color: #666;
     --title-bg-color: #222;
     --button-bg-color: #fff;
     --link-color: #6CF;
+    --table-head-bg-color: #555;
     --code-area-bg-color: #555;
     --un-run-bg-color: blue;
     --aborted-bg-color: #000;

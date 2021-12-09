@@ -8,7 +8,10 @@ type Gist = {
   name: string,
   date: string,
   public: boolean,
+  id: string,
 }
+
+// ( ) Wrap table with div, scroll div. Because table expands to 100%
 
 interface GistIdMap {
    [key: string]: Gist;
@@ -18,13 +21,41 @@ type LoadGistState = {
   loading: boolean,
   gists: GistIdMap,
   checks: Set<string>,
-  filter: string,
+  filter: string,  // TODO: move up
+  sortKey: string, // TODO: move up
+  sortDir: string, // TODO: move up
 };
 
-function gistsToSortedArray(gists: GistIdMap) {
+function getSortFn(sortKey: string, checks: Set<string>): (a: Gist, b: Gist) => number {
+  switch (sortKey) {
+    case 'name':
+      return (a: Gist, b: Gist) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
+    case 'date':
+      return (a: Gist, b: Gist) => a.date < b.date ? -1 : (a.date > b.date ? 1 : 0);
+    case 'public':
+      return (a: Gist, b: Gist) => {
+        const ap = a.public ? 1 : 0;
+        const bp = b.public ? 1 : 0;
+        return Math.sign(ap - bp);
+      };
+    case 'check':
+      return (a: Gist, b: Gist) => {
+        const ap = checks.has(a.id) ? 1 : 0;
+        const bp = checks.has(b.id) ? 1 : 0;
+        return Math.sign(ap - bp);
+      };
+    default:
+      throw new Error('unknown sortKey');
+  }
+}
+
+function gistsToSortedArray(gists: GistIdMap, checks: Set<string>, sortKey: string, sortDir: string) {
+  const compareDirMult = sortDir === 'down' ? 1 : -1;
+  const compFn = getSortFn(sortKey, checks);
+  console.log('sortDir:', compareDirMult);
   return Object.entries(gists).map(([id, {name, date, public: _public}]) => {
     return {id, name, date, public: _public};
-  }).sort((b, a) => a.date < b.date ? -1 : ((a.date > b.date) ? 1 : 0));
+  }).sort((b, a) => compFn(a, b) * compareDirMult);
 }
 
 function matchFilter(filter: string) {
@@ -37,6 +68,22 @@ function matchFilter(filter: string) {
   }
 }
 
+
+type SortKeyInfo = {
+  sortDir: string,
+  selected: boolean,
+  update: (sortDir: string) => void,
+};
+
+function SortBy(props: SortKeyInfo) {
+  const {sortDir, selected, update} = props;
+  return (
+    <React.Fragment>
+      <span onClick={() => update(!selected ? sortDir : (sortDir === 'up' ? 'down' : 'up'))} className={selected ? 'current-sort-key' : ''}>{sortDir === 'up' ? '▲' : '▼'}</span>
+    </React.Fragment>
+  );
+}
+
 export default class LoadGist extends React.Component<{}, LoadGistState> {
   constructor (props: {}) {
     super(props);
@@ -46,6 +93,8 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
       gists: _gists,
       checks: new Set(),
       filter: '',
+      sortKey: 'date',
+      sortDir: 'down',
     };
   }
   handleNewGists = (gists: GistIdMap) => {
@@ -68,6 +117,10 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
     if (userManager.getUserData()) {
       this.loadGists();
     }
+  }
+  updateSort = (sortKey: string, sortDir: string) => {
+    console.log('update:', sortKey, sortDir);
+    this.setState({sortDir, sortKey});
   }
   componentDidMount() {
     const {userManager} = this.context;
@@ -135,10 +188,10 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
   }
   renderLoad() {
     const {userManager} = this.context;
-    const {gists, checks, loading, filter} = this.state;
+    const {gists, checks, loading, filter, sortKey, sortDir} = this.state;
     const userData = userManager.getUserData();
     const canLoad = !!userData && !loading;
-    const gistArray = gistsToSortedArray(gists);
+    const gistArray = gistsToSortedArray(gists, checks, sortKey, sortDir);
     return (
       <div>
         <p>
@@ -153,22 +206,32 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
               <p>
                 <EditLine className="foobar" placeholder="search:" value={filter} onChange={(filter:string) => {this.setState({filter})}} />
               </p>
-              <table className="gists">
-                <tbody>
-                {
-                  gistArray.filter(matchFilter(filter)).map((gist, ndx) => {
-                    return (
-                      <tr key={`g${ndx}`}>
-                        <td><input type="checkbox" id={`gc${ndx}`} checked={checks.has(gist.id)} onChange={() => this.toggleCheck(gist.id)}/><label htmlFor={`gc${ndx}`}/></td>
-                        <td><a onClick={this.clearBackup} href={`${window.location.origin}?src=${encodeURIComponent(gist.id)}`}>{gist.name}</a></td>
-                        <td>{gist.date.substring(0, 10)}</td>
-                        <td>{gist.public ? '' : '🔒'}</td>
-                      </tr>
-                    );
-                  })
-                }
-                </tbody>
-              </table>
+              <div className="gists">
+                <table>
+                  <thead>
+                    <tr>
+                      <th><SortBy selected={sortKey === 'check'} sortDir={sortDir} update={(dir: string) => this.updateSort('check', dir)}/></th>
+                      <th><SortBy selected={sortKey === 'name'} sortDir={sortDir} update={(dir: string) => this.updateSort('name', dir)}/></th>
+                      <th><SortBy selected={sortKey === 'date'} sortDir={sortDir} update={(dir: string) => this.updateSort('date', dir)}/></th>
+                      <th><SortBy selected={sortKey === 'public'} sortDir={sortDir} update={(dir: string) => this.updateSort('public', dir)}/></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {
+                    gistArray.filter(matchFilter(filter)).map((gist, ndx) => {
+                      return (
+                        <tr key={`g${ndx}`}>
+                          <td><input type="checkbox" id={`gc${ndx}`} checked={checks.has(gist.id)} onChange={() => this.toggleCheck(gist.id)}/><label htmlFor={`gc${ndx}`}/></td>
+                          <td><a onClick={this.clearBackup} href={`${window.location.origin}?src=${encodeURIComponent(gist.id)}`}>{gist.name}</a></td>
+                          <td>{gist.date.substring(0, 10)}</td>
+                          <td>{gist.public ? '' : '🔒'}</td>
+                        </tr>
+                      );
+                    })
+                  }
+                  </tbody>
+                </table>
+              </div>
               <div><button onClick={this.deleteSelected}>Delete Selected Gists</button></div>
               </React.Fragment>
           }
