@@ -1,8 +1,11 @@
 # To Do
 
-- [ ] check flow when token is bad
-- [ ] document running test (ngrok?)
-- [ ] make save (new) create a README.md
+- [ ] add notes
+- [ ] fix re-load flow
+- [ ] store gists in jsgist-index.json
+  + much faster
+  - more complex?
+  - need to handle when too large
 - [ ] fix console.log crashing
 - [ ] try not making a new iframe each run (they show up in the debugger)
 - [ ] add stack trace to all the logs?
@@ -15,6 +18,10 @@
 
 # Done
 
+- [X] make save (new) create a README.md
+- [X] document running test (ngrok?)
+- [X] check flow when token is bad (ok?)
+      Seems like it's ok. Get's error. You can pick "login"
 - [x] fix file keys
 - [x] fix model so that each area only updates when its file changes
 - [x] click log line to take you to line
