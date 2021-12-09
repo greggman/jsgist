@@ -7,11 +7,7 @@ import * as winMsgMgr from './WindowMessageManager';
 
 const patKey = 'pat';
 
-const getTokenURL = process.env.REACT_APP_OAUTH_HELPER_URL;
-if (!getTokenURL) {
-  throw Error ('must set environment variable: OAUTH_HELPER_URL');
-}
-
+const getTokenURL = 'https://auth.jsgist.org/oauth-helper'
 export default class OAuthManager {
   private _popup?: Window;
   private _state?: string;
