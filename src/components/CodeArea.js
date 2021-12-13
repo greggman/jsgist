@@ -1,5 +1,4 @@
 import React from 'react';
-//import {Resizable} from 're-resizable';
 import Code from './Code.js';
 import {classNames} from '../libs/css-utils.js';
 
