@@ -6,4 +6,4 @@ if (!domain) {
   throw new Error(`environment variable REACT_APP_DOMAIN not set`);
 }
 
-fs.writeFileSync(path.join(__dirname, 'CNAME'), `${domain}\n`);
+fs.writeFileSync(path.join(__dirname, 'build', 'CNAME'), `${domain}\n`);
