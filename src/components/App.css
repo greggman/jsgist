@@ -702,6 +702,10 @@ hr {
   resize: vertical;
   overflow: auto;
 }
+.new-comment .new-comment-write {
+  min-height: 10em;
+  height: 10em;
+}
 .new-comment .new-comment-preview {
   min-height: 10em;
   padding: 0.5em;

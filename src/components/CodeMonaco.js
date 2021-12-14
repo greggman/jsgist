@@ -8,6 +8,11 @@ const darkMatcher = window.matchMedia
 
 const noop = () => {};
 
+function codeMirrorModeToLanguage(editor) {
+  const language = (editor?.mode || 'javascript').split('/').pop();
+  return language === 'gfm' ? 'markdown' : language;
+}
+
 export default class CodeMonaco extends React.Component {
   constructor(props) {
     super(props);
@@ -22,6 +27,7 @@ export default class CodeMonaco extends React.Component {
   }
   handleEditorDidMount = (editor, monaco) => {
     this.editor = editor;
+    editor.getModel().updateOptions({tabSize: 2});
     const {registerAPI} = this.props;
     if (registerAPI) {
       registerAPI({
@@ -50,7 +56,7 @@ export default class CodeMonaco extends React.Component {
     // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.IEditorConstructionOptions.html
 
     // we pass in mime-type (eg. 'text/css' but monaco wants just 'css')
-    const language = (options.editor?.mode || 'javascript').split('/').pop();
+    const language = codeMirrorModeToLanguage(options.editor).split('/').pop();
     return (
       <Editor
         theme={isDarkMode ? "vs-dark" : "light"}
@@ -60,7 +66,7 @@ export default class CodeMonaco extends React.Component {
         onMount={this.handleEditorDidMount}
         options={{
           minimap: {enabled: false},
-          lineNumbers: "off",
+          // lineNumbers: "off",
           glyphMargin: false,
           folding: false,
         }}

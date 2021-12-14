@@ -18,6 +18,7 @@ import ServiceContext from '../ServiceContext.js';
 import Settings from './Settings.js';
 import UserManager from '../libs/UserManager.js';
 import * as winMsgMgr from '../libs/WindowMessageManager';
+import query from '../libs/start-query.js';
 
 import './App.css';
 
@@ -90,7 +91,6 @@ class App extends React.Component {
       this.setState({dark: darkMatcher.matches});
     });
 
-    const query = Object.fromEntries(new URLSearchParams(window.location.search).entries());
     if (query.newGist) {
       window.history.pushState({}, '', `${window.location.origin}`);
       window.opener.postMessage({type: 'gimmeDaCodez'}, '*');
