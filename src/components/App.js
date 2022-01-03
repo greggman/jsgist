@@ -281,7 +281,6 @@ class App extends React.Component {
           backupManager: this.backupManager,
         }}>
         <div className="content">
-          <Head />
           <div className="top">
             <div className="left">
               <div className="name">
@@ -291,13 +290,16 @@ class App extends React.Component {
               </div>
             </div>
             <div className="right">
-              <button tabIndex="1" onClick={this.handleRun}>Run</button>
-              <button tabIndex="1" onClick={this.handleStop}>Stop</button>
-              <button tabIndex="1" onClick={this.handleSave}>Save</button>
-              <button tabIndex="1" onClick={this.handleNew}>New</button>
-              <button tabIndex="1" onClick={this.handleLoad}>Load</button>
-              <button tabIndex="1" onClick={this.handleSettings} title="settings"><img src={`${window.location.origin}/resources/images/gear.svg`} alt="settings"></img></button>
-              <button tabIndex="1" onClick={this.handleHelp} title="help">?</button>
+              <div className="toolbar">
+                <button tabIndex="1" onClick={this.handleRun}>Run</button>
+                <button tabIndex="1" onClick={this.handleStop}>Stop</button>
+                <button tabIndex="1" onClick={this.handleSave}>Save</button>
+                <button tabIndex="1" onClick={this.handleNew}>New</button>
+                <button tabIndex="1" onClick={this.handleLoad}>Load</button>
+                <button tabIndex="1" onClick={this.handleSettings} title="settings"><img src={`${window.location.origin}/resources/images/gear.svg`} alt="settings"></img></button>
+                <button tabIndex="1" onClick={this.handleHelp} title="help">?</button>
+              </div>
+              <Head />
             </div>
           </div>
           {

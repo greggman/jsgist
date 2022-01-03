@@ -48,13 +48,11 @@ html, body {
 .head {
   flex: 0 0 auto;
   display: flex;
-  font-size: xx-large;
   font-weight: bold;
   justify-content: space-between;
   align-items: center;
   margin: 0;
-  padding: 10px;
-  background: var(--title-bg-color);
+  font-size: larger;
 }
 .head a {
   text-decoration: none;
@@ -107,8 +105,12 @@ html, body {
   display: flex;
 }
 .top .right {
-  display: flex;
   margin-left: 10px;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.toolbar {
+  display: flex;
 }
 .top .left {
   position: relative;
