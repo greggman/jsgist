@@ -57,6 +57,8 @@ html, body {
 .head a {
   text-decoration: none;
   color: var(--main-fg-color);
+  display: flex;
+  align-items: center;
 }
 .head img {
   height: 1em;
@@ -748,8 +750,13 @@ hr {
   .top, .bottom {
     margin-top: 5px;
   }
+  .top {
+    flex-direction: column-reverse;
+  }
   .right {
     margin-left: 0;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
   }
   .top .right {
     margin-left: 0;
