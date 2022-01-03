@@ -109,6 +109,7 @@ html, body {
 .top .right {
   margin-left: 10px;
   justify-content: space-between;
+  align-items: center;
   overflow: hidden;
 }
 .toolbar {
