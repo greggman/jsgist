@@ -192,9 +192,7 @@ class App extends React.Component {
   }
   handleNew = async() => {
     this.backupManager.clearBackup();
-    window.location.href = window.location.origin;
-    //window.history.pushState({}, '', `${window.location.origin}`);
-    //model.setData(model.getNewData());
+    window.location.href = window.location.origin;  // causes a reload
   }
   handleRun = async () => {
     this.backupManager.setBackup(JSON.stringify({
