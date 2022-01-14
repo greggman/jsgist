@@ -324,13 +324,14 @@ html, body {
 .split .pane {
   flex-shrink: 1;
   flex-grow: 1;
-  overflow: hidden;
   position: relative;
 }
-.split, .gutter.gutter-horizontal {
+.split .pane-dragging {
+  overflow: hidden;
 }
 .gutter {
-    background-color: var(--main-bg-color);
+  background-color: var(--main-bg-color);
+  flex: 0 0 auto;
 }
 .gutter.gutter-horizontal,
 .gutter.gutter-horizontal:hover {
