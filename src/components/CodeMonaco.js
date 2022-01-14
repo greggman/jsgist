@@ -49,7 +49,7 @@ export default class CodeMonaco extends React.Component {
     this.editor = editor;
   }
   render() {
-    const {options = {}, onValueChange = noop} = this.props;
+    const {options = {}, onValueChange = noop, ui} = this.props;
     const {value} =  this.state;
     const isDarkMode = darkMatcher.matches;
 
@@ -67,9 +67,11 @@ export default class CodeMonaco extends React.Component {
         onMount={this.handleEditorDidMount}
         options={{
           minimap: {enabled: false},
-          // lineNumbers: "off",
+          lineNumbers: ui.lineNumbers ? "on" : "off",
           glyphMargin: false,
           folding: false,
+          insertSpaces: !ui.tabs,
+          renderWhitespace: ui.showWhitespace,
         }}
       />
     );

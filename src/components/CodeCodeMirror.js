@@ -58,7 +58,7 @@ export default class CodeCodeMirror extends React.Component {
     this.editor = editor;
   }
   render() {
-    const {options = {}, onValueChange = noop} = this.props;
+    const {options = {}, onValueChange = noop, ui} = this.props;
     const {value} =  this.state;
     const isDarkMode = darkMatcher.matches;
     const codeMirrorOptions = {
@@ -66,7 +66,8 @@ export default class CodeCodeMirror extends React.Component {
       scrollbarStyle: 'overlay',
       theme: isDarkMode ? 'material' : 'eclipse',
       matchBrackets: true,
-      lineNumbers: true,
+      lineNumbers: ui.lineNumbers,
+      ...(ui.tabs && {indentWithTabs: true}),
       ...(options.editor && options.editor),
     };
     if (codeMirrorOptions.mode.indexOf('html') >= 0) {

@@ -16,11 +16,13 @@ import OAuthManager from '../libs/OAuthManager';
 import Save from './Save.js';
 import ServiceContext from '../ServiceContext.js';
 import Settings from './Settings.js';
+import * as uiModel from '../libs/ui-model.js';
 import UserManager from '../libs/UserManager.js';
 import * as winMsgMgr from '../libs/WindowMessageManager';
 import query from '../libs/start-query.js';
 
 import './App.css';
+import { classNames } from '../libs/css-utils.js';
 
 const noJSX = () => [];
 const darkMatcher = window.matchMedia('(prefers-color-scheme: dark)');
@@ -48,7 +50,11 @@ class App extends React.Component {
       addError: this.addError,
     });
   }
+  componentWillUnmount() {
+    uiModel.unsubscribe(this.handleUIChange);
+  }
   componentDidMount() {
+    uiModel.subscribe(this.handleUIChange);
     winMsgMgr.on('newGist', null, this.handleNewGist);
     this.github.addEventListener('userdata', (e) => {
       this.setState({
@@ -152,6 +158,9 @@ class App extends React.Component {
     if (success) {
       this.handleRun();
     }
+  }
+  handleUIChange = () => {
+    this.forceUpdate();
   }
   handleNewGist = (data) => {
     let success = true;
@@ -269,8 +278,9 @@ class App extends React.Component {
       userData,
       gistId,
     } = this.state;
+    const editor = uiModel.get().editor;
     return (
-      <div className="App">
+      <div className={classNames('App', `editor-${editor}`)}>
         <ServiceContext.Provider value={{
           github: this.github,
           addError: this.addError,
