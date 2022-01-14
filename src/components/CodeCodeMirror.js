@@ -56,18 +56,24 @@ export default class CodeCodeMirror extends React.Component {
   }
   registerEditor = (editor) => {
     this.editor = editor;
+    editor.setOption("extraKeys", {
+      Tab: (cm) => {
+        const str = this.tabs ? '\t' : ''.padEnd(cm.getOption("indentUnit") + 1);
+        cm.replaceSelection(str);
+      }
+    });
   }
   render() {
     const {options = {}, onValueChange = noop, ui} = this.props;
     const {value} =  this.state;
     const isDarkMode = darkMatcher.matches;
+    this.tabs = ui.tabs;
     const codeMirrorOptions = {
       mode: 'javascript',
       scrollbarStyle: 'overlay',
       theme: isDarkMode ? 'material' : 'eclipse',
       matchBrackets: true,
       lineNumbers: ui.lineNumbers,
-      ...(ui.tabs && {indentWithTabs: true}),
       ...(options.editor && options.editor),
     };
     if (codeMirrorOptions.mode.indexOf('html') >= 0) {
