@@ -34,6 +34,7 @@ export default class CodeMonaco extends React.Component {
         goToLine: (lineNo, colNo) => {
           this.editor.focus();
           this.editor.setPosition({lineNumber: lineNo, column: colNo});
+          this.editor.revealPosition({lineNumber: lineNo, column: colNo})
         },
         refresh: _ => {
           // this.editor.refresh();
