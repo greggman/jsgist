@@ -8,7 +8,19 @@ A client side HTML/CSS/JavaScript playground based on gists.
 
 Just to see if it could be done. Also something you can add
 features to instead of having to beg other services. Just make a PR
-though maybe ask first.
+though maybe ask first. 
+
+Further, it's your data. Nothing is stored by this site. It's effectively
+a static webpage except for the tiny login function which itself does
+not store anything on any servers. The only storage is your gists and
+local storage. The site does not ask for any personal info. Even logging in
+it only asks for permission to save gists. It does not ask for your name,
+username, email, nothing. Further, that permission token is stored locally
+on your machine. The site doesn't keep it.
+
+On top of that, it's your data. Even if was to take this site down it would
+be trivial to still use your gists. See [`embed.js`](https://github.com/greggman/jsgist/blob/main/src/embed/embed.js)
+as one example of how to use your own gists.
 
 ## To Do
 
@@ -17,8 +29,8 @@ There's a long list of desired features. Feel free to help add them
 - [ ] add bunch of settings
 
   - [X] layout options
-  - [ ] tabs/space
-  - [ ] editor? (use monaco?)
+  - [X] tabs/space
+  - [X] editor? (use monaco?)
   - [ ] eslint?
   - [ ] eslint settings?
   - [X] support mobile
@@ -38,14 +50,14 @@ There's a long list of desired features. Feel free to help add them
 - [ ] Support a bunch of frameworks
 
   I'm not really a fan of the various sites that add hidden `<script>`
-  tags (codepen, jsfiddle). The problem is a new to programming user
+  tags (codepen, jsfiddle). The problem is, a new to programming user
   comes, see the visible code, copies, and it doesn't work because
   there are a bunch of invisible things happening. I think Stack 
   Overflow snippets get this right. They have the UI but the UI just
   inserts the correct script tags into the HTML area so they are
   visible. This makes it clear what's actually happening.
 
-  It might be nice for the UX present like codepen (a list of include stuff)
+  It might be nice for the UX to present like codepen (a list of include stuff)
   but that list is derived from scanning the code, not internally stored.
 
   Speaking of which, if anyone knows a good layout / form lib speak up.
@@ -73,7 +85,7 @@ There's a long list of desired features. Feel free to help add them
 - [ ] optimize Log
 
   As it is the log prints all the messages. This is too slow. It should
-  use a virtual list and just show the message visible.
+  use a virtual list and just show the visible messages.
 
 - [ ] show confirmation when loading backup
 
@@ -114,6 +126,18 @@ There's a long list of desired features. Feel free to help add them
   so when reading we stop when we hit that id.
 
   (unless control is pressed or something to reset)
+  
+- [ ] Store list in gist?
+
+  As it is to get the list of gists it has to get all your gists' meta data
+  and then filter by those that have `jsgist.json`.
+  
+  The problem with storing the list as a gist
+  
+  1. You need to know which gist (which you can search and then remember client side)
+  2. You need to fetch the directory gist, update, and write it back on every save.
+  3. You need to handle the directory getting too large and so needing multiple gists
+  4. It will almost always be your newest gist
 
 - [ ] show revisions and forks
 
@@ -148,6 +172,8 @@ There's a long list of desired features. Feel free to help add them
   don't crash the browser with an infinite loop. As it is the code saves your
   work to local storage before running so if crash you should come back to the
   same result. Note: I haven't thought much about how this flow should work.
+  Also, at least in Chrome, your code is run in a separate process so you can
+  kill the iframe by clicking "stop".
 
 - [X] Mobile
 
