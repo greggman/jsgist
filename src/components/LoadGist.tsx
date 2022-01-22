@@ -52,7 +52,6 @@ function getSortFn(sortKey: string, checks: Set<string>): (a: Gist, b: Gist) => 
 function gistsToSortedArray(gists: GistIdMap, checks: Set<string>, sortKey: string, sortDir: string) {
   const compareDirMult = sortDir === 'down' ? 1 : -1;
   const compFn = getSortFn(sortKey, checks);
-  console.log('sortDir:', compareDirMult);
   return Object.entries(gists).map(([id, {name, date, public: _public}]) => {
     return {id, name, date, public: _public};
   }).sort((b, a) => compFn(a, b) * compareDirMult);

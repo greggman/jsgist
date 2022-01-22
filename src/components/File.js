@@ -1,6 +1,5 @@
 import mime from 'mime-types';
 import React from 'react';
-// import EditLine from './EditLine.js';
 import CodeArea from './CodeArea.js';
 
 export default class File extends React.Component {

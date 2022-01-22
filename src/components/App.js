@@ -16,10 +16,13 @@ import OAuthManager from '../libs/OAuthManager';
 import Save from './Save.js';
 import ServiceContext from '../ServiceContext.js';
 import Settings from './Settings.js';
+import * as uiModel from '../libs/ui-model.js';
 import UserManager from '../libs/UserManager.js';
 import * as winMsgMgr from '../libs/WindowMessageManager';
+import query from '../libs/start-query.js';
 
 import './App.css';
+import { classNames } from '../libs/css-utils.js';
 
 const noJSX = () => [];
 const darkMatcher = window.matchMedia('(prefers-color-scheme: dark)');
@@ -47,7 +50,11 @@ class App extends React.Component {
       addError: this.addError,
     });
   }
+  componentWillUnmount() {
+    uiModel.unsubscribe(this.handleUIChange);
+  }
   componentDidMount() {
+    uiModel.subscribe(this.handleUIChange);
     winMsgMgr.on('newGist', null, this.handleNewGist);
     this.github.addEventListener('userdata', (e) => {
       this.setState({
@@ -90,7 +97,6 @@ class App extends React.Component {
       this.setState({dark: darkMatcher.matches});
     });
 
-    const query = Object.fromEntries(new URLSearchParams(window.location.search).entries());
     if (query.newGist) {
       window.history.pushState({}, '', `${window.location.origin}`);
       window.opener.postMessage({type: 'gimmeDaCodez'}, '*');
@@ -153,6 +159,9 @@ class App extends React.Component {
       this.handleRun();
     }
   }
+  handleUIChange = () => {
+    this.forceUpdate();
+  }
   handleNewGist = (data) => {
     let success = true;
     try {
@@ -192,9 +201,7 @@ class App extends React.Component {
   }
   handleNew = async() => {
     this.backupManager.clearBackup();
-    window.location.href = window.location.origin;
-    //window.history.pushState({}, '', `${window.location.origin}`);
-    //model.setData(model.getNewData());
+    window.location.href = window.location.origin;  // causes a reload
   }
   handleRun = async () => {
     this.backupManager.setBackup(JSON.stringify({
@@ -271,8 +278,9 @@ class App extends React.Component {
       userData,
       gistId,
     } = this.state;
+    const editor = uiModel.get().editor;
     return (
-      <div className="App">
+      <div className={classNames('App', `editor-${editor}`)}>
         <ServiceContext.Provider value={{
           github: this.github,
           addError: this.addError,
@@ -283,7 +291,6 @@ class App extends React.Component {
           backupManager: this.backupManager,
         }}>
         <div className="content">
-          <Head />
           <div className="top">
             <div className="left">
               <div className="name">
@@ -293,13 +300,16 @@ class App extends React.Component {
               </div>
             </div>
             <div className="right">
-              <button tabIndex="1" onClick={this.handleRun}>Run</button>
-              <button tabIndex="1" onClick={this.handleStop}>Stop</button>
-              <button tabIndex="1" onClick={this.handleSave}>Save</button>
-              <button tabIndex="1" onClick={this.handleNew}>New</button>
-              <button tabIndex="1" onClick={this.handleLoad}>Load</button>
-              <button tabIndex="1" onClick={this.handleSettings} title="settings"><img src={`${window.location.origin}/resources/images/gear.svg`} alt="settings"></img></button>
-              <button tabIndex="1" onClick={this.handleHelp} title="help">?</button>
+              <div className="toolbar">
+                <button tabIndex="1" onClick={this.handleRun}>Run</button>
+                <button tabIndex="1" onClick={this.handleStop}>Stop</button>
+                <button tabIndex="1" onClick={this.handleSave}>Save</button>
+                <button tabIndex="1" onClick={this.handleNew}>New</button>
+                <button tabIndex="1" onClick={this.handleLoad}>Load</button>
+                <button tabIndex="1" onClick={this.handleSettings} title="settings"><img src={`${window.location.origin}/resources/images/gear.svg`} alt="settings"></img></button>
+                <button tabIndex="1" onClick={this.handleHelp} title="help">?</button>
+              </div>
+              <Head />
             </div>
           </div>
           {

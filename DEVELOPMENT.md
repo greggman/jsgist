@@ -72,15 +72,20 @@ Mine is configured only to respond to requests for domains I control.
 
 Then, in one terminal
 
-```
+```bash
 REACT_APP_OAUTH_HELPER_URL=<url-to-your-auth-helper> npm start
 ```
 
 and in another.
 
-```
-ngron http --subdomain=somedomain 3000
+```bash
+ngrok http --subdomain=somedomain 3000
 ```
 
 Then go to `https://somedomain.ngrok.io`. Note that at the moment the preview won't
 work but you can test authenticating, etc...
+
+# Switching editors
+
+By default Monaco is used on desktop, CodeMirror on mobile.
+To test CodeMirror on desktop add `codeMirror=true` as a query parameter.

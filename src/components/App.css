@@ -48,17 +48,17 @@ html, body {
 .head {
   flex: 0 0 auto;
   display: flex;
-  font-size: xx-large;
   font-weight: bold;
   justify-content: space-between;
   align-items: center;
   margin: 0;
-  padding: 10px;
-  background: var(--title-bg-color);
+  font-size: larger;
 }
 .head a {
   text-decoration: none;
   color: var(--main-fg-color);
+  display: flex;
+  align-items: center;
 }
 .head img {
   height: 1em;
@@ -107,8 +107,13 @@ html, body {
   display: flex;
 }
 .top .right {
-  display: flex;
   margin-left: 10px;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+}
+.toolbar {
+  display: flex;
 }
 .top .left {
   position: relative;
@@ -319,13 +324,21 @@ html, body {
 .split .pane {
   flex-shrink: 1;
   flex-grow: 1;
-  overflow: hidden;
   position: relative;
 }
-.split, .gutter.gutter-horizontal {
+.editor-codemirror .pane {
+  /*
+   I don't understand why codemirror needs this
+   and monaco fails with it. >:(
+  */
+  overflow: hidden;
+}
+.split .pane-dragging {
+  overflow: hidden;
 }
 .gutter {
-    background-color: var(--main-bg-color);
+  background-color: var(--main-bg-color);
+  flex: 0 0 auto;
 }
 .gutter.gutter-horizontal,
 .gutter.gutter-horizontal:hover {
@@ -485,6 +498,11 @@ a {
 .layout .radio>* {
   width: 3.5em;
   padding: 0.5em;
+}
+/* -------------------- */
+.settings .radio>* {
+  margin: 0.2em;
+  padding: 0.2em;
 }
 /* -------------------- */
 input {
@@ -702,6 +720,10 @@ hr {
   resize: vertical;
   overflow: auto;
 }
+.new-comment .new-comment-write {
+  min-height: 10em;
+  height: 10em;
+}
 .new-comment .new-comment-preview {
   min-height: 10em;
   padding: 0.5em;
@@ -742,8 +764,13 @@ hr {
   .top, .bottom {
     margin-top: 5px;
   }
+  .top {
+    flex-direction: column-reverse;
+  }
   .right {
     margin-left: 0;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
   }
   .top .right {
     margin-left: 0;
