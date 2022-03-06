@@ -325,6 +325,7 @@ html, body {
   flex-shrink: 1;
   flex-grow: 1;
   position: relative;
+  min-width: 0;
   min-height: 0;
 }
 .editor-codemirror .pane {
