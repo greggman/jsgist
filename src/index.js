@@ -1,13 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {storageManager} from './globals.js';
 import './index.css';
 import './scrollbars.js';
 import App from './components/App';
+import BackupManager from './components/BackupManager.js';
+import OAuthManager from './libs/OAuthManager';
 import * as serviceWorker from './serviceWorker';
+
+const oauthManager = new OAuthManager(storageManager);
+const backupManager = new BackupManager(storageManager);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App oauthManager={oauthManager} backupManager={backupManager} />
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,6 +1,5 @@
 import React from 'react';
 
-import BackupManager from './BackupManager.js';
 import EditLine from './EditLine.js';
 import Footer from './Footer.js';
 import {storageManager} from '../globals.js';
@@ -12,7 +11,6 @@ import Load from './Load.js';
 import {isGistId, loadGistFromSrc} from '../libs/loader.js';
 import {LogManager} from './Log.js';
 import * as model from '../libs/model.js';
-import OAuthManager from '../libs/OAuthManager';
 import Save from './Save.js';
 import ServiceContext from '../ServiceContext.js';
 import Settings from './Settings.js';
@@ -28,7 +26,7 @@ const noJSX = () => [];
 const darkMatcher = window.matchMedia('(prefers-color-scheme: dark)');
 
 class App extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       path: window.location.pathname,
@@ -41,9 +39,9 @@ class App extends React.Component {
       updateVersion: 0,
     };
     this.github = new GitHub();
+    this.oauthManager = props.oauthManager;
+    this.backupManager = props.backupManager;
     this.logManager = new LogManager();
-    this.oauthManager = new OAuthManager(storageManager);
-    this.backupManager = new BackupManager(storageManager);
     this.userManager = new UserManager({
       oauthManager: this.oauthManager,
       github: this.github,
@@ -52,6 +50,7 @@ class App extends React.Component {
   }
   componentWillUnmount() {
     uiModel.unsubscribe(this.handleUIChange);
+    this.userManager.cleanup();
   }
   componentDidMount() {
     uiModel.subscribe(this.handleUIChange);
