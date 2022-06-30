@@ -139,6 +139,36 @@ There's a long list of desired features. Feel free to help add them
   3. You need to handle the directory getting too large and so needing multiple gists
   4. It will almost always be your newest gist
 
+- [ ] only download up to the newest gist
+
+  I'm not sure this works. The idea is, when you get the list of gists, as soon as you 
+  see one that's already in your local list then you should have seen everything older
+  and so it's already in your list. This assumes you track the newest gist you've seen
+  when getting the list of gists which is separate from the newest gist (since the newest
+  gist might be one you just saved).
+  
+  In other words. 
+  
+  1. Your local list has [ABC]. 
+  2. Elsewhere you create [DE]. 
+  3. You save locally and get [F].
+  
+  When you "reload gists" you need to load until you see 'C' because that's
+  the newest gist you saw when you last did a "reload gists". That would help update
+  quicker.
+  
+  Currently, given the example above, C is not tracked, so after step 3 your
+  list is [ABCF] so just need to add flags or data that C is the newest when
+  "reload gists" was last used.
+  
+  Also "Shift" to force reload?
+
+- [ ] Consider paging "reload gists" so it just does one request at a time
+
+  My hope is, if I implement the previous item, there's less need for this.
+  As it is I think I have ~1400 gists which at 100 per means 14 requests
+  for gists.
+
 - [ ] show revisions and forks
 
 - [ ] allow more files.
