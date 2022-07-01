@@ -139,7 +139,7 @@ There's a long list of desired features. Feel free to help add them
   3. You need to handle the directory getting too large and so needing multiple gists
   4. It will almost always be your newest gist
 
-- [ ] only download up to the newest gist
+- [x] only download up to the newest gist
 
   I'm not sure this works. The idea is, when you get the list of gists, as soon as you 
   see one that's already in your local list then you should have seen everything older
@@ -167,7 +167,9 @@ There's a long list of desired features. Feel free to help add them
 
   My hope is, if I implement the previous item, there's less need for this.
   As it is I think I have ~1400 gists which at 100 per means 14 requests
-  for gists.
+  for gists. At the same time, I do have 1400 gists which means each time
+  I start on a new browser/profile/computer, 14 requests need to be made.
+  It's possible I'll have to add this 😢 
 
 - [ ] show revisions and forks
 
