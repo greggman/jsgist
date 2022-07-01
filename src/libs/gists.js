@@ -8,6 +8,7 @@ const gistSchema = {
   "properties": {
     "name": { "type": "string" },
     "date": { "type": "string" },
+    "locallySaved": { "type": "boolean" },
   },
   "required": ["name", "date"],
 };
@@ -42,7 +43,7 @@ storageManager.subscribe(gistsKey, () => {
 });
 
 export function addGist(id, name, date, _public) {
-  const gist = {name, date, public: _public};
+  const gist = {name, date, public: _public, locallySaved: true};
   if (!gistValidator(gist)) {
     throw new Error(`gist not valid:\n${gistValidator.errors.map(e => `${e.message}: ${e.dataPath}`)}`)
   }

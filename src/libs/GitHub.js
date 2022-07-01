@@ -329,10 +329,13 @@ export default class GitHub extends EventTarget {
     return response.data;
   }
 
-  async getUserGists() {
+  async getUserGists(since) {
     const gists = await this.authorizedOctokit.paginate(
         this.authorizedOctokit.gists.list,
-        {per_page: 100});
+        {
+          per_page: 100,
+          ...(since && {since}),
+        });
     return gists.filter(gist => !!gist.files['jsGist.json']);
     // return await this.authorizedOctokit.gists.list();
   }

@@ -8,6 +8,7 @@ type Gist = {
   name: string,
   date: string,
   public: boolean,
+  locallySaved?: boolean,
   id: string,
 }
 
@@ -24,6 +25,7 @@ type LoadGistState = {
   filter: string,  // TODO: move up
   sortKey: string, // TODO: move up
   sortDir: string, // TODO: move up
+  shift: boolean,
 };
 
 function getSortFn(sortKey: string, checks: Set<string>): (a: Gist, b: Gist) => number {
@@ -83,6 +85,18 @@ function SortBy(props: SortKeyInfo) {
   );
 }
 
+function getDateOfNewestNonLocallySavedGist(gistsById: GistIdMap) {
+  let since;
+  for (const {date, locallySaved} of Object.values(gistsById)) {
+    if (!locallySaved) {
+      if (!since || date > since) {
+        since = date;
+      }
+    }
+  }
+  return since;
+}
+
 export default class LoadGist extends React.Component<{}, LoadGistState> {
   constructor (props: {}) {
     super(props);
@@ -94,6 +108,7 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
       filter: '',
       sortKey: 'date',
       sortDir: 'down',
+      shift: false,
     };
   }
   handleNewGists = (gists: GistIdMap) => {
@@ -125,17 +140,34 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
     const {userManager} = this.context;
     gists.subscribe(this.handleNewGists);
     userManager.subscribe(this.onUserStatusChange);
+    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keyup', this.handleKeyUp);
   }
   componentWillUnmount() {
     const {userManager} = this.context;
     gists.unsubscribe(this.handleNewGists);
     userManager.unsubscribe(this.onUserStatusChange);
+    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keyup', this.handleKeyUp);
+  }
+  handleKeyDown = (e: KeyboardEvent) => {
+    this.setState({shift: e.shiftKey});
+  }
+  handleKeyUp = (e: KeyboardEvent) => {
+    this.setState({shift: e.shiftKey});
   }
   loadGists = async() => {
     const {addError, github} = this.context;
     this.setState({loading: true});
     try {
-      const gistArray = await github.getUserGists();
+      // This doesn't belong here. It's not the UI's responsibility
+      // to manage this stuff.
+      // Find data of the newest gist that was not locally saved.
+      // then pass that to getUserGists so Github will return only
+      // newer gists.
+      const existingGists = this.state.shift ? {} : this.state.gists;
+      const since = getDateOfNewestNonLocallySavedGist(existingGists);
+      const gistArray = await github.getUserGists(since);
       const gistsById = gistArray.reduce((gists: any[], gist: any) => {
         gists[gist.id] = {
           name: gist.description,
@@ -143,7 +175,7 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
           public: gist.public,
         };
         return gists;
-      }, {});
+      }, {...existingGists});
       gists.setGists(gistsById);
     } catch (e) {
       addError(`could not load gists: ${e}`);
@@ -187,7 +219,7 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
   }
   renderLoad() {
     const {userManager} = this.context;
-    const {gists, checks, loading, filter, sortKey, sortDir} = this.state;
+    const {gists, checks, loading, filter, sortKey, sortDir, shift} = this.state;
     const userData = userManager.getUserData();
     const canLoad = !!userData && !loading;
     const gistArray = gistsToSortedArray(gists, checks, sortKey, sortDir);
@@ -197,7 +229,7 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
           <button
             className={classNames({disabled: !canLoad})}
             onClick={this.loadGists}
-          >{gistArray.length ? 'Reload' : 'Load'} Your Gists</button>
+          >{shift ? '(Force) ' : ''}Load New Gists</button>
         </p>
          {
             gistArray.length >= 0 &&
