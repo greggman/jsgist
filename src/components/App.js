@@ -32,7 +32,7 @@ class App extends React.Component {
     this.state = {
       path: window.location.pathname,
       dark: darkMatcher.matches,
-      fullscreen: false,
+      fullscreen: !!query.fullscreen,
       loading: false,
       dialog: noJSX,
       gistId: '',
