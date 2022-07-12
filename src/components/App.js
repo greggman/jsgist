@@ -14,6 +14,7 @@ import * as model from '../libs/model.js';
 import Save from './Save.js';
 import ServiceContext from '../ServiceContext.js';
 import Settings from './Settings.js';
+import Toolbar from './Toolbar.js';
 import * as uiModel from '../libs/ui-model.js';
 import UserManager from '../libs/UserManager.js';
 import * as winMsgMgr from '../libs/WindowMessageManager';
@@ -31,6 +32,7 @@ class App extends React.Component {
     this.state = {
       path: window.location.pathname,
       dark: darkMatcher.matches,
+      fullscreen: false,
       loading: false,
       dialog: noJSX,
       gistId: '',
@@ -47,6 +49,16 @@ class App extends React.Component {
       github: this.github,
       addError: this.addError,
     });
+    this.toolbarFns = {
+      handleRun: this.handleRun,
+      handleStop: this.handleStop,
+      handleSave: this.handleSave,
+      handleNew: this.handleNew,
+      handleLoad: this.handleLoad,
+      handleSettings: this.handleSettings,
+      handleFullscreen: this.handleFullscreen,
+      handleHelp: this.handleHelp,
+    };
   }
   componentWillUnmount() {
     uiModel.unsubscribe(this.handleUIChange);
@@ -221,6 +233,9 @@ class App extends React.Component {
   handleSettings = () => {
     this.setState({dialog: this.renderSettings});
   }
+  handleFullscreen = () => {
+    this.setState({fullscreen: !this.state.fullscreen});
+  }
   handleHelp = () => {
     this.setState({dialog: this.renderHelp});
   }
@@ -275,6 +290,7 @@ class App extends React.Component {
       dialog,
       updateVersion: hackKey,
       userData,
+      fullscreen,
       gistId,
     } = this.state;
     const editor = uiModel.get().editor;
@@ -299,15 +315,7 @@ class App extends React.Component {
               </div>
             </div>
             <div className="right">
-              <div className="toolbar">
-                <button tabIndex="1" onClick={this.handleRun}>Run</button>
-                <button tabIndex="1" onClick={this.handleStop}>Stop</button>
-                <button tabIndex="1" onClick={this.handleSave}>Save</button>
-                <button tabIndex="1" onClick={this.handleNew}>New</button>
-                <button tabIndex="1" onClick={this.handleLoad}>Load</button>
-                <button tabIndex="1" onClick={this.handleSettings} title="settings"><img src={`${window.location.origin}/resources/images/gear.svg`} alt="settings"></img></button>
-                <button tabIndex="1" onClick={this.handleHelp} title="help">?</button>
-              </div>
+              <Toolbar toolbarFns={this.toolbarFns} fullscreen={fullscreen} />
               <Head />
             </div>
           </div>
@@ -318,6 +326,7 @@ class App extends React.Component {
                   hackKey={hackKey}
                   data={data}
                   registerRunnerAPI={this.registerRunnerAPI}
+                  fullscreen={fullscreen}
                 />
               </div>
           }

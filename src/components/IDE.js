@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Layout1 from './Layout1.js';
 import Layout3Vertical from './Layout3Vertical.js';
 import Layout3Horizontal from './Layout3Horizontal.js';
 import Layout2x2 from './Layout2x2.js';
@@ -25,8 +26,10 @@ export default class IDE extends React.Component {
     this.forceUpdate();
   }
   render() {
+    const {fullscreen} = this.props;
     const mode = uiModel.get().layout;
-    return React.createElement(layoutModes[mode], this.props);
+    const layoutMode = fullscreen ? Layout1 : layoutModes[mode]
+    return React.createElement(layoutMode, this.props);
   }
 }
 
