@@ -276,6 +276,7 @@ html, body {
   background-position: center center;
   background-repeat: no-repeat;
   text-align: center;
+  flex: 0 0 auto;
 }
 .logger .log .count,
 .logger .info .count,
