@@ -22,6 +22,16 @@
   const worker = navigator.serviceWorker?.controller || navigator.serviceWorker?.active;
 
   function cacheFile(pathname, type, content) {
+    const {debug} = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+    if (debug) {
+      worker.postMessage({
+        type: 'setOptions',
+        data: {
+          verbose: debug,
+        },
+      });
+    }
+
     worker.postMessage({
       type: 'cacheFile',
       data: {
