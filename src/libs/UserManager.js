@@ -74,6 +74,7 @@ export default class UserManager {
   }
   logout = () => {
     this.oauthManager.logout();
+    this.github.setPat()
   }
   subscribe(fn) {
     this.subscriptionManager.subscribe(kUserManagerKey, fn);

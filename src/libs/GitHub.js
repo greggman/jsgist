@@ -341,6 +341,8 @@ export default class GitHub extends EventTarget {
   }
 
   async getGist(gist_id) {
+    // I'm not sure where this should happen. The issue is if the user's
+    // token has expired, then loading a gist fails, even if it's public.
     const octokit = this.authorizedOctokit || this.octokit;
     const gist = await octokit.gists.get({gist_id});
     return {

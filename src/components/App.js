@@ -151,19 +151,29 @@ class App extends React.Component {
   async loadData(src) {
     this.setState({loading: true});
     let success = true;
-    try {
-      const {data, id, rawData} = await loadGistFromSrc(src, this.github);
-      model.setData(data);
-      if (id) {
-        this.setState({
-          gistId: src,
-          gistOwnerId: rawData?.owner?.id,
-        });
+    let firstTry = true;
+    for (;;) {
+      try {
+        const {data, id, rawData} = await loadGistFromSrc(src, this.github);
+        model.setData(data);
+        if (id) {
+          this.setState({
+            gistId: src,
+            gistOwnerId: rawData?.owner?.id,
+          });
+        }
+        break;
+      } catch (e) {
+        if (firstTry) {
+          this.userManager.logout();
+          firstTry = false;
+        } else {
+          success = false;
+          console.warn(e);
+          this.addError(`could not load jsGist: src=${src} ${e}`);
+          break;
+        }
       }
-    } catch (e) {
-      success = false;
-      console.warn(e);
-      this.addError(`could not load jsGist: src=${src} ${e}`);
     }
     this.setState({loading: false});
     if (success) {
