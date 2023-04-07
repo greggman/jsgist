@@ -1,7 +1,7 @@
 import React from 'react';
 
 import EditLine from './EditLine.js';
-import Footer from './Footer.js';
+// import Footer from './Footer.js';
 import {storageManager} from '../globals.js';
 import GitHub from '../libs/GitHub.js';
 import Head from './Head.js';
@@ -341,10 +341,12 @@ class App extends React.Component {
               </div>
           }
         </div>
+        {/*
         <Footer
           gistId={gistId}
           title={data.name}
         />
+        */}
         {dialog()}
         <div className="messages">
           {
