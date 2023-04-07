@@ -301,7 +301,6 @@ class App extends React.Component {
       updateVersion: hackKey,
       userData,
       fullscreen,
-      gistId,
     } = this.state;
     const editor = uiModel.get().editor;
     return (
