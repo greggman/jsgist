@@ -1,5 +1,6 @@
 import React from 'react';
 import Editor from "@monaco-editor/react";
+import { once } from '../libs/utils.ts';
 
 const darkMatcher = window.matchMedia
     ? window.matchMedia('(prefers-color-scheme: dark)')
@@ -7,6 +8,17 @@ const darkMatcher = window.matchMedia
 // darkMatcher.addListener(render);
 
 const noop = () => {};
+
+async function getText(url) {
+  const req = await fetch(url);
+  return await req.text();
+}
+
+const addTypes = once(async function addTypes(monaco) {
+  const basePath = '/types/webgpu/dist/index.d.ts';
+  const text = await getText(basePath);
+  monaco.languages.typescript.javascriptDefaults.addExtraLib(text, '');
+});
 
 function codeMirrorModeToLanguage(editor) {
   const language = (editor?.mode || 'javascript').split('/').pop();
@@ -27,6 +39,7 @@ export default class CodeMonaco extends React.Component {
   }
   handleEditorDidMount = (editor, monaco) => {
     this.editor = editor;
+    addTypes(monaco);
     editor.getModel().updateOptions({tabSize: 2});
     const {registerAPI} = this.props;
     if (registerAPI) {

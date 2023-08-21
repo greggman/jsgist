@@ -44,3 +44,13 @@ export function createPopup(url: string, config: any = {}): (Window | undefined)
   };
   return window.open(url, '_blank', stringify(options, ',')) || undefined;
 }
+
+export function once(fn: (...args: any[]) => void) {
+  return function (...args: any[]) {
+    let once = false;
+    if (!once) {
+      once = true;
+      fn(...args);
+    }
+  };
+}
