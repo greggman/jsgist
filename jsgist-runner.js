@@ -58,7 +58,7 @@
   }
 
   function makePageHTML(mainHTML, mainJS, mainCSS) {
-    const isModule = /\bimport\b/.test(mainJS.content);
+    const isModule = /\bimport|async|await\b/.test(mainJS.content);
     const module = isModule
       ? ' type="module"'
       : '';
