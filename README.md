@@ -221,7 +221,7 @@ There's a long list of desired features. Feel free to help add them
 
 - [ ] Add tests!!!
 
-  There are currently no tests.
+  There are currently no tests
 
 ## Development
 
