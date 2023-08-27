@@ -2,6 +2,17 @@ import React from 'react';
 
 import {escapeTextForHTMLContent, getOrFind} from '../libs/utils';
 
+const saveData = (function() {
+  const a = document.createElement("a");
+  a.style.display = "none";
+  document.body.appendChild(a);
+  return function saveData(blob, fileName) {
+    const url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = fileName;
+    a.click()
+  };
+})();
 /*
 
 <!-- begin snippet: js hide: false console: true babel: false -->
@@ -68,6 +79,10 @@ ${indent4(mainHTML.content)}
 <!-- end snippet -->
 `;
 
+}
+
+function selectAndCopy(e) {
+  navigator.clipboard.writeText(e.target.textContent);
 }
 
 function openInCodepen(data) {
@@ -170,6 +185,14 @@ export default class Export extends React.Component {
   exportToJSFiddle = () => {
     openInJSFiddle(this.props.data);
   }
+  saveToFile = () => {
+    const {data} = this.props;
+    const {asModule} = this.state;
+    const html = makeHTML(data, asModule);
+    const blob = new Blob([html], {type: 'text/html'});
+    const filename = `jsgist-${data.name}.html`;
+    saveData(blob, filename);
+  }
   render() {
     const {data} = this.props;
     const {asModule} = this.state;
@@ -181,15 +204,26 @@ export default class Export extends React.Component {
         <div>
           <div><input type="radio" id="export-as-module" checked={asModule} onChange={_ => this.onChange(true)}/><label htmlFor="export-as-module">As es6 module</label></div>
           <div><input type="radio" id="export-as-script" checked={!asModule} onChange={_ => this.onChange(false)}/><label htmlFor="export-as-script">As script</label></div>
-          <p>S.O. does not support es6 modules yet so picking "As Module" puts the code in a &lt;script&gt; in the HTML.</p>
+          <p>S.O. does not support es6 modules yet so picking "As Module" puts the code in a &lt;script&gt; in the HTML area.</p>
         </div>
-        <pre className="layout-scrollbar" style={{userSelect: 'all', overflow: 'auto', height: '5em'}}>{makeSnippet(data, asModule)}</pre>
+        <div className="copy-text">
+          <pre className="layout-scrollbar" onClick={selectAndCopy} style={{userSelect: 'all', overflow: 'auto', height: '5em'}}>{makeSnippet(data, asModule)}</pre>
+          <div className="copy-buttons">
+            <button type="button" onClick={() => navigator.clipboard.writeText(makeSnippet(data, asModule))}>copy</button>
+          </div>
+        </div>
         <p>HTML (copy the code below paste into a file)</p>
         <div>
           <div><input type="radio" id="export-as-module" checked={asModule} onChange={_ => this.onChange(true)}/><label htmlFor="export-as-module">As es6 module</label></div>
           <div><input type="radio" id="export-as-script" checked={!asModule} onChange={_ => this.onChange(false)}/><label htmlFor="export-as-script">As script</label></div>
         </div>
-        <pre className="layout-scrollbar" style={{userSelect: 'all', overflow: 'auto', height: '5em'}}>{makeHTML(data, asModule)}</pre>
+        <div className="copy-text">
+          <pre className="layout-scrollbar" onClick={selectAndCopy} style={{userSelect: 'all', overflow: 'auto', height: '5em'}}>{makeHTML(data, asModule)}</pre>
+          <div className="copy-buttons">
+            <button type="button" onClick={this.saveToFile}>save</button>
+            <button type="button" onClick={() => navigator.clipboard.writeText(makeHTML(data, asModule))}>copy</button>
+          </div>
+        </div>
       </div>
     );
   }
