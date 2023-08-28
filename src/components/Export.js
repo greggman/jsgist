@@ -207,7 +207,7 @@ export default class Export extends React.Component {
           <p>S.O. does not support es6 modules yet so picking "As Module" puts the code in a &lt;script&gt; in the HTML area.</p>
         </div>
         <div className="copy-text">
-          <pre className="layout-scrollbar" onClick={selectAndCopy} style={{userSelect: 'all', overflow: 'auto', height: '5em'}}>{makeSnippet(data, asModule)}</pre>
+          <pre className="layout-scrollbar" style={{userSelect: 'all', overflow: 'auto', height: '5em'}}>{makeSnippet(data, asModule)}</pre>
           <div className="copy-buttons">
             <button type="button" onClick={() => navigator.clipboard.writeText(makeSnippet(data, asModule))}>copy</button>
           </div>
@@ -218,7 +218,7 @@ export default class Export extends React.Component {
           <div><input type="radio" id="export-as-script" checked={!asModule} onChange={_ => this.onChange(false)}/><label htmlFor="export-as-script">As script</label></div>
         </div>
         <div className="copy-text">
-          <pre className="layout-scrollbar" onClick={selectAndCopy} style={{userSelect: 'all', overflow: 'auto', height: '5em'}}>{makeHTML(data, asModule)}</pre>
+          <pre className="layout-scrollbar" style={{userSelect: 'all', overflow: 'auto', height: '5em'}}>{makeHTML(data, asModule)}</pre>
           <div className="copy-buttons">
             <button type="button" onClick={this.saveToFile}>save</button>
             <button type="button" onClick={() => navigator.clipboard.writeText(makeHTML(data, asModule))}>copy</button>
