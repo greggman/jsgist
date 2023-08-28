@@ -81,10 +81,6 @@ ${indent4(mainHTML.content)}
 
 }
 
-function selectAndCopy(e) {
-  navigator.clipboard.writeText(e.target.textContent);
-}
-
 function openInCodepen(data) {
   const files = data.files;
   const mainHTML = getOrFind(files, 'index.html', 'html');
