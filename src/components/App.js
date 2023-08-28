@@ -221,8 +221,9 @@ class App extends React.Component {
     this.handleStop();
   }
   handleNew = async() => {
-    this.backupManager.clearBackup();
-    window.location.href = window.location.origin;  // causes a reload
+    //this.backupManager.clearBackup();
+    //window.location.href = window.location.origin;  // causes a reload
+    window.open('/?newGist=1', '_blank');
   }
   handleRun = async () => {
     this.backupManager.setBackup(JSON.stringify({
