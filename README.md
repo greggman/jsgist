@@ -16,7 +16,7 @@ The top reasons I wrote this
   for me. It would lint things I don't personally care about and I'd end
   up have to jump through hoops to get it top stop cluttering my code
   with superflous marks. It also just didn't respond the way I wanted it
-  it.
+  to.
 
 * I started getting used to more useful features like multi-cursor
   edit and Intellisense like completions for JavaScript. Editing on
