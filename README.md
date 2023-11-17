@@ -10,17 +10,43 @@ Just to see if it could be done. Also something you can add
 features to instead of having to beg other services. Just make a PR
 though maybe ask first. 
 
+The top reasons I wrote this
+
+* JSFiddle started updating their editor in a way that was super annoying
+  for me. It would lint things I don't personally care about and I'd end
+  up have to jump through hoops to get it top stop cluttering my code
+  with superflous marks. It also just didn't respond the way I wanted it
+  it.
+
+* I started getting used to more useful features like multi-cursor
+  edit and Intellisense like completions for JavaScript. Editing on
+  sites that didn't support this started to get really tedious.
+
+* Searching on JSFiddle is too slow. I find that with my list
+  of gists in JSGist I can easily find examples and useful piece
+  of code where as on JSFiddle, I almost never looked up old code.
+  Here, I have over 1200 snippets and with fuzzy search it's usually
+  easy to find something I wrote previously that I want to reference now.
+
+* Other sites had issues too. Codepen has pretty much all the same issues
+  as JSFiddle though their editor is less annoying. Codesandbox, glitch.io,
+  etc have customizable backends and that's great and I use them when I need
+  one but they are way slower and not really suited for storing 100s of
+  small snippets and being able to easily search them.
+
 Further, it's your data. Nothing is stored by this site. It's effectively
 a static webpage except for the tiny login function which itself does
-not store anything on any servers. The only storage is your gists and
-local storage. The site does not ask for any personal info. Even logging in
+not store anything on any servers. The only storage is your gists (on github) and
+local storage (in your browser). The site itself does not store anything. It does not ask for any personal info. Even logging in
 it only asks for permission to save gists. It does not ask for your name,
 username, email, nothing. Further, that permission token is stored locally
 on your machine. The site doesn't keep it.
 
-On top of that, it's your data. Even if was to take this site down it would
-be trivial to still use your gists. See [`embed.js`](https://github.com/greggman/jsgist/blob/main/src/embed/embed.js)
-as one example of how to use your own gists.
+On top of that, it's your data. Even if this site taken down it would
+be trivial to still use your gists.
+See [`embed.js`](https://github.com/greggman/jsgist/blob/main/src/embed/embed.js)
+as one example of how to use your own gists. You won't lose your data because your
+data is stored on github, not this static size.
 
 ## To Do
 
