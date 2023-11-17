@@ -1,4 +1,5 @@
 import React from 'react';
+import MiniSearch from 'minisearch'
 import EditLine from './EditLine.js';
 import {classNames} from '../libs/css-utils.js';
 import * as gists from '../libs/gists.js';
@@ -16,20 +17,29 @@ type Gist = {
 
 interface GistIdMap {
    [key: string]: Gist;
-} 
+}
+
+interface ScoredGist extends Gist {
+  score: number,
+  id: string,
+};
 
 type LoadGistState = {
   loading: boolean,
   gists: GistIdMap,
   checks: Set<string>,
   filter: string,  // TODO: move up
+  newFilter: boolean,
   sortKey: string, // TODO: move up
   sortDir: string, // TODO: move up
   shift: boolean,
+  index: any,
 };
 
-function getSortFn(sortKey: string, checks: Set<string>): (a: Gist, b: Gist) => number {
+function getSortFn(sortKey: string, checks: Set<string>): (a: ScoredGist, b: ScoredGist) => number {
   switch (sortKey) {
+    case 'score':
+      return (a: ScoredGist, b: ScoredGist) => Math.sign(a.score - b.score);
     case 'name':
       return (a: Gist, b: Gist) => a.name.toLowerCase() < b.name.toLowerCase() ? -1 : (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0);
     case 'date':
@@ -51,24 +61,32 @@ function getSortFn(sortKey: string, checks: Set<string>): (a: Gist, b: Gist) => 
   }
 }
 
-function gistsToSortedArray(gists: GistIdMap, checks: Set<string>, sortKey: string, sortDir: string) {
+function scoredGistsToSortedArray(gists: ScoredGist[], checks: Set<string>, sortKey: string, sortDir: string) {
   const compareDirMult = sortDir === 'down' ? 1 : -1;
   const compFn = getSortFn(sortKey, checks);
-  return Object.entries(gists).map(([id, {name, date, public: _public}]) => {
-    return {id, name, date, public: _public};
-  }).sort((b, a) => compFn(a, b) * compareDirMult);
+  return gists.slice().sort((b, a) => compFn(a, b) * compareDirMult);
 }
 
-function matchFilter(filter: string) {
-  filter = filter.trim().toLowerCase();
-  return function(gist: Gist) {
-    const {name, date} = gist;
-    return filter === '' ||
-           name.toLowerCase().includes(filter) ||
-           date.substring(0, 10).includes(filter);
+function createIndex(gists: GistIdMap) {
+  const miniSearch = new MiniSearch({
+    fields: ['name'], // fields to index for full-text search
+  });
+  miniSearch.addAll(Object.entries(gists).map(([id, {name}]) => ({id, name})));
+  return miniSearch;
+}
+
+function matchingGists(index: MiniSearch, filter: string, gists: GistIdMap): ScoredGist[] {
+  filter = filter.trim();
+  if (filter === '') {
+    return Object.entries(gists)
+        .map(([id, gist]) => ({...gist, id, score: 0}))
   }
-}
+  const results = new Map(index.search(filter, { prefix: true, fuzzy: 0.2 }).map(r => [r.id, r.score]));
+  return Object.entries(gists)
+      .filter(([id]) => results.has(id))
+      .map(([id, gist]) => ({...gist, id, score: results.get(id)! }))
 
+}
 
 type SortKeyInfo = {
   sortDir: string,
@@ -106,14 +124,17 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
       gists: _gists,
       checks: new Set(),
       filter: '',
+      newFilter: false,
       sortKey: 'date',
       sortDir: 'down',
       shift: false,
+      index: createIndex(_gists),
     };
   }
   handleNewGists = (gists: GistIdMap) => {
     this.setState({
       gists,
+      index: createIndex(gists),
     });
   }
   toggleCheck = (id: string) => {
@@ -133,8 +154,7 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
     }
   }
   updateSort = (sortKey: string, sortDir: string) => {
-    console.log('update:', sortKey, sortDir);
-    this.setState({sortDir, sortKey});
+    this.setState({sortDir, sortKey, newFilter: false});
   }
   componentDidMount() {
     const {userManager} = this.context;
@@ -219,10 +239,17 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
   }
   renderLoad() {
     const {userManager} = this.context;
-    const {gists, checks, loading, filter, sortKey, sortDir, shift} = this.state;
+    const {gists, checks, loading, index, filter, sortKey, sortDir, shift, newFilter} = this.state;
     const userData = userManager.getUserData();
     const canLoad = !!userData && !loading;
-    const gistArray = gistsToSortedArray(gists, checks, sortKey, sortDir);
+    const effectiveSortKey = newFilter ? 'score' : sortKey;
+    const effectiveSortDir = newFilter ? 'down' : sortDir;
+    const gistArray = scoredGistsToSortedArray(
+        matchingGists(index, filter, gists),
+        checks,
+        effectiveSortKey, 
+        effectiveSortDir);
+        
     return (
       <div>
         <p>
@@ -235,21 +262,26 @@ export default class LoadGist extends React.Component<{}, LoadGistState> {
             gistArray.length >= 0 &&
               <React.Fragment>
               <p>
-                <EditLine className="foobar" placeholder="search:" value={filter} onChange={(filter:string) => {this.setState({filter})}} />
+                <EditLine className="foobar" placeholder="search:" value={filter} onChange={
+                    (filter:string) => {
+                      this.setState({filter, newFilter: filter.trim() !== ''});
+                    }
+                  }
+                />
               </p>
               <div className="gists">
                 <table>
                   <thead>
                     <tr>
-                      <th><SortBy selected={sortKey === 'check'} sortDir={sortDir} update={(dir: string) => this.updateSort('check', dir)}/></th>
-                      <th><SortBy selected={sortKey === 'name'} sortDir={sortDir} update={(dir: string) => this.updateSort('name', dir)}/></th>
-                      <th><SortBy selected={sortKey === 'date'} sortDir={sortDir} update={(dir: string) => this.updateSort('date', dir)}/></th>
-                      <th><SortBy selected={sortKey === 'public'} sortDir={sortDir} update={(dir: string) => this.updateSort('public', dir)}/></th>
+                      <th><SortBy selected={effectiveSortKey === 'check'} sortDir={sortDir} update={(dir: string) => this.updateSort('check', dir)}/></th>
+                      <th><SortBy selected={effectiveSortKey === 'name'} sortDir={sortDir} update={(dir: string) => this.updateSort('name', dir)}/></th>
+                      <th><SortBy selected={effectiveSortKey === 'date'} sortDir={sortDir} update={(dir: string) => this.updateSort('date', dir)}/></th>
+                      <th><SortBy selected={effectiveSortKey === 'public'} sortDir={sortDir} update={(dir: string) => this.updateSort('public', dir)}/></th>
                     </tr>
                   </thead>
                   <tbody>
                   {
-                    gistArray.filter(matchFilter(filter)).map((gist, ndx) => {
+                    gistArray.map((gist, ndx) => {
                       return (
                         <tr key={`g${ndx}`}>
                           <td><input type="checkbox" id={`gc${ndx}`} checked={checks.has(gist.id)} onChange={() => this.toggleCheck(gist.id)}/><label htmlFor={`gc${ndx}`}/></td>
