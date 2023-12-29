@@ -140,7 +140,7 @@ function makeHTML(data, asModule) {
   const mainHTML = getOrFind(files, 'index.html', 'html');
   const mainJS = getOrFind(files, 'index.js', 'js', 'js', 'javascript');
   const mainCSS = getOrFind(files, 'index.css', 'css');
-  const isModule = asModule !== undefined ? asModule : /\bimport\b/.test(mainJS.content);
+  const isModule = asModule !== undefined ? asModule : /\b(import|async|await)\b/.test(mainJS.content);
   const module = isModule
     ? ' type="module"'
     : '';
