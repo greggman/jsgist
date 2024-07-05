@@ -5,6 +5,23 @@ import ServiceContext from '../ServiceContext.js';
 import {createURL} from '../libs/url.js';
 import * as winMsgMgr from '../libs/WindowMessageManager';
 
+const allow = [
+  'accelerometer',
+  'bluetooth',
+  'camera',
+  'encrypted-media',
+  'display-capture',
+  'geolocation',
+  'gyroscope',
+  'microphone',
+  'midi',
+  'clipboard-read',
+  'clipboard-write',
+  'web-share',
+  'serial',
+  'xr-spatial-tracking',
+].map(v => `${v} *`).join('; ');
+
 export default class Runner extends React.Component {
   constructor(props) {
     super(props);
@@ -45,6 +62,7 @@ export default class Runner extends React.Component {
         this.data = data;
         this.removeIFrame();
         const iframe = document.createElement('iframe');
+        iframe.allow = allow;        
         this.iframe = iframe;
         iframe.src = isDevelopment
             ? createURL(`http://${window.location.hostname}:8081/runner-03.html`, {url: `http://${window.location.hostname}:8080/jsgist-runner.js`, ...extra})
