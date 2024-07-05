@@ -4,6 +4,23 @@
   const params = Object.fromEntries(new URLSearchParams(window.location.search).entries());
   const url = new URL(params.url);
 
+  const allow = [
+    'accelerometer',
+    'bluetooth',
+    'camera',
+    'encrypted-media',
+    'display-capture',
+    'geolocation',
+    'gyroscope',
+    'microphone',
+    'midi',
+    'clipboard-read',
+    'clipboard-write',
+    'web-share',
+    'serial',
+    'xr-spatial-tracking',
+  ].map(v => `${v} *`).join('; ');
+
   let iframe;
 
   async function startServiceWorker() {
@@ -144,6 +161,7 @@ iframe {
   function insertInBlob(mainHTML, mainJS, mainCSS) {
     applyCSSToSelfToRunContentInIFrame();
     const iframe = document.createElement('iframe');
+    iframe.allow = allow;
     const html = makePageHTML(mainHTML, mainJS, mainCSS);
     registerSections(html);
     const blob = new Blob([html], {type: 'text/html'});
@@ -155,6 +173,7 @@ iframe {
   function insertInServiceWorker(mainHTML, mainJS, mainCSS) {
     applyCSSToSelfToRunContentInIFrame();
     const iframe = document.createElement('iframe');
+    iframe.allow = "accelerometer *; bluetooth *; camera *; encrypted-media *; display-capture *; geolocation *; gyroscope *; microphone *; midi *; clipboard-read *; clipboard-write *; web-share *; serial *; xr-spatial-tracking *"
     const html = makePageHTML(mainHTML, mainJS, mainCSS);
     registerSections(html);
     cacheFile('/user-jsgist.html', 'text/html', html);
