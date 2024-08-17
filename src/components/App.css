@@ -222,21 +222,26 @@ html, body {
   height: 100%;
   width: 100%;
 }
+.logger table {
+  width: 100%;
+}
+.logger td {
+  vertical-align: top;
+}
 .log-messages {
   overflow: auto;
   height: 100%;
 }
 .log-messages>* {
   overflow-wrap: anywhere;
-  display: flex;
 }
 .logger .msg {
   flex: 1 1 auto;
 }
 .logger .file {
-  float: right;
-  position: relative;
   user-select: none;
+  white-space: nowrap;
+  color: var(--link-color);
 }
 .tooltip {
   position: relative;
@@ -278,21 +283,22 @@ html, body {
   margin: 0 0.25em 0 0.25em;
   background-position: center center;
   background-repeat: no-repeat;
-  text-align: center;
   flex: 0 0 auto;
+  text-align: right;
+  white-space: nowrap;
+  user-select: none;
 }
 .logger .log .count,
 .logger .info .count,
 .logger .warn .count,
 .logger .error .count {
   border-radius: 0.5em;
-  vertical-align: middle;
-  line-height: 1em;
 }
 
 .logger .info .count {
   background: #666;
   color: #DDD;
+  color: var(--unselected-color);
 }
 .logger .warn {
   color: var(--warn-fg-color);

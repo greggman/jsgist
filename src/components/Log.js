@@ -105,25 +105,24 @@ export default class Log extends React.Component {
     return (
       <div className="logger">
         <div className="log-messages layout-scrollbar" ref={this.logMessagesRef}>
+          <table><tbody>
           { logManager.getMsgs().map((msg, ndx) => {
               const tooltip = !msg.section;
               return (
-                <div className={classNames('log-line',{[msg.type]: true})} key={`l${ndx}`}>
-                  <div className={msg.count ? "count" : "no-count"}>{msg.count ? msg.count : ''}</div>
-                  <div className="msg">
-                    {msg.msg}
-                    <span>&nbsp;</span> {/* this is to prevent auto-selection to the next element when double clicking */}
-                    <div
-                      className={classNames('file', {tooltip, fileLink: msg.section})}
-                      onClick={() => onGoToLine(msg)}
-                      data-tooltip={`${msg.section || msg.url}:${msg.lineNo}`}
-                    >
-                      {msg.section || basename(msg.url || '')}:{msg.lineNo}
-                    </div>
-                  </div>
-                </div>
+                <tr className={classNames('log-line',{[msg.type]: true})} key={`l${ndx}`}>
+                  <td className={msg.count ? "count" : "no-count"}>{msg.count ? msg.count : ''}</td>
+                  <td className="msg">{msg.msg}</td>
+                  <td
+                    className={classNames('file', {tooltip, fileLink: msg.section})}
+                    onClick={() => onGoToLine(msg)}
+                    data-tooltip={`${msg.section || msg.url}:${msg.lineNo}`}
+                  >
+                    {msg.section || basename(msg.url || '')}:{msg.lineNo}
+                  </td>
+                </tr>
               );
             })}
+          </tbody></table>
         </div>
       </div>
     );
