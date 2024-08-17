@@ -17,7 +17,6 @@ const allow = [
   'midi',
   'clipboard-read',
   'clipboard-write',
-  'web-share',
   'serial',
   'xr-spatial-tracking',
 ].map(v => `${v} *`).join('; ');

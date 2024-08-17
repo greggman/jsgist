@@ -10,6 +10,7 @@
     "codemirror": "^5.65.1",
     "mime-types": "^2.1.34",
     "minisearch": "^6.2.0",
+    "playground-elements": "^0.18.1",
     "react": "^17.0.2",
     "react-codemirror2": "^7.2.1",
     "react-dom": "^17.0.2",
