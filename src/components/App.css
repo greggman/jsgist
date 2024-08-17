@@ -236,6 +236,7 @@ html, body {
 .logger .file {
   float: right;
   position: relative;
+  user-select: none;
 }
 .tooltip {
   position: relative;
